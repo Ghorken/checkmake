@@ -36,9 +36,7 @@ flutter:
     # piece_id examples: pawn, rook, knight, bishop, queen, king
     # per pezzi nuovi: fighter, miner, rifleman, healer, etc.
     - assets/images/pieces/
-    - assets/images/ui/
     - assets/images/skins/
-    - assets/images/boards/
   # fonts:
     # Puoi aggiungere font custom qui
     # - family: MedievalFont

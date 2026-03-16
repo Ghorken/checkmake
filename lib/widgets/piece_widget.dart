@@ -1,65 +1,78 @@
-// lib/widgets/piece_placeholder_painter.dart
-// Disegna placeholder colorati per i pezzi finché non hai asset reali
+// lib/widgets/piece_widget.dart
 
 import 'package:flutter/material.dart';
 import 'package:crownfall/models/piece.dart';
 import 'package:crownfall/models/piece_definitions.dart';
 
+// ─────────────────────────────────────────────────────────────────────────────
+// PLACEHOLDER PAINTER
+// Disegna placeholder colorati finché non sono disponibili gli asset reali.
+// I pezzi del giocatore (player1) mostrano il simbolo normale → di schiena.
+// I pezzi dell'avversario (player2) mostrano il simbolo specchiato → di fronte.
+// ─────────────────────────────────────────────────────────────────────────────
 class PiecePlaceholderPainter extends CustomPainter {
   final PieceType type;
   final PlayerSide side;
   final bool isHalfHp;
 
-  PiecePlaceholderPainter({
+  const PiecePlaceholderPainter({
     required this.type,
     required this.side,
     required this.isHalfHp,
   });
 
-  // Colore base per tipo di pezzo
   static Color _pieceColor(PieceType type) => switch (type) {
-        PieceType.pawn || PieceType.fighter || PieceType.miner || PieceType.rifleman => const Color(0xFF8BC34A),
-        PieceType.rook || PieceType.catapult || PieceType.ironWall => const Color(0xFF607D8B),
-        PieceType.knight || PieceType.paladin || PieceType.shadowRider => const Color(0xFF9C27B0),
-        PieceType.bishop || PieceType.healer || PieceType.investigator || PieceType.invisibleMan => const Color(0xFF2196F3),
-        PieceType.queen || PieceType.warlord || PieceType.heartQueen || PieceType.soulReaper => const Color(0xFFFF9800),
+        PieceType.pawn ||
+        PieceType.fighter ||
+        PieceType.miner ||
+        PieceType.rifleman =>
+          const Color(0xFF8BC34A),
+        PieceType.rook || PieceType.catapult || PieceType.ironWall =>
+          const Color(0xFF607D8B),
+        PieceType.knight ||
+        PieceType.paladin ||
+        PieceType.shadowRider =>
+          const Color(0xFF9C27B0),
+        PieceType.bishop ||
+        PieceType.healer ||
+        PieceType.investigator ||
+        PieceType.invisibleMan =>
+          const Color(0xFF2196F3),
+        PieceType.queen ||
+        PieceType.warlord ||
+        PieceType.heartQueen ||
+        PieceType.soulReaper =>
+          const Color(0xFFFF9800),
         PieceType.king || PieceType.commander => const Color(0xFFFFD700),
       };
 
-  // Simbolo per tipo base
   static String _symbol(PieceBaseType base) => switch (base) {
-        PieceBaseType.pawn => '♟',
-        PieceBaseType.rook => '♜',
+        PieceBaseType.pawn   => '♟',
+        PieceBaseType.rook   => '♜',
         PieceBaseType.knight => '♞',
         PieceBaseType.bishop => '♝',
-        PieceBaseType.queen => '♛',
-        PieceBaseType.king => '♚',
+        PieceBaseType.queen  => '♛',
+        PieceBaseType.king   => '♚',
       };
 
   @override
   void paint(Canvas canvas, Size size) {
     final def = pieceDefinitions[type]!;
     var color = _pieceColor(type);
-
-    // A metà vita il pezzo appare più scuro/graffiato
     if (isHalfHp) color = color.withValues(alpha: 0.6);
 
-    // Bordo che identifica il lato del giocatore
+    // Bordo ciano = player1 (giocatore), rosso = player2 (avversario)
     final borderColor = side == PlayerSide.player1
-        ? const Color(0xFF00E5FF) // ciano per giocatore 1
-        : const Color(0xFFFF5252); // rosso per giocatore 2
+        ? const Color(0xFF00E5FF)
+        : const Color(0xFFFF5252);
 
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width / 2 - 2;
 
     // Sfondo circolare
-    canvas.drawCircle(
-      center,
-      radius,
-      Paint()..color = color,
-    );
+    canvas.drawCircle(center, radius, Paint()..color = color);
 
-    // Bordo colorato per identificare il lato
+    // Bordo colorato
     canvas.drawCircle(
       center,
       radius,
@@ -69,23 +82,24 @@ class PiecePlaceholderPainter extends CustomPainter {
         ..strokeWidth = 3,
     );
 
-    // Se a metà vita, disegna una crepa
+    // Crepa a metà vita
     if (isHalfHp) {
       final crackPaint = Paint()
         ..color = Colors.black.withValues(alpha: 0.5)
         ..strokeWidth = 1.5
         ..style = PaintingStyle.stroke;
-      final path = Path();
-      path.moveTo(size.width * 0.4, size.height * 0.2);
-      path.lineTo(size.width * 0.55, size.height * 0.5);
-      path.lineTo(size.width * 0.35, size.height * 0.8);
+      final path = Path()
+        ..moveTo(size.width * 0.4, size.height * 0.2)
+        ..lineTo(size.width * 0.55, size.height * 0.5)
+        ..lineTo(size.width * 0.35, size.height * 0.8);
       canvas.drawPath(path, crackPaint);
     }
 
-    // Simbolo scacchi al centro
+    // Simbolo scacchi: specchiato orizzontalmente per player2 (di fronte)
+    final symbol = _symbol(def.baseType);
     final textPainter = TextPainter(
       text: TextSpan(
-        text: _symbol(def.baseType),
+        text: symbol,
         style: TextStyle(
           fontSize: size.width * 0.55,
           color: Colors.white.withValues(alpha: isHalfHp ? 0.6 : 0.95),
@@ -94,21 +108,46 @@ class PiecePlaceholderPainter extends CustomPainter {
       textDirection: TextDirection.ltr,
     )..layout();
 
-    textPainter.paint(
-      canvas,
-      Offset(center.dx - textPainter.width / 2, center.dy - textPainter.height / 2),
-    );
+    final dx = center.dx - textPainter.width / 2;
+    final dy = center.dy - textPainter.height / 2;
+
+    if (side == PlayerSide.player2) {
+      // Specchia orizzontalmente: trasla al centro, scala -1 sull'asse X, ritrasla
+      canvas.save();
+      canvas.translate(center.dx, 0);
+      canvas.scale(-1, 1);
+      canvas.translate(-center.dx, 0);
+      textPainter.paint(canvas, Offset(dx, dy));
+      canvas.restore();
+    } else {
+      textPainter.paint(canvas, Offset(dx, dy));
+    }
   }
 
   @override
-  bool shouldRepaint(PiecePlaceholderPainter old) => old.type != type || old.side != side || old.isHalfHp != isHalfHp;
+  bool shouldRepaint(PiecePlaceholderPainter old) =>
+      old.type != type || old.side != side || old.isHalfHp != isHalfHp;
 }
 
-/// Widget che mostra il pezzo: usa asset PNG se esistono, altrimenti il placeholder
+// ─────────────────────────────────────────────────────────────────────────────
+// PIECE WIDGET
+// Carica piece.imagePath (asset PNG); se manca usa il placeholder.
+//
+// Convenzione asset:
+//   assets/images/pieces/{type}_{perspective}_{state}.png
+//     perspective = 'back'  → player1 (di schiena)
+//                = 'front' → player2 (di fronte)
+//     state       = 'full' | 'half'
+//
+// Esempi:
+//   assets/images/pieces/pawn_back_full.png
+//   assets/images/pieces/pawn_front_half.png
+//   assets/images/pieces/queen_back_full.png
+// ─────────────────────────────────────────────────────────────────────────────
 class PieceWidget extends StatelessWidget {
   final Piece piece;
   final double size;
-  final bool showStats; // mostra HP/ATK solo se è il tuo pezzo
+  final bool showStats; // mostra la barra HP solo per i propri pezzi
   final bool isSelected;
 
   const PieceWidget({
@@ -126,20 +165,17 @@ class PieceWidget extends StatelessWidget {
       height: size,
       child: Stack(
         children: [
-          // ============================================================
-          // GESTIONE ASSET:
-          // Quando hai le immagini reali, sostituisci il CustomPaint
-          // con Image.asset(piece.imagePath, fit: BoxFit.contain)
-          //
-          // Esempio:
-          // Image.asset(
-          //   piece.imagePath,  // es: 'assets/images/pieces/pawn_full.png'
-          //   fit: BoxFit.contain,
-          //   errorBuilder: (_, __, ___) => _buildPlaceholder(),
-          // )
-          // ============================================================
-          _buildPlaceholder(),
+          // ── Immagine principale ──────────────────────────────────────────
+          // Prova a caricare l'asset; se non esiste (ancora) usa il placeholder.
+          Positioned.fill(
+            child: Image.asset(
+              piece.imagePath,
+              fit: BoxFit.contain,
+              errorBuilder: (_, __, ___) => _buildPlaceholder(),
+            ),
+          ),
 
+          // ── Bordo selezione ──────────────────────────────────────────────
           if (isSelected)
             Container(
               decoration: BoxDecoration(
@@ -149,12 +185,12 @@ class PieceWidget extends StatelessWidget {
                   BoxShadow(
                     color: Colors.yellowAccent.withValues(alpha: 0.5),
                     blurRadius: 8,
-                  )
+                  ),
                 ],
               ),
             ),
 
-          // Barra HP piccola in basso
+          // ── Barra HP ─────────────────────────────────────────────────────
           if (showStats)
             Positioned(
               bottom: 0,
@@ -179,6 +215,7 @@ class PieceWidget extends StatelessWidget {
       );
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
 class _HpBar extends StatelessWidget {
   final int current;
   final int max;
@@ -193,6 +230,7 @@ class _HpBar extends StatelessWidget {
         : ratio > 0.25
             ? Colors.orange
             : Colors.red;
+
     return Container(
       height: 4,
       decoration: BoxDecoration(

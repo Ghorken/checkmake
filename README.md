@@ -41,11 +41,19 @@ crownfall/
 
 ### Convenzione Nomi File
 
-Per ogni pezzo servono **2 immagini**:
+Ogni pezzo ha **4 immagini** — due prospettive × due stati di vita:
+
 ```
-assets/images/pieces/{piece_id}_full.png   → vita piena (> 50%)
-assets/images/pieces/{piece_id}_half.png   → vita ridotta (≤ 50%)
+assets/images/pieces/{piece_id}_back_full.png   → giocatore,   vita piena  (> 50%)
+assets/images/pieces/{piece_id}_back_half.png   → giocatore,   vita ridotta (≤ 50%)
+assets/images/pieces/{piece_id}_front_full.png  → avversario,  vita piena
+assets/images/pieces/{piece_id}_front_half.png  → avversario,  vita ridotta
 ```
+
+> **`back`** = personaggio visto **di schiena** → pezzi del giocatore (player 1)  
+> **`front`** = personaggio visto **di fronte** → pezzi dell'avversario (player 2)
+
+Il path viene calcolato automaticamente da `Piece.imagePath` in base a `piece.side` e `piece.stats.isHalfHp`.
 
 **Lista degli ID pezzi** (`piece_id`):
 | ID              | Pezzo                |
@@ -71,45 +79,49 @@ assets/images/pieces/{piece_id}_half.png   → vita ridotta (≤ 50%)
 | `soulReaper`    | Rapitrice di Anime   |
 | `commander`     | Comandante           |
 
-### Come Distinguere i Giocatori Senza Bianchi/Neri
+### Esempio di file per il Pedone
 
-Nei file `piece_widget.dart` i pezzi vengono identificati con:
-- **Bordo ciano** → Giocatore 1 (tu)
-- **Bordo rosso** → Giocatore 2 (avversario)
+```
+assets/images/pieces/pawn_back_full.png    ← pedone giocatore, vita piena
+assets/images/pieces/pawn_back_half.png    ← pedone giocatore, ferito
+assets/images/pieces/pawn_front_full.png   ← pedone avversario, vita piena
+assets/images/pieces/pawn_front_half.png   ← pedone avversario, ferito
+```
 
-Quando inserisci asset reali, puoi fare in due modi:
-1. **Un'unica immagine per pezzo** + bordo colorato gestito dal codice (già implementato)
-2. **Due varianti** `{piece_id}_p1_full.png` e `{piece_id}_p2_full.png` con colori diversi
+### Come Funziona il Fallback
 
-### Dove Modificare il Codice per Usare Asset Reali
-
-In `lib/widgets/piece_widget.dart`, nel metodo `build` della classe `PieceWidget`:
+Il `PieceWidget` tenta di caricare l'asset PNG; se il file non esiste usa
+automaticamente il **placeholder colorato** (simbolo scacchi).
+Puoi aggiungere le immagini pezzo per pezzo senza rompere nulla:
 
 ```dart
-// PRIMA (placeholder):
-_buildPlaceholder(),
-
-// DOPO (asset reali):
+// In PieceWidget (già implementato):
 Image.asset(
-  piece.imagePath,  // già calcolato automaticamente
+  piece.imagePath,           // calcolato automaticamente
   fit: BoxFit.contain,
-  errorBuilder: (_, __, ___) => _buildPlaceholder(), // fallback se manca
+  errorBuilder: (_, __, ___) => _buildPlaceholder(),  // fallback
 ),
 ```
 
-Puoi anche lasciare `errorBuilder` che usa il placeholder come fallback
-mentre aggiungi le immagini gradualmente.
+### Placeholder durante lo sviluppo
+
+Finché gli asset non sono disponibili il placeholder mostra:
+- **Simbolo normale** = pezzi del giocatore (di schiena)
+- **Simbolo specchiato orizzontalmente** = pezzi dell'avversario (di fronte)
+- **Bordo ciano** → giocatore 1 (tu)
+- **Bordo rosso** → giocatore 2 (avversario)
+- **Simbolo semitrasparente + crepa** → pezzo a metà vita
 
 ### Skin dei Pezzi
 
-Per le skin, la convenzione è:
+Per le skin la convenzione aggiunge il prefisso della skin:
 ```
-assets/images/skins/{skin_id}_{piece_id}_full.png
-assets/images/skins/{skin_id}_{piece_id}_half.png
+assets/images/skins/{skin_id}_{piece_id}_back_full.png
+assets/images/skins/{skin_id}_{piece_id}_back_half.png
+assets/images/skins/{skin_id}_{piece_id}_front_full.png
+assets/images/skins/{skin_id}_{piece_id}_front_half.png
 ```
-Es: `assets/images/skins/army_fire_pawn_full.png`
-
-Il path viene calcolato automaticamente in `Piece.imagePath`.
+Es: `assets/images/skins/army_fire_pawn_back_full.png`
 
 ---
 

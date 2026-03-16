@@ -9,9 +9,9 @@ enum PieceType {
   queen,
   king,
   // Pezzi sbloccabili - Varianti Pedone
-  fighter,      // variante pedone
-  miner,        // variante pedone
-  rifleman,     // variante pedone
+  fighter, // variante pedone
+  miner, // variante pedone
+  rifleman, // variante pedone
   // Varianti Torre
   catapult,
   ironWall,
@@ -127,8 +127,9 @@ class Piece {
   // Immagine da mostrare in base alla vita
   String get imagePath {
     final skinPrefix = equippedSkin != null ? 'skins/${equippedSkin}_' : 'pieces/';
-    final suffix = stats.isHalfHp ? '_half' : '_full';
-    return 'assets/images/$skinPrefix${type.name}$suffix.png';
+    final perspective = side == PlayerSide.player1 ? 'back' : 'front';
+    final state = stats.isHalfHp ? 'half' : 'full';
+    return 'assets/images/$skinPrefix${type.name}_${perspective}_$state.png';
   }
 
   Piece copyWith({
