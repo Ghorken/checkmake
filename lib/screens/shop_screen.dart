@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:crownfall/l10n/app_localizations.dart';
+import 'package:crownfall/l10n/piece_strings.dart';
 import 'package:crownfall/models/piece.dart';
 import 'package:crownfall/models/piece_definitions.dart';
 import 'package:crownfall/providers/shop_provider.dart';
@@ -26,6 +28,7 @@ class _ShopScreenState extends State<ShopScreen> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     final shop = context.watch<ShopProvider>();
+    final l = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: const Color(0xFF1A1A2E),
@@ -33,7 +36,7 @@ class _ShopScreenState extends State<ShopScreen> with SingleTickerProviderStateM
         backgroundColor: const Color(0xFF16213E),
         title: Row(
           children: [
-            const Text('Negozio', style: TextStyle(color: Colors.amber)),
+            Text(l.shopTitle, style: const TextStyle(color: Colors.amber)),
             const Spacer(),
             const Icon(Icons.monetization_on, color: Colors.amber, size: 18),
             const SizedBox(width: 4),
@@ -48,10 +51,10 @@ class _ShopScreenState extends State<ShopScreen> with SingleTickerProviderStateM
           indicatorColor: Colors.amber,
           labelColor: Colors.amber,
           unselectedLabelColor: Colors.white54,
-          tabs: const [
-            Tab(text: 'Pezzi'),
-            Tab(text: 'Potenziamenti'),
-            Tab(text: 'Skin'),
+          tabs: [
+            Tab(text: l.shopTabPieces),
+            Tab(text: l.shopTabUpgrades),
+            Tab(text: l.shopTabSkins),
           ],
         ),
       ),
@@ -74,6 +77,7 @@ class _PiecesTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final unlockable = pieceDefinitions.values.where((d) => d.isUnlockable).toList();
 
     return ListView.builder(
@@ -99,13 +103,13 @@ class _PiecesTab extends StatelessWidget {
                   : _LockedPieceIcon(baseType: def.baseType),
             ),
             title: Text(
-              def.displayName,
+              l.pieceNameFor(def.type),
               style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
             ),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(def.description, style: const TextStyle(color: Colors.white54, fontSize: 11)),
+                Text(l.pieceDescFor(def.type), style: const TextStyle(color: Colors.white54, fontSize: 11)),
                 const SizedBox(height: 4),
                 Row(
                   children: [
@@ -119,7 +123,7 @@ class _PiecesTab extends StatelessWidget {
                 if (def.abilityFactory != null)
                   Padding(
                     padding: const EdgeInsets.only(top: 4),
-                    child: _StatChip('✨ ${def.abilityFactory!()?.name ?? 'Abilità speciale'}'),
+                    child: _StatChip('✨ ${l.abilityNameFor(def.abilityFactory!()?.id ?? '') }'),
                   ),
               ],
             ),
@@ -144,11 +148,12 @@ class _PiecesTab extends StatelessWidget {
   }
 
   void _buy(BuildContext context, ShopProvider shop, PieceType type) {
+    final l = AppLocalizations.of(context)!;
     final success = shop.unlockPiece(type);
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('${pieceDefinitions[type]!.displayName} sbloccato!'),
+          content: Text(l.shopUnlockSuccess(l.pieceNameFor(type))),
           backgroundColor: Colors.green,
         ),
       );
@@ -163,15 +168,15 @@ class _UpgradesTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final owned = shop.profile.unlockedPieces.toList();
 
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        // Iniziativa
         _InitiativeCard(shop: shop),
         const SizedBox(height: 12),
-        const Text('Migliora i pezzi', style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold, fontSize: 16)),
+        Text(l.shopUpgradePieces, style: const TextStyle(color: Colors.amber, fontWeight: FontWeight.bold, fontSize: 16)),
         const SizedBox(height: 8),
         ...owned.map((type) => _PieceUpgradeCard(shop: shop, type: type)),
       ],
@@ -185,6 +190,8 @@ class _InitiativeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+
     return Card(
       color: const Color(0xFF0F3460),
       child: Padding(
@@ -197,22 +204,22 @@ class _InitiativeCard extends StatelessWidget {
                 const Icon(Icons.flash_on, color: Colors.yellow),
                 const SizedBox(width: 8),
                 Text(
-                  'Iniziativa: Lvl ${shop.profile.initiative}',
+                  l.shopInitiativeLabel(shop.profile.initiative),
                   style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
             const SizedBox(height: 4),
-            const Text(
-              'Chi ha iniziativa più alta inizia la partita. In caso di parità, si lancia una moneta.',
-              style: TextStyle(color: Colors.white54, fontSize: 11),
+            Text(
+              l.shopInitiativeDesc,
+              style: const TextStyle(color: Colors.white54, fontSize: 11),
             ),
             const SizedBox(height: 8),
             ElevatedButton(
               onPressed: shop.profile.coins >= shop.initiativeUpgradeCost ? () => shop.upgradeInitiative() : null,
               style: ElevatedButton.styleFrom(backgroundColor: Colors.yellow),
               child: Text(
-                'Potenzia (${shop.initiativeUpgradeCost}🪙)',
+                l.shopUpgradeBtn(shop.initiativeUpgradeCost),
                 style: const TextStyle(color: Colors.black, fontSize: 12),
               ),
             ),
@@ -230,8 +237,9 @@ class _PieceUpgradeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final def = pieceDefinitions[type]!;
+    final l = AppLocalizations.of(context)!;
     final levels = shop.profile.getUpgradeLevel(type);
+
 
     return Card(
       color: const Color(0xFF16213E),
@@ -241,7 +249,7 @@ class _PieceUpgradeCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(def.displayName, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            Text(l.pieceNameFor(type), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             _UpgradeRow(
               label: '❤️ HP',
@@ -258,7 +266,7 @@ class _PieceUpgradeCard extends StatelessWidget {
               onUpgrade: () => shop.upgradeStat(type, 'attack'),
             ),
             _UpgradeRow(
-              label: '🪙 Valore',
+              label: l.shopStatValue,
               level: levels.valueLevel,
               cost: shop.getUpgradeCost(type, 'value'),
               canAfford: shop.profile.coins >= shop.getUpgradeCost(type, 'value'),
@@ -335,11 +343,19 @@ class _SkinsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+
+    // Skin con nomi e descrizioni localizzate
+    final localizedSkins = _buildLocalizedSkins(l);
+
     return ListView.builder(
       padding: const EdgeInsets.all(16),
-      itemCount: availableSkins.length,
+      itemCount: localizedSkins.length,
       itemBuilder: (context, i) {
-        final skin = availableSkins[i];
+        final entry = localizedSkins[i];
+        final skin = entry.item;
+        final skinName = entry.name;
+        final skinDesc = entry.description;
         final owned = shop.hasSkin(skin.skinId);
         final canBuy = !owned && shop.profile.coins >= skin.cost;
 
@@ -365,18 +381,18 @@ class _SkinsTab extends StatelessWidget {
                 color: Colors.white,
               ),
             ),
-            title: Text(skin.name, style: const TextStyle(color: Colors.white)),
+            title: Text(skinName, style: const TextStyle(color: Colors.white)),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(skin.description, style: const TextStyle(color: Colors.white54, fontSize: 11)),
-                if (skin.targetPiece == null) const Text('Skin per tutta l\'armata', style: TextStyle(color: Colors.amber, fontSize: 10)),
+                Text(skinDesc, style: const TextStyle(color: Colors.white54, fontSize: 11)),
+                if (skin.targetPiece == null) Text(l.shopSkinForArmy, style: const TextStyle(color: Colors.amber, fontSize: 10)),
               ],
             ),
             trailing: owned
                 ? TextButton(
                     onPressed: () => shop.equipSkin(skin.skinId),
-                    child: const Text('Equipaggia', style: TextStyle(color: Colors.cyan)),
+                    child: Text(l.shopEquip, style: const TextStyle(color: Colors.cyan)),
                   )
                 : ElevatedButton(
                     onPressed: canBuy ? () => shop.buySkin(skin) : null,
@@ -390,6 +406,22 @@ class _SkinsTab extends StatelessWidget {
       },
     );
   }
+
+  List<_LocalizedSkin> _buildLocalizedSkins(AppLocalizations l) {
+    return [
+      _LocalizedSkin(availableSkins[0], l.skinFireArmy, l.skinFireArmyDesc),
+      _LocalizedSkin(availableSkins[1], l.skinIceArmy, l.skinIceArmyDesc),
+      _LocalizedSkin(availableSkins[2], l.skinPawnShadow, l.skinPawnShadowDesc),
+      _LocalizedSkin(availableSkins[3], l.skinQueenGolden, l.skinQueenGoldenDesc),
+    ];
+  }
+}
+
+class _LocalizedSkin {
+  final ShopSkinItem item;
+  final String name;
+  final String description;
+  const _LocalizedSkin(this.item, this.name, this.description);
 }
 
 // Helpers

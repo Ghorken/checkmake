@@ -1,0 +1,141 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "Crown Fall",
+  "appSubtitle": "Battle Chess",
+
+  "statCoins": "Coins",
+  "statWins": "Wins",
+  "statLosses": "Losses",
+  "statInitiative": "Initiative",
+
+  "btnPlay": "PLAY",
+  "btnBuildArmy": "BUILD ARMY",
+  "btnShop": "SHOP",
+
+  "shopTitle": "Shop",
+  "shopTabPieces": "Pieces",
+  "shopTabUpgrades": "Upgrades",
+  "shopTabSkins": "Skins",
+
+  "shopUnlockSuccess": "{pieceName} unlocked!",
+  "@shopUnlockSuccess": {
+    "placeholders": {
+      "pieceName": { "type": "String" }
+    }
+  },
+
+  "shopUpgradePieces": "Upgrade pieces",
+  "shopInitiativeLabel": "Initiative: Lvl {level}",
+  "@shopInitiativeLabel": {
+    "placeholders": {
+      "level": { "type": "int" }
+    }
+  },
+  "shopInitiativeDesc": "The player with higher initiative goes first. On a tie, a coin is flipped.",
+  "shopUpgradeBtn": "Upgrade ({cost}🪙)",
+  "@shopUpgradeBtn": {
+    "placeholders": {
+      "cost": { "type": "int" }
+    }
+  },
+  "shopSkinForArmy": "Skin for the whole army",
+  "shopEquip": "Equip",
+  "shopStatValue": "🪙 Value",
+
+  "armyBuilderTitle": "Build Army",
+  "armySave": "Save",
+  "armySaved": "Army saved!",
+
+  "basePawn": "Pawns",
+  "baseRook": "Rooks",
+  "baseKnight": "Knights",
+  "baseBishop": "Bishops",
+  "baseQueen": "Queens",
+  "baseKing": "Kings",
+
+  "gameOpponentTurn": "Opponent's turn",
+  "gameEndTurn": "End turn",
+  "gameOver": "End game",
+  "gameTurnMoved": "You moved. You can use an ability or end your turn.",
+  "gameTurnAbility": "Ability used. You can move or end your turn.",
+  "gameTurnSelect": "🎮 Your turn — select a piece",
+
+  "pieceNamePawn": "Pawn",
+  "pieceDescPawn": "The basic soldier, moves forward and captures diagonally.",
+  "pieceNameRook": "Rook",
+  "pieceDescRook": "Moves in straight lines, high durability.",
+  "pieceNameKnight": "Knight",
+  "pieceDescKnight": "Moves in an L-shape, can jump over pieces.",
+  "pieceNameBishop": "Bishop",
+  "pieceDescBishop": "Moves diagonally, high speed.",
+  "pieceNameQueen": "Queen",
+  "pieceDescQueen": "The most powerful piece, moves in all directions.",
+  "pieceNameKing": "King",
+  "pieceDescKing": "Must be protected. Its fall means defeat.",
+  "pieceNameFighter": "Fighter",
+  "pieceDescFighter": "A pawn variant with boosted attack.",
+  "pieceNameMiner": "Miner",
+  "pieceDescMiner": "Can place traps on the ground.",
+  "pieceNameRifleman": "Rifleman",
+  "pieceDescRifleman": "Attacks from 2 squares away.",
+  "pieceNameHealer": "Healer",
+  "pieceDescHealer": "Can restore HP to allied pieces.",
+  "pieceNameInvestigator": "Investigator",
+  "pieceDescInvestigator": "Can reveal enemy statistics.",
+  "pieceNameInvisibleMan": "Invisible Man",
+  "pieceDescInvisibleMan": "Can become invisible for one turn.",
+  "pieceNameWarlord": "Warlord",
+  "pieceDescWarlord": "Boosts nearby allied pieces.",
+  "pieceNameHeartQueen": "Heart Queen",
+  "pieceDescHeartQueen": "Extremely high health, can regenerate HP.",
+  "pieceNameSoulReaper": "Soul Reaper",
+  "pieceDescSoulReaper": "Steals HP from eliminated enemies.",
+  "pieceNameCatapult": "Catapult",
+  "pieceDescCatapult": "High attack, can strike from a distance.",
+  "pieceNameIronWall": "Iron Wall",
+  "pieceDescIronWall": "Massive HP, blocks enemy movement.",
+  "pieceNamePaladin": "Paladin",
+  "pieceDescPaladin": "Perfect balance between attack and defense.",
+  "pieceNameShadowRider": "Shadow Rider",
+  "pieceDescShadowRider": "Moves silently, frequent critical hits.",
+  "pieceNameCommander": "Commander",
+  "pieceDescCommander": "A battlefield leader that boosts allied pieces.",
+
+  "abilityNameBattleCry": "Battle Cry",
+  "abilityDescBattleCry": "Increases attack by 50% for one turn.",
+  "abilityNamePlaceTrap": "Place Trap",
+  "abilityDescPlaceTrap": "Places a trap on an adjacent square.",
+  "abilityNameLongShot": "Long Shot",
+  "abilityDescLongShot": "Attacks a piece 3 squares away.",
+  "abilityNameHeal": "Heal",
+  "abilityDescHeal": "Restores 20 HP to an adjacent allied piece.",
+  "abilityNameReveal": "Analysis",
+  "abilityDescReveal": "Reveals an enemy piece's stats for 2 turns.",
+  "abilityNameInvisibility": "Invisibility",
+  "abilityDescInvisibility": "Becomes invisible to the enemy for 1 turn.",
+  "abilityNameBattleCommand": "Battle Command",
+  "abilityDescBattleCommand": "All allied pieces within range 2 gain +5 ATK for 2 turns.",
+  "abilityNameRoyalAura": "Royal Aura",
+  "abilityDescRoyalAura": "Regenerates 15 HP to all adjacent allied pieces.",
+  "abilityNameSoulSteal": "Soul Steal",
+  "abilityDescSoulSteal": "Steals 30% of an adjacent enemy piece's max HP.",
+  "abilityNameBombardment": "Bombardment",
+  "abilityDescBombardment": "Attacks all squares in a row or column.",
+  "abilityNameFortify": "Fortify",
+  "abilityDescFortify": "Reduces damage taken by 50% until next turn.",
+  "abilityNameHolyCharge": "Holy Charge",
+  "abilityDescHolyCharge": "Moves twice this turn, dealing +10 damage.",
+  "abilityNameShadowStrike": "Shadow Strike",
+  "abilityDescShadowStrike": "Guaranteed critical hit (double damage).",
+  "abilityNameSpecial": "Special ability",
+
+  "skinFireArmy": "Fire Army",
+  "skinFireArmyDesc": "Dyes all your pieces in blazing red",
+  "skinIceArmy": "Ice Army",
+  "skinIceArmyDesc": "Pieces crystallized in glacial blue",
+  "skinPawnShadow": "Shadow Pawn",
+  "skinPawnShadowDesc": "Dark skin for your pawns",
+  "skinQueenGolden": "Golden Queen",
+  "skinQueenGoldenDesc": "Your queen shines in gold"
+}

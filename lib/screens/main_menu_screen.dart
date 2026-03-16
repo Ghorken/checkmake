@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:crownfall/l10n/app_localizations.dart';
 import 'package:crownfall/models/player_profile.dart';
 import 'package:crownfall/providers/game_provider.dart';
 import 'package:crownfall/providers/shop_provider.dart';
@@ -15,12 +16,12 @@ class MainMenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.watch<PlayerProfile>();
+    final l = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: const Color(0xFF1A1A2E),
       body: Stack(
         children: [
-          // Background pattern
           Positioned.fill(
             child: CustomPaint(painter: _BackgroundPainter()),
           ),
@@ -28,10 +29,9 @@ class MainMenuScreen extends StatelessWidget {
             child: Column(
               children: [
                 const SizedBox(height: 40),
-                // Logo / Titolo
-                const Text(
-                  'CROWN FALL',
-                  style: TextStyle(
+                Text(
+                  l.appTitle,
+                  style: const TextStyle(
                     color: Colors.amber,
                     fontSize: 36,
                     fontWeight: FontWeight.bold,
@@ -41,9 +41,9 @@ class MainMenuScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                const Text(
-                  'Battle Chess',
-                  style: TextStyle(color: Colors.white54, fontSize: 16, letterSpacing: 2),
+                Text(
+                  l.appSubtitle,
+                  style: const TextStyle(color: Colors.white54, fontSize: 16, letterSpacing: 2),
                 ),
                 const SizedBox(height: 20),
 
@@ -59,27 +59,26 @@ class MainMenuScreen extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      _Stat('🪙', '${profile.coins}', 'Monete'),
-                      _Stat('🏆', '${profile.wins}', 'Vittorie'),
-                      _Stat('💀', '${profile.losses}', 'Sconfitte'),
-                      _Stat('⚡', '${profile.initiative}', 'Iniziativa'),
+                      _Stat('🪙', '${profile.coins}', l.statCoins),
+                      _Stat('🏆', '${profile.wins}', l.statWins),
+                      _Stat('💀', '${profile.losses}', l.statLosses),
+                      _Stat('⚡', '${profile.initiative}', l.statInitiative),
                     ],
                   ),
                 ),
 
                 const Spacer(),
 
-                // Menu buttons
                 _MenuButton(
                   icon: Icons.sports_esports,
-                  label: 'GIOCA',
+                  label: l.btnPlay,
                   color: Colors.amber,
                   onTap: () => _startGame(context, profile),
                 ),
                 const SizedBox(height: 12),
                 _MenuButton(
                   icon: Icons.shield,
-                  label: 'COSTRUISCI ESERCITO',
+                  label: l.btnBuildArmy,
                   color: Colors.cyan,
                   onTap: () => Navigator.push(
                     context,
@@ -94,7 +93,7 @@ class MainMenuScreen extends StatelessWidget {
                 const SizedBox(height: 12),
                 _MenuButton(
                   icon: Icons.store,
-                  label: 'NEGOZIO',
+                  label: l.btnShop,
                   color: Colors.purple,
                   onTap: () => Navigator.push(
                     context,
@@ -116,9 +115,7 @@ class MainMenuScreen extends StatelessWidget {
   }
 
   void _startGame(BuildContext context, PlayerProfile myProfile) {
-    // Per ora crea un profilo avversario di esempio
     final opponent = PlayerProfile(name: 'Avversario');
-
     Navigator.push(
       context,
       MaterialPageRoute(

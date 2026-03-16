@@ -67,7 +67,7 @@ class ShopProvider extends ChangeNotifier {
   bool unlockPiece(PieceType type) {
     final def = pieceDefinitions[type];
     if (def == null || !canUnlock(type)) return false;
-    profile.coins -= def.unlockCost;
+    if (!profile.spendCoins(def.unlockCost)) return false;
     profile.unlockedPieces.add(type);
     notifyListeners();
     return true;
@@ -89,9 +89,8 @@ class ShopProvider extends ChangeNotifier {
 
   bool upgradeStat(PieceType type, String stat) {
     final cost = getUpgradeCost(type, stat);
-    if (profile.coins < cost) return false;
+    if (!profile.spendCoins(cost)) return false;
 
-    profile.coins -= cost;
     final levels = profile.upgradeLevels[type] ?? UpgradeLevel(pieceType: type);
 
     switch (stat) {
@@ -111,8 +110,7 @@ class ShopProvider extends ChangeNotifier {
   int get initiativeUpgradeCost => 300 * profile.initiative;
 
   bool upgradeInitiative() {
-    if (profile.coins < initiativeUpgradeCost) return false;
-    profile.coins -= initiativeUpgradeCost;
+    if (!profile.spendCoins(initiativeUpgradeCost)) return false;
     profile.initiative++;
     notifyListeners();
     return true;
@@ -122,8 +120,8 @@ class ShopProvider extends ChangeNotifier {
   bool hasSkin(String skinId) => profile.ownedSkins.any((s) => s.skinId == skinId);
 
   bool buySkin(ShopSkinItem item) {
-    if (hasSkin(item.skinId) || profile.coins < item.cost) return false;
-    profile.coins -= item.cost;
+    if (hasSkin(item.skinId)) return false;
+    if (!profile.spendCoins(item.cost)) return false;
     profile.ownedSkins.add(SkinOwnership(
       skinId: item.skinId,
       name: item.name,

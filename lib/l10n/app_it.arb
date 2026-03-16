@@ -1,0 +1,144 @@
+{
+  "@@locale": "it",
+
+  "appTitle": "Crown Fall",
+  "@appTitle": { "description": "Nome dell'app" },
+
+  "appSubtitle": "Battle Chess",
+  "@appSubtitle": {},
+
+  "statCoins": "Monete",
+  "statWins": "Vittorie",
+  "statLosses": "Sconfitte",
+  "statInitiative": "Iniziativa",
+
+  "btnPlay": "GIOCA",
+  "btnBuildArmy": "COSTRUISCI ESERCITO",
+  "btnShop": "NEGOZIO",
+
+  "shopTitle": "Negozio",
+  "shopTabPieces": "Pezzi",
+  "shopTabUpgrades": "Potenziamenti",
+  "shopTabSkins": "Skin",
+
+  "shopUnlockSuccess": "{pieceName} sbloccato!",
+  "@shopUnlockSuccess": {
+    "placeholders": {
+      "pieceName": { "type": "String" }
+    }
+  },
+
+  "shopUpgradePieces": "Migliora i pezzi",
+  "shopInitiativeLabel": "Iniziativa: Lvl {level}",
+  "@shopInitiativeLabel": {
+    "placeholders": {
+      "level": { "type": "int" }
+    }
+  },
+  "shopInitiativeDesc": "Chi ha iniziativa più alta inizia la partita. In caso di parità, si lancia una moneta.",
+  "shopUpgradeBtn": "Potenzia ({cost}🪙)",
+  "@shopUpgradeBtn": {
+    "placeholders": {
+      "cost": { "type": "int" }
+    }
+  },
+  "shopSkinForArmy": "Skin per tutta l'armata",
+  "shopEquip": "Equipaggia",
+  "shopStatValue": "🪙 Valore",
+
+  "armyBuilderTitle": "Costruisci Esercito",
+  "armySave": "Salva",
+  "armySaved": "Esercito salvato!",
+
+  "basePawn": "Pedoni",
+  "baseRook": "Torri",
+  "baseKnight": "Cavalli",
+  "baseBishop": "Alfieri",
+  "baseQueen": "Regine",
+  "baseKing": "Re",
+
+  "gameOpponentTurn": "Turno avversario",
+  "gameEndTurn": "Fine turno",
+  "gameOver": "Fine partita",
+  "gameTurnMoved": "Hai mosso. Puoi usare un'abilità o finire il turno.",
+  "gameTurnAbility": "Abilità usata. Puoi muovere o finire il turno.",
+  "gameTurnSelect": "🎮 Il tuo turno — seleziona un pezzo",
+
+  "pieceNamePawn": "Pedone",
+  "pieceDescPawn": "Il soldato base, muove avanti e cattura in diagonale.",
+  "pieceNameRook": "Torre",
+  "pieceDescRook": "Muove in linea retta, alta resistenza.",
+  "pieceNameKnight": "Cavallo",
+  "pieceDescKnight": "Muove a L, può scavalcare i pezzi.",
+  "pieceNameBishop": "Alfiere",
+  "pieceDescBishop": "Muove in diagonale, velocità elevata.",
+  "pieceNameQueen": "Regina",
+  "pieceDescQueen": "Il pezzo più potente, muove in tutte le direzioni.",
+  "pieceNameKing": "Re",
+  "pieceDescKing": "Va protetto. La sua caduta significa sconfitta.",
+  "pieceNameFighter": "Combattente",
+  "pieceDescFighter": "Variante del pedone con attacco potenziato.",
+  "pieceNameMiner": "Minatore",
+  "pieceDescMiner": "Può piazzare trappole sul terreno.",
+  "pieceNameRifleman": "Fuciliere",
+  "pieceDescRifleman": "Attacca a distanza di 2 caselle.",
+  "pieceNameHealer": "Curatore",
+  "pieceDescHealer": "Può ripristinare HP a pezzi alleati.",
+  "pieceNameInvestigator": "Investigatore",
+  "pieceDescInvestigator": "Può rivelare le statistiche dei nemici.",
+  "pieceNameInvisibleMan": "Uomo Invisibile",
+  "pieceDescInvisibleMan": "Può rendersi invisibile per un turno.",
+  "pieceNameWarlord": "Condottiera",
+  "pieceDescWarlord": "Potenzia i pezzi alleati nelle vicinanze.",
+  "pieceNameHeartQueen": "Regina di Cuori",
+  "pieceDescHeartQueen": "Salute elevatissima, può rigenerare HP.",
+  "pieceNameSoulReaper": "Rapitrice di Anime",
+  "pieceDescSoulReaper": "Ruba HP dai nemici eliminati.",
+  "pieceNameCatapult": "Catapulta",
+  "pieceDescCatapult": "Alto attacco, può colpire a distanza.",
+  "pieceNameIronWall": "Muro di Ferro",
+  "pieceDescIronWall": "HP massivi, blocca il passaggio nemico.",
+  "pieceNamePaladin": "Paladino",
+  "pieceDescPaladin": "Equilibrio perfetto tra attacco e difesa.",
+  "pieceNameShadowRider": "Cavaliere Ombra",
+  "pieceDescShadowRider": "Si muove in silenzio, colpi critici frequenti.",
+  "pieceNameCommander": "Comandante",
+  "pieceDescCommander": "Un leader sul campo di battaglia che potenzia i pezzi alleati.",
+
+  "abilityNameBattleCry": "Grido di Guerra",
+  "abilityDescBattleCry": "Aumenta l'attacco del 50% per un turno.",
+  "abilityNamePlaceTrap": "Piazza Trappola",
+  "abilityDescPlaceTrap": "Piazza una trappola su una casella adiacente.",
+  "abilityNameLongShot": "Tiro Lungo",
+  "abilityDescLongShot": "Attacca un pezzo a 3 caselle di distanza.",
+  "abilityNameHeal": "Cura",
+  "abilityDescHeal": "Ripristina 20 HP a un pezzo alleato adiacente.",
+  "abilityNameReveal": "Analisi",
+  "abilityDescReveal": "Rivela le statistiche di un pezzo nemico per 2 turni.",
+  "abilityNameInvisibility": "Invisibilità",
+  "abilityDescInvisibility": "Diventa invisibile al nemico per 1 turno.",
+  "abilityNameBattleCommand": "Comando Bellico",
+  "abilityDescBattleCommand": "Tutti i pezzi alleati nel raggio di 2 guadagnano +5 ATK per 2 turni.",
+  "abilityNameRoyalAura": "Aura Regale",
+  "abilityDescRoyalAura": "Rigenera 15 HP a tutti i pezzi alleati adiacenti.",
+  "abilityNameSoulSteal": "Furto d'Anima",
+  "abilityDescSoulSteal": "Ruba il 30% degli HP massimi di un pezzo nemico adiacente.",
+  "abilityNameBombardment": "Bombardamento",
+  "abilityDescBombardment": "Attacca tutte le caselle in una riga o colonna.",
+  "abilityNameFortify": "Fortifica",
+  "abilityDescFortify": "Riduce i danni subiti del 50% fino al prossimo turno.",
+  "abilityNameHolyCharge": "Carica Sacra",
+  "abilityDescHolyCharge": "Si muove 2 volte questa mossa, infliggendo +10 danno.",
+  "abilityNameShadowStrike": "Colpo d'Ombra",
+  "abilityDescShadowStrike": "Attacco garantito critico (danno raddoppiato).",
+  "abilityNameSpecial": "Abilità speciale",
+
+  "skinFireArmy": "Armata del Fuoco",
+  "skinFireArmyDesc": "Tinge tutti i tuoi pezzi di rosso ardente",
+  "skinIceArmy": "Armata del Ghiaccio",
+  "skinIceArmyDesc": "Pezzi cristallizzati in blu glaciale",
+  "skinPawnShadow": "Pedone Ombra",
+  "skinPawnShadowDesc": "Skin oscura per i tuoi pedoni",
+  "skinQueenGolden": "Regina Dorata",
+  "skinQueenGoldenDesc": "La tua regina splende d'oro"
+}

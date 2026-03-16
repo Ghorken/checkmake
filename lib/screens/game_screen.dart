@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:crownfall/l10n/app_localizations.dart';
+import 'package:crownfall/l10n/piece_strings.dart';
 import 'package:crownfall/providers/game_provider.dart';
 import 'package:crownfall/widgets/game_board_widget.dart';
 
@@ -17,10 +19,7 @@ class GameScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            // ===== TOP BAR (avversario) =====
             _OpponentBar(game: game),
-
-            // ===== SCACCHIERA =====
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -29,7 +28,6 @@ class GameScreen extends StatelessWidget {
                   children: [
                     const GameBoardWidget(),
                     const SizedBox(height: 8),
-                    // Log ultimo scontro
                     if (game.lastCombatLog != null)
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -47,8 +45,6 @@ class GameScreen extends StatelessWidget {
                 ),
               ),
             ),
-
-            // ===== BOTTOM BAR (giocatore) =====
             _PlayerBar(game: game),
           ],
         ),
@@ -63,6 +59,8 @@ class _OpponentBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+
     return Container(
       height: 60,
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -89,7 +87,6 @@ class _OpponentBar extends StatelessWidget {
             ],
           ),
           const Spacer(),
-          // Indicatore turno avversario
           if (game.phase == GamePhase.opponentTurn)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -98,7 +95,7 @@ class _OpponentBar extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: Colors.red),
               ),
-              child: const Text('Turno avversario', style: TextStyle(color: Colors.red, fontSize: 11)),
+              child: Text(l.gameOpponentTurn, style: const TextStyle(color: Colors.red, fontSize: 11)),
             ),
         ],
       ),
@@ -112,6 +109,7 @@ class _PlayerBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final isMyTurn = game.phase == GamePhase.myTurn;
 
     return Container(
@@ -148,7 +146,6 @@ class _PlayerBar extends StatelessWidget {
               ),
               const Spacer(),
               if (isMyTurn) ...[
-                // Abilità speciale del pezzo selezionato
                 if (game.selectedPosition != null) ...[
                   _AbilityButton(game: game),
                   const SizedBox(width: 8),
@@ -156,7 +153,7 @@ class _PlayerBar extends StatelessWidget {
                 ElevatedButton.icon(
                   onPressed: game.endTurn,
                   icon: const Icon(Icons.skip_next, size: 16),
-                  label: const Text('Fine turno'),
+                  label: Text(l.gameEndTurn),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF0F3460),
                     foregroundColor: Colors.white,
@@ -168,11 +165,10 @@ class _PlayerBar extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () => Navigator.pop(context),
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
-                  child: const Text('Fine partita', style: TextStyle(color: Colors.black)),
+                  child: Text(l.gameOver, style: const TextStyle(color: Colors.black)),
                 ),
             ],
           ),
-          // Turno indicator
           if (isMyTurn)
             Padding(
               padding: const EdgeInsets.only(top: 6),
@@ -186,10 +182,10 @@ class _PlayerBar extends StatelessWidget {
                 ),
                 child: Text(
                   game.turnAction == TurnAction.moved
-                      ? 'Hai mosso. Puoi usare un\'abilità o finire il turno.'
+                      ? l.gameTurnMoved
                       : game.turnAction == TurnAction.usedAbility
-                          ? 'Abilità usata. Puoi muovere o finire il turno.'
-                          : '🎮 Il tuo turno — seleziona un pezzo',
+                          ? l.gameTurnAbility
+                          : l.gameTurnSelect,
                   style: const TextStyle(color: Colors.cyan, fontSize: 11),
                   textAlign: TextAlign.center,
                 ),
@@ -207,19 +203,21 @@ class _AbilityButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
     final pos = game.selectedPosition!;
     final piece = game.board.getPiece(pos);
     if (piece?.specialAbility == null) return const SizedBox.shrink();
 
     final ability = piece!.specialAbility!;
     final canUse = ability.isReady && game.canUseAbility;
+    final abilityName = l.abilityNameFor(ability.id);
 
     return Tooltip(
-      message: '${ability.name}: ${ability.description}',
+      message: '${l.abilityNameFor(ability.id)}: ${l.abilityDescFor(ability.id)}',
       child: ElevatedButton.icon(
         onPressed: canUse ? () => game.useAbility(pos) : null,
         icon: const Icon(Icons.flash_on, size: 14),
-        label: Text(ability.name, style: const TextStyle(fontSize: 11)),
+        label: Text(abilityName, style: const TextStyle(fontSize: 11)),
         style: ElevatedButton.styleFrom(
           backgroundColor: canUse ? Colors.purple : Colors.grey,
           foregroundColor: Colors.white,

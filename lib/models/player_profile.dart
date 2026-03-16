@@ -127,6 +127,20 @@ class PlayerProfile extends ChangeNotifier {
         ownedSkins = ownedSkins ?? [],
         armyConfig = armyConfig ?? ArmyConfig();
 
+  /// Scala i coins e notifica tutti i listener (es. la home page).
+  bool spendCoins(int amount) {
+    if (coins < amount) return false;
+    coins -= amount;
+    notifyListeners();
+    return true;
+  }
+
+  /// Aggiunge coins e notifica tutti i listener.
+  void addCoins(int amount) {
+    coins += amount;
+    notifyListeners();
+  }
+
   bool hasPiece(PieceType type) => unlockedPieces.contains(type);
 
   UpgradeLevel getUpgradeLevel(PieceType type) => upgradeLevels[type] ?? UpgradeLevel(pieceType: type);

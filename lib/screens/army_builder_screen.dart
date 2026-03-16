@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:crownfall/l10n/app_localizations.dart';
+import 'package:crownfall/l10n/piece_strings.dart';
 import 'package:crownfall/models/piece.dart';
 import 'package:crownfall/models/piece_definitions.dart';
 import 'package:crownfall/models/player_profile.dart';
@@ -61,17 +63,20 @@ class _ArmyBuilderScreenState extends State<ArmyBuilderScreen> {
 
   bool get _isValid => ArmyConfig(composition: _draft).isValid();
 
-  void _save() {
+  void _save(BuildContext context) {
     if (!_isValid) return;
+    final l = AppLocalizations.of(context)!;
     _profile.armyConfig = ArmyConfig(composition: _draft);
     Navigator.pop(context);
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Esercito salvato!'), backgroundColor: Colors.green),
+      SnackBar(content: Text(l.armySaved), backgroundColor: Colors.green),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+
     final groups = <PieceBaseType, List<PieceDefinition>>{};
     for (final def in pieceDefinitions.values) {
       if (_profile.hasPiece(def.type)) {
@@ -83,18 +88,18 @@ class _ArmyBuilderScreenState extends State<ArmyBuilderScreen> {
       backgroundColor: const Color(0xFF1A1A2E),
       appBar: AppBar(
         backgroundColor: const Color(0xFF16213E),
-        title: const Text('Costruisci Esercito', style: TextStyle(color: Colors.amber)),
+        title: Text(l.armyBuilderTitle, style: const TextStyle(color: Colors.amber)),
         actions: [
           TextButton.icon(
-            onPressed: _isValid ? _save : null,
+            onPressed: _isValid ? () => _save(context) : null,
             icon: const Icon(Icons.save, color: Colors.amber),
-            label: const Text('Salva', style: TextStyle(color: Colors.amber)),
+            label: Text(l.armySave, style: const TextStyle(color: Colors.amber)),
           ),
         ],
       ),
       body: Column(
         children: [
-          // Summary
+          // Summary header
           Container(
             padding: const EdgeInsets.all(12),
             color: const Color(0xFF0F3460),
@@ -106,7 +111,7 @@ class _ArmyBuilderScreenState extends State<ArmyBuilderScreen> {
                 return Column(
                   children: [
                     Text(
-                      _baseLabel(base),
+                      l.baseTypeLabel(base),
                       style: const TextStyle(color: Colors.white54, fontSize: 10),
                     ),
                     Text(
@@ -135,7 +140,7 @@ class _ArmyBuilderScreenState extends State<ArmyBuilderScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(
-                        '${_baseLabel(base)} (${_countForBase(base)}/${pieceMaxCount[base]})',
+                        '${l.baseTypeLabel(base)} (${_countForBase(base)}/${pieceMaxCount[base]})',
                         style: const TextStyle(
                           color: Colors.amber,
                           fontWeight: FontWeight.bold,
@@ -160,15 +165,6 @@ class _ArmyBuilderScreenState extends State<ArmyBuilderScreen> {
       ),
     );
   }
-
-  String _baseLabel(PieceBaseType base) => switch (base) {
-        PieceBaseType.pawn => 'Pedoni',
-        PieceBaseType.rook => 'Torri',
-        PieceBaseType.knight => 'Cavalli',
-        PieceBaseType.bishop => 'Alfieri',
-        PieceBaseType.queen => 'Regine',
-        PieceBaseType.king => 'Re',
-      };
 }
 
 class _PieceRow extends StatelessWidget {
@@ -188,6 +184,8 @@ class _PieceRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+
     return Card(
       color: const Color(0xFF16213E),
       margin: const EdgeInsets.only(bottom: 6),
@@ -214,7 +212,7 @@ class _PieceRow extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(def.displayName, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                  Text(l.pieceNameFor(def.type), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                   Text(
                     '❤️${def.baseHp} ⚔️${def.baseAttack} 🪙${def.baseValue}',
                     style: const TextStyle(color: Colors.white54, fontSize: 10),

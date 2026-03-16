@@ -98,33 +98,7 @@ class _BoardCell extends StatelessWidget {
                 ),
               ),
 
-            // Label coordinata (opzionale, angolo in alto a sinistra per col 0 e row 7)
-            if (position.col == 0)
-              Positioned(
-                top: 1,
-                left: 2,
-                child: Text(
-                  '${8 - position.row}',
-                  style: TextStyle(
-                    fontSize: 8,
-                    color: isLight ? const Color(0xFF8B4513) : const Color(0xFFECCB82),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            if (position.row == 7)
-              Positioned(
-                bottom: 1,
-                right: 2,
-                child: Text(
-                  String.fromCharCode(65 + position.col),
-                  style: TextStyle(
-                    fontSize: 8,
-                    color: isLight ? const Color(0xFF8B4513) : const Color(0xFFECCB82),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
+
           ],
         ),
       ),
