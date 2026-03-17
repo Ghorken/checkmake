@@ -9,6 +9,7 @@ import 'package:crownfall/providers/shop_provider.dart';
 import 'package:crownfall/screens/game_screen.dart';
 import 'package:crownfall/screens/shop_screen.dart';
 import 'package:crownfall/screens/army_builder_screen.dart';
+import 'package:crownfall/screens/matchmaking_screen.dart';
 
 class MainMenuScreen extends StatelessWidget {
   const MainMenuScreen({super.key});
@@ -74,6 +75,21 @@ class MainMenuScreen extends StatelessWidget {
                   label: l.btnPlay,
                   color: Colors.amber,
                   onTap: () => _startGame(context, profile),
+                ),
+                const SizedBox(height: 12),
+                _MenuButton(
+                  icon: Icons.wifi,
+                  label: 'GIOCA ONLINE',
+                  color: Colors.green,
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => ChangeNotifierProvider<PlayerProfile>.value(
+                        value: profile,
+                        child: const MatchmakingScreen(),
+                      ),
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 12),
                 _MenuButton(

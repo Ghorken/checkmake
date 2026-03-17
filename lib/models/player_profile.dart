@@ -145,6 +145,29 @@ class PlayerProfile extends ChangeNotifier {
 
   UpgradeLevel getUpgradeLevel(PieceType type) => upgradeLevels[type] ?? UpgradeLevel(pieceType: type);
 
+  Map<String, dynamic> toJson() => {
+        'name': name,
+        'army': armyConfig.toJson(),
+        'upgrades': upgradeLevels.values.map((u) => u.toJson()).toList(),
+        'wins': wins,
+        'losses': losses,
+      };
+
+  factory PlayerProfile.fromJson(Map<String, dynamic> json) {
+    final upgrades = <PieceType, UpgradeLevel>{};
+    for (final u in (json['upgrades'] as List)) {
+      final upgrade = UpgradeLevel.fromJson(u as Map<String, dynamic>);
+      upgrades[upgrade.pieceType] = upgrade;
+    }
+    return PlayerProfile(
+      name: json['name'] as String,
+      armyConfig: ArmyConfig.fromJson(json['army'] as Map<String, dynamic>),
+      upgradeLevels: upgrades,
+      wins: (json['wins'] as int?) ?? 0,
+      losses: (json['losses'] as int?) ?? 0,
+    );
+  }
+
   PieceStats getStatsForPiece(PieceType type) {
     final def = pieceDefinitions[type]!;
     final levels = getUpgradeLevel(type);

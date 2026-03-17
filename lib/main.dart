@@ -1,19 +1,24 @@
 // lib/main.dart
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:crownfall/firebase_options.dart';
 import 'package:crownfall/l10n/app_localizations.dart';
 import 'package:crownfall/models/player_profile.dart';
 import 'package:crownfall/screens/main_menu_screen.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const CrownFallApp());
 }
 
