@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:crownfall/models/piece.dart';
 import 'package:crownfall/models/player_profile.dart';
+import 'package:crownfall/providers/game_provider.dart';
 import 'package:crownfall/providers/online_game_provider.dart';
 import 'package:crownfall/screens/game_screen.dart';
 import 'package:crownfall/services/firebase_service.dart';
@@ -143,7 +144,7 @@ class _MatchmakingScreenState extends State<MatchmakingScreen> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (_) => ChangeNotifierProvider(
+        builder: (_) => ChangeNotifierProvider<GameProvider>(
           create: (_) => OnlineGameProvider(
             myProfile: myProfile,
             opponentProfile: opponentProfile,
