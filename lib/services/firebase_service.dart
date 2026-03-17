@@ -3,7 +3,7 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:crownfall/models/player_profile.dart';
+import 'package:checkmake/models/player_profile.dart';
 
 /// Servizio per tutte le operazioni Firebase relative al multiplayer online.
 ///

@@ -5,7 +5,7 @@ Gioco di scacchi modificato con elementi RPG in stile Clash Royale, sviluppato i
 ## 📁 Struttura del Progetto
 
 ```
-crownfall/
+checkmake/
 ├── lib/
 │   ├── main.dart                          # Entry point
 │   ├── models/

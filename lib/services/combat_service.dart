@@ -1,7 +1,7 @@
 // lib/services/combat_service.dart
 
-import 'package:crownfall/models/board.dart';
-import 'package:crownfall/models/piece.dart';
+import 'package:checkmake/models/board.dart';
+import 'package:checkmake/models/piece.dart';
 
 class CombatService {
   /// Gestisce lo scontro tra attaccante e difensore.

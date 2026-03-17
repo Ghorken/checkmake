@@ -1,12 +1,12 @@
 // lib/providers/game_provider.dart
 
 import 'package:flutter/foundation.dart';
-import 'package:crownfall/models/board.dart';
-import 'package:crownfall/models/piece.dart';
-import 'package:crownfall/models/piece_definitions.dart';
-import 'package:crownfall/models/player_profile.dart';
-import 'package:crownfall/services/movement_service.dart';
-import 'package:crownfall/services/combat_service.dart';
+import 'package:checkmake/models/board.dart';
+import 'package:checkmake/models/piece.dart';
+import 'package:checkmake/models/piece_definitions.dart';
+import 'package:checkmake/models/player_profile.dart';
+import 'package:checkmake/services/movement_service.dart';
+import 'package:checkmake/services/combat_service.dart';
 
 enum GamePhase { myTurn, opponentTurn, combat, gameOver, waitingForOpponent }
 

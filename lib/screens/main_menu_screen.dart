@@ -2,14 +2,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:crownfall/l10n/app_localizations.dart';
-import 'package:crownfall/models/player_profile.dart';
-import 'package:crownfall/providers/game_provider.dart';
-import 'package:crownfall/providers/shop_provider.dart';
-import 'package:crownfall/screens/game_screen.dart';
-import 'package:crownfall/screens/shop_screen.dart';
-import 'package:crownfall/screens/army_builder_screen.dart';
-import 'package:crownfall/screens/matchmaking_screen.dart';
+import 'package:checkmake/l10n/app_localizations.dart';
+import 'package:checkmake/models/player_profile.dart';
+import 'package:checkmake/providers/game_provider.dart';
+import 'package:checkmake/providers/shop_provider.dart';
+import 'package:checkmake/screens/game_screen.dart';
+import 'package:checkmake/screens/shop_screen.dart';
+import 'package:checkmake/screens/army_builder_screen.dart';
+import 'package:checkmake/screens/matchmaking_screen.dart';
 
 class MainMenuScreen extends StatelessWidget {
   const MainMenuScreen({super.key});

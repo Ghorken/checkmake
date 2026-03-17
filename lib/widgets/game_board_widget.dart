@@ -2,10 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:crownfall/models/board.dart';
-import 'package:crownfall/models/piece.dart';
-import 'package:crownfall/providers/game_provider.dart';
-import 'package:crownfall/widgets/piece_widget.dart';
+import 'package:checkmake/models/board.dart';
+import 'package:checkmake/models/piece.dart';
+import 'package:checkmake/providers/game_provider.dart';
+import 'package:checkmake/widgets/piece_widget.dart';
 
 class GameBoardWidget extends StatelessWidget {
   const GameBoardWidget({super.key});
@@ -97,8 +97,6 @@ class _BoardCell extends StatelessWidget {
                   isSelected: isSelected,
                 ),
               ),
-
-
           ],
         ),
       ),

@@ -1,8 +1,8 @@
 // lib/widgets/piece_widget.dart
 
 import 'package:flutter/material.dart';
-import 'package:crownfall/models/piece.dart';
-import 'package:crownfall/models/piece_definitions.dart';
+import 'package:checkmake/models/piece.dart';
+import 'package:checkmake/models/piece_definitions.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PLACEHOLDER PAINTER
@@ -22,37 +22,21 @@ class PiecePlaceholderPainter extends CustomPainter {
   });
 
   static Color _pieceColor(PieceType type) => switch (type) {
-        PieceType.pawn ||
-        PieceType.fighter ||
-        PieceType.miner ||
-        PieceType.rifleman =>
-          const Color(0xFF8BC34A),
-        PieceType.rook || PieceType.catapult || PieceType.ironWall =>
-          const Color(0xFF607D8B),
-        PieceType.knight ||
-        PieceType.paladin ||
-        PieceType.shadowRider =>
-          const Color(0xFF9C27B0),
-        PieceType.bishop ||
-        PieceType.healer ||
-        PieceType.investigator ||
-        PieceType.invisibleMan =>
-          const Color(0xFF2196F3),
-        PieceType.queen ||
-        PieceType.warlord ||
-        PieceType.heartQueen ||
-        PieceType.soulReaper =>
-          const Color(0xFFFF9800),
+        PieceType.pawn || PieceType.fighter || PieceType.miner || PieceType.rifleman => const Color(0xFF8BC34A),
+        PieceType.rook || PieceType.catapult || PieceType.ironWall => const Color(0xFF607D8B),
+        PieceType.knight || PieceType.paladin || PieceType.shadowRider => const Color(0xFF9C27B0),
+        PieceType.bishop || PieceType.healer || PieceType.investigator || PieceType.invisibleMan => const Color(0xFF2196F3),
+        PieceType.queen || PieceType.warlord || PieceType.heartQueen || PieceType.soulReaper => const Color(0xFFFF9800),
         PieceType.king || PieceType.commander => const Color(0xFFFFD700),
       };
 
   static String _symbol(PieceBaseType base) => switch (base) {
-        PieceBaseType.pawn   => '♟',
-        PieceBaseType.rook   => '♜',
+        PieceBaseType.pawn => '♟',
+        PieceBaseType.rook => '♜',
         PieceBaseType.knight => '♞',
         PieceBaseType.bishop => '♝',
-        PieceBaseType.queen  => '♛',
-        PieceBaseType.king   => '♚',
+        PieceBaseType.queen => '♛',
+        PieceBaseType.king => '♚',
       };
 
   @override
@@ -62,9 +46,7 @@ class PiecePlaceholderPainter extends CustomPainter {
     if (isHalfHp) color = color.withValues(alpha: 0.6);
 
     // Bordo ciano = player1 (giocatore), rosso = player2 (avversario)
-    final borderColor = side == PlayerSide.player1
-        ? const Color(0xFF00E5FF)
-        : const Color(0xFFFF5252);
+    final borderColor = side == PlayerSide.player1 ? const Color(0xFF00E5FF) : const Color(0xFFFF5252);
 
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width / 2 - 2;
@@ -125,8 +107,7 @@ class PiecePlaceholderPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(PiecePlaceholderPainter old) =>
-      old.type != type || old.side != side || old.isHalfHp != isHalfHp;
+  bool shouldRepaint(PiecePlaceholderPainter old) => old.type != type || old.side != side || old.isHalfHp != isHalfHp;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

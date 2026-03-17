@@ -1,16 +1,16 @@
 // lib/screens/matchmaking_screen.dart
 
 import 'dart:async';
+import 'package:checkmake/providers/game_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:crownfall/models/piece.dart';
-import 'package:crownfall/models/player_profile.dart';
-import 'package:crownfall/providers/game_provider.dart';
-import 'package:crownfall/providers/online_game_provider.dart';
-import 'package:crownfall/screens/game_screen.dart';
-import 'package:crownfall/services/firebase_service.dart';
+import 'package:checkmake/models/piece.dart';
+import 'package:checkmake/models/player_profile.dart';
+import 'package:checkmake/providers/online_game_provider.dart';
+import 'package:checkmake/screens/game_screen.dart';
+import 'package:checkmake/services/firebase_service.dart';
 
 /// Schermata per creare o unirsi a una partita online.
 class MatchmakingScreen extends StatefulWidget {

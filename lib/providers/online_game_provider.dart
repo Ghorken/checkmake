@@ -2,11 +2,11 @@
 
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:crownfall/models/board.dart';
-import 'package:crownfall/models/piece.dart';
-import 'package:crownfall/models/player_profile.dart';
-import 'package:crownfall/providers/game_provider.dart';
-import 'package:crownfall/services/firebase_service.dart';
+import 'package:checkmake/models/board.dart';
+import 'package:checkmake/models/piece.dart';
+import 'package:checkmake/models/player_profile.dart';
+import 'package:checkmake/providers/game_provider.dart';
+import 'package:checkmake/services/firebase_service.dart';
 
 /// Provider per il multiplayer online via Firebase.
 ///

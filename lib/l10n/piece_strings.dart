@@ -2,8 +2,8 @@
 // Helper per recuperare nomi e descrizioni localizzati di pezzi, abilità e skin.
 
 import 'package:flutter/material.dart';
-import 'package:crownfall/models/piece.dart';
-import 'package:crownfall/l10n/app_localizations.dart';
+import 'package:checkmake/models/piece.dart';
+import 'package:checkmake/l10n/app_localizations.dart';
 
 extension PieceStrings on AppLocalizations {
   // ===== NOMI PEZZI =====
