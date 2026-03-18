@@ -50,14 +50,6 @@ class DefaultFirebaseOptions {
     storageBucket: 'YOUR_PROJECT_ID.firebasestorage.app',
   );
 
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCpI8GI4QOUeUHcbHTY0o1ENQAVzvpz0FE',
-    appId: '1:53100118222:android:0eea4a1e2e7dc64910509f',
-    messagingSenderId: 'YOUR_SENDER_ID',
-    projectId: 'checkmake-b3426',
-    storageBucket: 'checkmake-b3426.firebasestorage.app',
-  );
-
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'YOUR_IOS_API_KEY',
     appId: 'YOUR_IOS_APP_ID',
