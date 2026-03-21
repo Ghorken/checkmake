@@ -30,7 +30,7 @@ class Checkmake extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => PlayerProfile(name: 'Giocatore'),
       child: MaterialApp(
-        title: 'Crown Fall',
+        title: 'CheckMake',
         debugShowCheckedModeBanner: false,
 
         // ── Localizzazione ──────────────────────────────────────────

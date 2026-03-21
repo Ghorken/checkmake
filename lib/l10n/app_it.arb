@@ -1,8 +1,8 @@
 {
   "@@locale": "it",
 
-  "appTitle": "Crown Fall",
-  "@appTitle": { "description": "Nome dell'app" },
+  "appTitle": "CheckMake",
+  "@appTitle": { "description": "Crea l'armata. Spezza la corona." },
 
   "appSubtitle": "Battle Chess",
   "@appSubtitle": {},

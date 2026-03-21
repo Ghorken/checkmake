@@ -1,4 +1,4 @@
-# Crown Fall 🏰⚔️
+# CheckMake 🏰⚔️
 
 Gioco di scacchi modificato con elementi RPG in stile Clash Royale, sviluppato in Flutter.
 

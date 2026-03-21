@@ -9,10 +9,10 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'Crown Fall';
+  String get appTitle => 'CheckMake';
 
   @override
-  String get appSubtitle => 'Battle Chess';
+  String get appSubtitle => 'Build your army. Break the king.';
 
   @override
   String get statCoins => 'Coins';

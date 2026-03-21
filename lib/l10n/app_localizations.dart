@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// Nome dell'app
   ///
   /// In it, this message translates to:
-  /// **'Crown Fall'**
+  /// **'CheckMake'**
   String get appTitle;
 
   /// No description provided for @appSubtitle.

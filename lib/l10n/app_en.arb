@@ -1,8 +1,8 @@
 {
   "@@locale": "en",
 
-  "appTitle": "Crown Fall",
-  "appSubtitle": "Battle Chess",
+  "appTitle": "CheckMake",
+  "appSubtitle": "Build your army. Break the king.",
 
   "statCoins": "Coins",
   "statWins": "Wins",
