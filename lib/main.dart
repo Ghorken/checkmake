@@ -19,11 +19,11 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const checkmakeApp());
+  runApp(const Checkmake());
 }
 
-class checkmakeApp extends StatelessWidget {
-  const checkmakeApp({super.key});
+class Checkmake extends StatelessWidget {
+  const Checkmake({super.key});
 
   @override
   Widget build(BuildContext context) {

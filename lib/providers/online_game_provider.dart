@@ -4,7 +4,6 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:checkmake/models/board.dart';
 import 'package:checkmake/models/piece.dart';
-import 'package:checkmake/models/player_profile.dart';
 import 'package:checkmake/providers/game_provider.dart';
 import 'package:checkmake/services/firebase_service.dart';
 
@@ -27,12 +26,11 @@ class OnlineGameProvider extends GameProvider {
   bool _applyingRemote = false;
 
   OnlineGameProvider({
-    required PlayerProfile myProfile,
-    required PlayerProfile opponentProfile,
+    required super.myProfile,
+    required super.opponentProfile,
     required PlayerSide mySide,
     required this.gameCode,
-  })  : _mySide = mySide,
-        super(myProfile: myProfile, opponentProfile: opponentProfile) {
+  })  : _mySide = mySide {
     // Player1 inizia sempre; se siamo player2 aspettiamo la mossa avversaria
     if (_mySide == PlayerSide.player2) {
       currentTurn = PlayerSide.player1; // il turno appartiene a player1
