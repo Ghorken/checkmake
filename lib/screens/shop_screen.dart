@@ -2,12 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:crownfall/l10n/app_localizations.dart';
-import 'package:crownfall/l10n/piece_strings.dart';
-import 'package:crownfall/models/piece.dart';
-import 'package:crownfall/models/piece_definitions.dart';
-import 'package:crownfall/providers/shop_provider.dart';
-import 'package:crownfall/widgets/piece_widget.dart';
+import 'package:checkmake/l10n/app_localizations.dart';
+import 'package:checkmake/l10n/piece_strings.dart';
+import 'package:checkmake/models/piece.dart';
+import 'package:checkmake/models/piece_definitions.dart';
+import 'package:checkmake/providers/shop_provider.dart';
+import 'package:checkmake/widgets/piece_widget.dart';
 
 class ShopScreen extends StatefulWidget {
   const ShopScreen({super.key});
@@ -123,7 +123,7 @@ class _PiecesTab extends StatelessWidget {
                 if (def.abilityFactory != null)
                   Padding(
                     padding: const EdgeInsets.only(top: 4),
-                    child: _StatChip('✨ ${l.abilityNameFor(def.abilityFactory!()?.id ?? '') }'),
+                    child: _StatChip('✨ ${l.abilityNameFor(def.abilityFactory!()?.id ?? '')}'),
                   ),
               ],
             ),
@@ -239,7 +239,6 @@ class _PieceUpgradeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
     final levels = shop.profile.getUpgradeLevel(type);
-
 
     return Card(
       color: const Color(0xFF16213E),

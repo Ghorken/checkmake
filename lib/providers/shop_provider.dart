@@ -1,9 +1,9 @@
 // lib/providers/shop_provider.dart
 
 import 'package:flutter/foundation.dart';
-import 'package:crownfall/models/player_profile.dart';
-import 'package:crownfall/models/piece.dart';
-import 'package:crownfall/models/piece_definitions.dart';
+import 'package:checkmake/models/player_profile.dart';
+import 'package:checkmake/models/piece.dart';
+import 'package:checkmake/models/piece_definitions.dart';
 
 class ShopSkinItem {
   final String skinId;

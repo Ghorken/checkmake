@@ -1,6 +1,6 @@
 // lib/models/board.dart
 
-import 'package:crownfall/models/piece.dart';
+import 'package:checkmake/models/piece.dart';
 
 class Position {
   final int row;

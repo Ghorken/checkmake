@@ -2,12 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:crownfall/l10n/app_localizations.dart';
-import 'package:crownfall/l10n/piece_strings.dart';
-import 'package:crownfall/models/piece.dart';
-import 'package:crownfall/models/piece_definitions.dart';
-import 'package:crownfall/models/player_profile.dart';
-import 'package:crownfall/widgets/piece_widget.dart';
+import 'package:checkmake/l10n/app_localizations.dart';
+import 'package:checkmake/l10n/piece_strings.dart';
+import 'package:checkmake/models/piece.dart';
+import 'package:checkmake/models/piece_definitions.dart';
+import 'package:checkmake/models/player_profile.dart';
+import 'package:checkmake/widgets/piece_widget.dart';
 
 class ArmyBuilderScreen extends StatefulWidget {
   const ArmyBuilderScreen({super.key});

@@ -1,12 +1,12 @@
 // lib/providers/game_provider.dart
 
 import 'package:flutter/foundation.dart';
-import 'package:crownfall/models/board.dart';
-import 'package:crownfall/models/piece.dart';
-import 'package:crownfall/models/piece_definitions.dart';
-import 'package:crownfall/models/player_profile.dart';
-import 'package:crownfall/services/movement_service.dart';
-import 'package:crownfall/services/combat_service.dart';
+import 'package:checkmake/models/board.dart';
+import 'package:checkmake/models/piece.dart';
+import 'package:checkmake/models/piece_definitions.dart';
+import 'package:checkmake/models/player_profile.dart';
+import 'package:checkmake/services/movement_service.dart';
+import 'package:checkmake/services/combat_service.dart';
 
 enum GamePhase { myTurn, opponentTurn, combat, gameOver, waitingForOpponent }
 
@@ -17,11 +17,30 @@ class GameProvider extends ChangeNotifier {
   late PlayerProfile myProfile;
   late PlayerProfile opponentProfile; // in local multiplayer
 
-  GamePhase phase = GamePhase.myTurn;
+  // Stato interno della fase - la fase visibile è calcolata tramite il getter `phase`
+  GamePhase _phaseRaw = GamePhase.myTurn;
+
   PlayerSide currentTurn = PlayerSide.player1;
   Position? selectedPosition;
   List<Position> validMoves = [];
   TurnAction turnAction = TurnAction.none;
+
+  // Il lato che il giocatore locale controlla (player1 per partite locali,
+  // sovrascrivibile per il multiplayer online)
+  PlayerSide get localSide => PlayerSide.player1;
+
+  bool get isLocalTurn => currentTurn == localSide;
+
+  /// La fase visualizzata nella UI: myTurn/opponentTurn sono calcolati in base
+  /// a `localSide` così funzionano correttamente sia per player1 che player2.
+  GamePhase get phase {
+    if (_phaseRaw == GamePhase.gameOver || _phaseRaw == GamePhase.waitingForOpponent) {
+      return _phaseRaw;
+    }
+    return isLocalTurn ? GamePhase.myTurn : GamePhase.opponentTurn;
+  }
+
+  set phase(GamePhase p) => _phaseRaw = p;
 
   bool get canMove => turnAction == TurnAction.none || turnAction == TurnAction.usedAbility;
   bool get canUseAbility => turnAction == TurnAction.none || turnAction == TurnAction.moved;
@@ -109,19 +128,19 @@ class GameProvider extends ChangeNotifier {
   }
 
   void selectPosition(Position pos) {
-    final isMyTurn = (currentTurn == PlayerSide.player1 && phase == GamePhase.myTurn);
-    if (!isMyTurn) return;
+    if (!isLocalTurn) return;
+    if (_phaseRaw == GamePhase.gameOver || _phaseRaw == GamePhase.waitingForOpponent) return;
 
     final piece = board.getPiece(pos);
 
     // Se ho già selezionato un pezzo e clicco su una mossa valida
     if (selectedPosition != null && validMoves.contains(pos)) {
-      _executeMove(selectedPosition!, pos);
+      executeMove(selectedPosition!, pos);
       return;
     }
 
     // Seleziona il pezzo se è mio
-    if (piece != null && piece.side == PlayerSide.player1 && canMove) {
+    if (piece != null && piece.side == localSide && canMove) {
       selectedPosition = pos;
       validMoves = MovementService.getValidMoves(board, pos);
     } else {
@@ -131,7 +150,8 @@ class GameProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void _executeMove(Position from, Position to) {
+  /// Esegue una mossa (pubblica per permettere la sovrascrittura nel multiplayer online).
+  void executeMove(Position from, Position to) {
     final attacker = board.getPiece(from)!;
     final defender = board.getPiece(to);
 
@@ -145,8 +165,11 @@ class GameProvider extends ChangeNotifier {
         board: board,
       );
 
-      myCoinsEarned += result.coinsEarned;
-      myProfile.coins += result.coinsEarned;
+      // Guadagna monete solo quando è il turno del giocatore locale
+      if (attacker.side == localSide) {
+        myCoinsEarned += result.coinsEarned;
+        myProfile.coins += result.coinsEarned;
+      }
 
       board.setPiece(from, null);
       board.setPiece(to, null);
@@ -199,7 +222,7 @@ class GameProvider extends ChangeNotifier {
   void useAbility(Position piecePos) {
     if (!canUseAbility) return;
     final piece = board.getPiece(piecePos);
-    if (piece == null || piece.side != PlayerSide.player1) return;
+    if (piece == null || piece.side != localSide) return;
     if (piece.specialAbility == null || !piece.specialAbility!.isReady) return;
 
     // TODO: implementare effetti delle abilità specifiche
@@ -209,29 +232,28 @@ class GameProvider extends ChangeNotifier {
   }
 
   void endTurn() {
+    if (!isLocalTurn) return;
     _checkEndTurn();
   }
 
   void _checkEndTurn() {
     turnAction = TurnAction.none;
     currentTurn = currentTurn == PlayerSide.player1 ? PlayerSide.player2 : PlayerSide.player1;
-    phase = currentTurn == PlayerSide.player1 ? GamePhase.myTurn : GamePhase.opponentTurn;
-
-    // In local multiplayer, qui si passerebbe il controllo al player 2
-    // In futuro: notifica server per multiplayer online
+    // La fase viene calcolata automaticamente dal getter `phase` tramite `isLocalTurn`
     notifyListeners();
   }
 
   void _checkGameOver() {
-    final myKing = board.findKing(PlayerSide.player1);
-    final oppKing = board.findKing(PlayerSide.player2);
+    final oppSide = localSide == PlayerSide.player1 ? PlayerSide.player2 : PlayerSide.player1;
+    final myKing = board.findKing(localSide);
+    final oppKing = board.findKing(oppSide);
 
     if (myKing == null) {
-      phase = GamePhase.gameOver;
+      _phaseRaw = GamePhase.gameOver;
       myProfile.losses++;
       myProfile.coins += 10; // premio piccolo per la sconfitta
     } else if (oppKing == null) {
-      phase = GamePhase.gameOver;
+      _phaseRaw = GamePhase.gameOver;
       myProfile.wins++;
       myProfile.coins += 200; // premio vittoria
     }

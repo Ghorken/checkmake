@@ -1,7 +1,7 @@
 // lib/models/piece_definitions.dart
 // Configurazione di tutti i pezzi del gioco
 
-import 'package:crownfall/models/piece.dart';
+import 'package:checkmake/models/piece.dart';
 
 class PieceDefinition {
   final PieceType type;

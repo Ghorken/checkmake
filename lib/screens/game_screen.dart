@@ -2,10 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:crownfall/l10n/app_localizations.dart';
-import 'package:crownfall/l10n/piece_strings.dart';
-import 'package:crownfall/providers/game_provider.dart';
-import 'package:crownfall/widgets/game_board_widget.dart';
+import 'package:checkmake/l10n/app_localizations.dart';
+import 'package:checkmake/l10n/piece_strings.dart';
+import 'package:checkmake/providers/game_provider.dart';
+import 'package:checkmake/widgets/game_board_widget.dart';
 
 class GameScreen extends StatelessWidget {
   const GameScreen({super.key});

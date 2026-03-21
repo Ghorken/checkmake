@@ -1,8 +1,8 @@
 // lib/services/movement_service.dart
 // Calcola le mosse valide per ogni tipo di pezzo
 
-import 'package:crownfall/models/board.dart';
-import 'package:crownfall/models/piece.dart';
+import 'package:checkmake/models/board.dart';
+import 'package:checkmake/models/piece.dart';
 
 class MovementService {
   static List<Position> getValidMoves(Board board, Position from) {
