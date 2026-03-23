@@ -22,12 +22,12 @@ class PiecePlaceholderPainter extends CustomPainter {
   });
 
   static Color _pieceColor(PieceType type) => switch (type) {
-        PieceType.pawn || PieceType.fighter || PieceType.miner || PieceType.rifleman => const Color(0xFF8BC34A),
-        PieceType.rook || PieceType.catapult || PieceType.ironWall => const Color(0xFF607D8B),
-        PieceType.knight || PieceType.paladin || PieceType.shadowRider => const Color(0xFF9C27B0),
-        PieceType.bishop || PieceType.healer || PieceType.investigator || PieceType.invisibleMan => const Color(0xFF2196F3),
-        PieceType.queen || PieceType.warlord || PieceType.heartQueen || PieceType.soulReaper => const Color(0xFFFF9800),
-        PieceType.king || PieceType.commander => const Color(0xFFFFD700),
+        PieceType.pawn => const Color(0xFF8BC34A),
+        PieceType.rook => const Color(0xFF607D8B),
+        PieceType.knight => const Color(0xFF9C27B0),
+        PieceType.bishop => const Color(0xFF2196F3),
+        PieceType.queen => const Color(0xFFFF9800),
+        PieceType.king => const Color(0xFFFFD700),
       };
 
   static String _symbol(PieceBaseType base) => switch (base) {

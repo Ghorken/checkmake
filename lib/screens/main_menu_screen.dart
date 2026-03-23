@@ -79,7 +79,7 @@ class MainMenuScreen extends StatelessWidget {
                 const SizedBox(height: 12),
                 _MenuButton(
                   icon: Icons.wifi,
-                  label: 'GIOCA ONLINE',
+                  label: l.btnMultiplayer,
                   color: Colors.green,
                   onTap: () => Navigator.push(
                     context,
