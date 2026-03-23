@@ -100,26 +100,40 @@ class OnlineGameProvider extends GameProvider {
     if (lastMoveData == null) return;
 
     final moveIndex = lastMoveData['moveIndex'] as int;
+    if (moveIndex <= _lastAppliedMoveIndex) return;
+
+    // Ignora l'eco della mossa appena inviata da questo stesso client.
+    final movedBy = lastMoveData['movedBy'] as String?;
+    if (movedBy != null && movedBy == FirebaseService.currentUserId) {
+      _lastAppliedMoveIndex = moveIndex;
+      return;
+    }
 
     // Applica la mossa solo se:
     // 1. È più recente dell'ultima che abbiamo applicato
     // 2. Il turno corrente NON è il nostro (è la mossa dell'avversario)
-    if (moveIndex > _lastAppliedMoveIndex && !isLocalTurn) {
+    if (isLocalTurn) return;
+
+    final from = Position(
+      lastMoveData['fromRow'] as int,
+      lastMoveData['fromCol'] as int,
+    );
+    final to = Position(
+      lastMoveData['toRow'] as int,
+      lastMoveData['toCol'] as int,
+    );
+
+    // Protezione extra per compatibilità con partite già in corso senza "movedBy".
+    final attacker = board.getPiece(from);
+    if (attacker == null || attacker.side == localSide) {
       _lastAppliedMoveIndex = moveIndex;
-
-      final from = Position(
-        lastMoveData['fromRow'] as int,
-        lastMoveData['fromCol'] as int,
-      );
-      final to = Position(
-        lastMoveData['toRow'] as int,
-        lastMoveData['toCol'] as int,
-      );
-
-      _applyingRemote = true;
-      executeMove(from, to);
-      _applyingRemote = false;
+      return;
     }
+
+    _lastAppliedMoveIndex = moveIndex;
+    _applyingRemote = true;
+    executeMove(from, to);
+    _applyingRemote = false;
   }
 
   /// Abbandona la partita in corso.

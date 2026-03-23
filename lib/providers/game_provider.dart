@@ -152,7 +152,8 @@ class GameProvider extends ChangeNotifier {
 
   /// Esegue una mossa (pubblica per permettere la sovrascrittura nel multiplayer online).
   void executeMove(Position from, Position to) {
-    final attacker = board.getPiece(from)!;
+    final attacker = board.getPiece(from);
+    if (attacker == null) return;
     final defender = board.getPiece(to);
 
     if (defender != null && defender.side != attacker.side) {

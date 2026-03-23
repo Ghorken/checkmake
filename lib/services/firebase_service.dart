@@ -101,6 +101,7 @@ class FirebaseService {
         'toRow': toRow,
         'toCol': toCol,
         'moveIndex': moveCount,
+        'movedBy': currentUserId,
       },
       'moveCount': moveCount + 1,
     });

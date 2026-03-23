@@ -261,113 +261,127 @@ class _IdleView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const SizedBox(height: 24),
-
-        // Sezione "Crea partita"
-        _SectionCard(
-          color: Colors.amber,
-          icon: Icons.add_circle_outline,
-          title: 'Crea Partita',
-          subtitle: 'Genera un codice e condividilo con l\'amico',
-          child: ElevatedButton.icon(
-            onPressed: onCreateGame,
-            icon: const Icon(Icons.play_arrow),
-            label: const Text('CREA PARTITA'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.amber,
-              foregroundColor: Colors.black,
-              minimumSize: const Size(double.infinity, 48),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            ),
-          ),
-        ),
-
-        const SizedBox(height: 20),
-        const Row(children: [
-          Expanded(child: Divider(color: Colors.white24)),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12),
-            child: Text('oppure', style: TextStyle(color: Colors.white38)),
-          ),
-          Expanded(child: Divider(color: Colors.white24)),
-        ]),
-        const SizedBox(height: 20),
-
-        // Sezione "Unisciti"
-        _SectionCard(
-          color: Colors.cyan,
-          icon: Icons.link,
-          title: 'Unisciti a una Partita',
-          subtitle: 'Inserisci il codice ricevuto dall\'avversario',
-          child: Column(
-            children: [
-              TextField(
-                controller: codeController,
-                textCapitalization: TextCapitalization.characters,
-                maxLength: 6,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 22,
-                  letterSpacing: 6,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-                decoration: InputDecoration(
-                  counterText: '',
-                  hintText: 'CODICE',
-                  hintStyle: const TextStyle(color: Colors.white24, letterSpacing: 4),
-                  filled: true,
-                  fillColor: const Color(0xFF0F3460),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Colors.cyan),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Colors.cyan, width: 1.5),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              ElevatedButton.icon(
-                onPressed: onJoinGame,
-                icon: const Icon(Icons.login),
-                label: const Text('UNISCITI'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.cyan,
-                  foregroundColor: Colors.black,
-                  minimumSize: const Size(double.infinity, 48),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                ),
-              ),
-            ],
-          ),
-        ),
-
-        if (errorMessage != null) ...[
-          const SizedBox(height: 16),
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.red.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.red.withValues(alpha: 0.5)),
-            ),
-            child: Row(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Icon(Icons.error_outline, color: Colors.red, size: 18),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(errorMessage!, style: const TextStyle(color: Colors.red, fontSize: 13)),
+                const SizedBox(height: 24),
+
+                // Sezione "Crea partita"
+                _SectionCard(
+                  color: Colors.amber,
+                  icon: Icons.add_circle_outline,
+                  title: 'Crea Partita',
+                  subtitle: 'Genera un codice e condividilo con l\'amico',
+                  child: ElevatedButton.icon(
+                    onPressed: onCreateGame,
+                    icon: const Icon(Icons.play_arrow),
+                    label: const Text('CREA PARTITA'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.amber,
+                      foregroundColor: Colors.black,
+                      minimumSize: const Size(double.infinity, 48),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    ),
+                  ),
                 ),
+
+                const SizedBox(height: 20),
+                const Row(children: [
+                  Expanded(child: Divider(color: Colors.white24)),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    child: Text('oppure', style: TextStyle(color: Colors.white38)),
+                  ),
+                  Expanded(child: Divider(color: Colors.white24)),
+                ]),
+                const SizedBox(height: 20),
+
+                // Sezione "Unisciti"
+                _SectionCard(
+                  color: Colors.cyan,
+                  icon: Icons.link,
+                  title: 'Unisciti a una Partita',
+                  subtitle: 'Inserisci il codice ricevuto dall\'avversario',
+                  child: Column(
+                    children: [
+                      TextField(
+                        controller: codeController,
+                        textCapitalization: TextCapitalization.characters,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
+                          const UpperCaseTextFormatter(),
+                        ],
+                        maxLength: 6,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          letterSpacing: 6,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                        decoration: InputDecoration(
+                          counterText: '',
+                          hintText: 'CODICE',
+                          hintStyle: const TextStyle(color: Colors.white24, letterSpacing: 4),
+                          filled: true,
+                          fillColor: const Color(0xFF0F3460),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(color: Colors.cyan),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(color: Colors.cyan, width: 1.5),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      ElevatedButton.icon(
+                        onPressed: onJoinGame,
+                        icon: const Icon(Icons.login),
+                        label: const Text('UNISCITI'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.cyan,
+                          foregroundColor: Colors.black,
+                          minimumSize: const Size(double.infinity, 48),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                if (errorMessage != null) ...[
+                  const SizedBox(height: 16),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.red.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.red.withValues(alpha: 0.5)),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.error_outline, color: Colors.red, size: 18),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(errorMessage!, style: const TextStyle(color: Colors.red, fontSize: 13)),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
-        ],
-      ],
+        );
+      },
     );
   }
 }
@@ -508,5 +522,17 @@ class _SectionCard extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class UpperCaseTextFormatter extends TextInputFormatter {
+  const UpperCaseTextFormatter();
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    return newValue.copyWith(text: newValue.text.toUpperCase());
   }
 }
