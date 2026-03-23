@@ -14,20 +14,6 @@ extension PieceStrings on AppLocalizations {
         PieceType.bishop => pieceNameBishop,
         PieceType.queen => pieceNameQueen,
         PieceType.king => pieceNameKing,
-        PieceType.fighter => pieceNameFighter,
-        PieceType.miner => pieceNameMiner,
-        PieceType.rifleman => pieceNameRifleman,
-        PieceType.healer => pieceNameHealer,
-        PieceType.investigator => pieceNameInvestigator,
-        PieceType.invisibleMan => pieceNameInvisibleMan,
-        PieceType.warlord => pieceNameWarlord,
-        PieceType.heartQueen => pieceNameHeartQueen,
-        PieceType.soulReaper => pieceNameSoulReaper,
-        PieceType.catapult => pieceNameCatapult,
-        PieceType.ironWall => pieceNameIronWall,
-        PieceType.paladin => pieceNamePaladin,
-        PieceType.shadowRider => pieceNameShadowRider,
-        PieceType.commander => pieceNameCommander,
       };
 
   // ===== DESCRIZIONI PEZZI =====
@@ -38,57 +24,13 @@ extension PieceStrings on AppLocalizations {
         PieceType.bishop => pieceDescBishop,
         PieceType.queen => pieceDescQueen,
         PieceType.king => pieceDescKing,
-        PieceType.fighter => pieceDescFighter,
-        PieceType.miner => pieceDescMiner,
-        PieceType.rifleman => pieceDescRifleman,
-        PieceType.healer => pieceDescHealer,
-        PieceType.investigator => pieceDescInvestigator,
-        PieceType.invisibleMan => pieceDescInvisibleMan,
-        PieceType.warlord => pieceDescWarlord,
-        PieceType.heartQueen => pieceDescHeartQueen,
-        PieceType.soulReaper => pieceDescSoulReaper,
-        PieceType.catapult => pieceDescCatapult,
-        PieceType.ironWall => pieceDescIronWall,
-        PieceType.paladin => pieceDescPaladin,
-        PieceType.shadowRider => pieceDescShadowRider,
-        PieceType.commander => pieceDescCommander,
       };
 
   // ===== NOMI ABILITÀ =====
-  String abilityNameFor(String abilityId) => switch (abilityId) {
-        'battle_cry' => abilityNameBattleCry,
-        'place_trap' => abilityNamePlaceTrap,
-        'long_shot' => abilityNameLongShot,
-        'heal' => abilityNameHeal,
-        'reveal' => abilityNameReveal,
-        'invisibility' => abilityNameInvisibility,
-        'battle_command' => abilityNameBattleCommand,
-        'royal_aura' => abilityNameRoyalAura,
-        'soul_steal' => abilityNameSoulSteal,
-        'bombardment' => abilityNameBombardment,
-        'fortify' => abilityNameFortify,
-        'holy_charge' => abilityNameHolyCharge,
-        'shadow_strike' => abilityNameShadowStrike,
-        _ => abilityId,
-      };
+  String abilityNameFor(String abilityId) => abilityId;
 
   // ===== DESCRIZIONI ABILITÀ =====
-  String abilityDescFor(String abilityId) => switch (abilityId) {
-        'battle_cry' => abilityDescBattleCry,
-        'place_trap' => abilityDescPlaceTrap,
-        'long_shot' => abilityDescLongShot,
-        'heal' => abilityDescHeal,
-        'reveal' => abilityDescReveal,
-        'invisibility' => abilityDescInvisibility,
-        'battle_command' => abilityDescBattleCommand,
-        'royal_aura' => abilityDescRoyalAura,
-        'soul_steal' => abilityDescSoulSteal,
-        'bombardment' => abilityDescBombardment,
-        'fortify' => abilityDescFortify,
-        'holy_charge' => abilityDescHolyCharge,
-        'shadow_strike' => abilityDescShadowStrike,
-        _ => abilityId,
-      };
+  String abilityDescFor(String abilityId) => abilityId;
 
   // ===== LABEL TIPO BASE =====
   String baseTypeLabel(PieceBaseType base) => switch (base) {

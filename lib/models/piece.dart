@@ -8,27 +8,6 @@ enum PieceType {
   bishop,
   queen,
   king,
-  // Pezzi sbloccabili - Varianti Pedone
-  fighter, // variante pedone
-  miner, // variante pedone
-  rifleman, // variante pedone
-  // Varianti Torre
-  catapult,
-  ironWall,
-  // Varianti Cavallo
-  paladin,
-  shadowRider,
-  // Varianti Alfiere
-  healer,
-  investigator,
-  invisibleMan,
-  // Varianti Regina
-  warlord,
-  heartQueen,
-  soulReaper,
-  // Varianti Re
-  commander,
-  // Aggiungi nuovi pezzi qui in futuro...
 }
 
 enum PieceBaseType {
