@@ -108,10 +108,12 @@ class FirebaseService {
 
   /// Notifica il server della fine della partita.
   static Future<void> setWinner(String gameCode, String winner) async {
-    await _db.collection('games').doc(gameCode).update({
+    final docRef = _db.collection('games').doc(gameCode);
+    await docRef.update({
       'status': 'finished',
       'winner': winner,
     });
+    await docRef.delete();
   }
 
   /// Stream dei dati della partita in tempo reale.
@@ -127,9 +129,23 @@ class FirebaseService {
   /// Abbandona la partita (imposta lo stato a 'abandoned').
   static Future<void> abandonGame(String gameCode, String loserSide) async {
     final winner = loserSide == 'player1' ? 'player2' : 'player1';
-    await _db.collection('games').doc(gameCode).update({
+    final docRef = _db.collection('games').doc(gameCode);
+    await docRef.update({
       'status': 'finished',
       'winner': winner,
     });
+    await docRef.delete();
+  }
+
+  /// Cancella una stanza in attesa (usato quando il creator annulla il matchmaking).
+  static Future<void> cancelWaitingGame(String gameCode) async {
+    final docRef = _db.collection('games').doc(gameCode);
+    final snap = await docRef.get();
+    if (!snap.exists) return;
+
+    final data = snap.data();
+    if (data?['status'] == 'waiting') {
+      await docRef.delete();
+    }
   }
 }

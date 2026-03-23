@@ -1,0 +1,22 @@
+[debug] [2026-03-21T18:05:27.838Z] ----------------------------------------------------------------------
+[debug] [2026-03-21T18:05:27.840Z] Command:       /usr/local/bin/firebase /Users/fiore/.cache/firebase/tools/lib/node_modules/firebase-tools/lib/bin/firebase apps:create ios checkmake (ios) --bundle-id=mf.smithing_things.checkmake --json --project=checkmake-b3426
+[debug] [2026-03-21T18:05:27.841Z] CLI Version:   13.6.1
+[debug] [2026-03-21T18:05:27.842Z] Platform:      darwin
+[debug] [2026-03-21T18:05:27.842Z] Node Version:  v18.5.0
+[debug] [2026-03-21T18:05:27.844Z] Time:          Sat Mar 21 2026 19:05:27 GMT+0100 (Central European Standard Time)
+[debug] [2026-03-21T18:05:27.844Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-03-21T18:05:27.862Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-03-21T18:05:27.864Z] > authorizing via signed-in user (smithingthings@gmail.com)
+[info] Create your IOS app in project checkmake-b3426:
+[debug] [2026-03-21T18:05:27.869Z] >>> [apiv2][query] POST https://firebase.googleapis.com/v1beta1/projects/checkmake-b3426/iosApps [none]
+[debug] [2026-03-21T18:05:27.870Z] >>> [apiv2][body] POST https://firebase.googleapis.com/v1beta1/projects/checkmake-b3426/iosApps {"displayName":"checkmake (ios)","bundleId":"mf.smithing_things.checkmake"}
+[debug] [2026-03-21T18:05:28.762Z] <<< [apiv2][status] POST https://firebase.googleapis.com/v1beta1/projects/checkmake-b3426/iosApps 400
+[debug] [2026-03-21T18:05:28.764Z] <<< [apiv2][body] POST https://firebase.googleapis.com/v1beta1/projects/checkmake-b3426/iosApps {"error":{"code":400,"message":"Request contains an invalid argument.","status":"INVALID_ARGUMENT"}}
+[debug] [2026-03-21T18:05:28.766Z] HTTP Error: 400, Request contains an invalid argument.
+[debug] [2026-03-21T18:05:28.922Z] FirebaseError: HTTP Error: 400, Request contains an invalid argument.
+    at responseToError (/Users/fiore/.cache/firebase/tools/lib/node_modules/firebase-tools/lib/responseToError.js:49:12)
+    at RetryOperation._fn (/Users/fiore/.cache/firebase/tools/lib/node_modules/firebase-tools/lib/apiv2.js:299:77)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+[error] 
+[error] Error: Failed to create iOS app for project checkmake-b3426. See firebase-debug.log for more info.

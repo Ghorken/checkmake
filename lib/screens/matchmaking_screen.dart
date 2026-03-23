@@ -112,7 +112,15 @@ class _MatchmakingScreenState extends State<MatchmakingScreen> {
 
   void _waitForOpponent(String code, PlayerSide mySide, PlayerProfile profile) {
     _waitingSubscription = FirebaseService.watchGame(code).listen((snap) {
-      if (!snap.exists) return;
+      if (!snap.exists) {
+        if (!mounted) return;
+        setState(() {
+          _uiState = _UIState.idle;
+          _createdGameCode = null;
+          _errorMessage = 'Partita annullata.';
+        });
+        return;
+      }
       final data = snap.data() as Map<String, dynamic>;
       if (data['status'] == 'playing' && data['player2'] != null) {
         _waitingSubscription?.cancel();
@@ -160,6 +168,17 @@ class _MatchmakingScreenState extends State<MatchmakingScreen> {
   // ── Annulla la partita in attesa ──────────────────────────────────────────
 
   void _cancelWaiting() {
+    unawaited(_cancelWaitingAsync());
+  }
+
+  Future<void> _cancelWaitingAsync() async {
+    _waitingSubscription?.cancel();
+    final code = _createdGameCode;
+    if (code != null) {
+      await FirebaseService.cancelWaitingGame(code);
+    }
+
+    if (!mounted) return;
     _waitingSubscription?.cancel();
     setState(() {
       _uiState = _UIState.idle;

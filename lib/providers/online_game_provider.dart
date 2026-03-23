@@ -24,6 +24,7 @@ class OnlineGameProvider extends GameProvider {
 
   /// True mentre si sta applicando una mossa remota (evita loop infiniti).
   bool _applyingRemote = false;
+  bool _resultApplied = false;
 
   OnlineGameProvider({
     required super.myProfile,
@@ -63,7 +64,15 @@ class OnlineGameProvider extends GameProvider {
 
   void _listenToGame() {
     _gameSubscription = FirebaseService.watchGame(gameCode).listen((snap) {
-      if (!snap.exists) return;
+      if (!snap.exists) {
+        // Se il documento viene rimosso, consideriamo la partita chiusa lato server.
+        if (phase != GamePhase.gameOver && !_resultApplied) {
+          _applyWinResult();
+          phase = GamePhase.gameOver;
+          notifyListeners();
+        }
+        return;
+      }
       final data = snap.data() as Map<String, dynamic>;
 
       _handleGameUpdate(data);
@@ -78,11 +87,9 @@ class OnlineGameProvider extends GameProvider {
       phase = GamePhase.gameOver;
       final mySideStr = _mySide == PlayerSide.player1 ? 'player1' : 'player2';
       if (serverWinner == mySideStr) {
-        myProfile.wins++;
-        myProfile.coins += 200;
+        _applyWinResult();
       } else {
-        myProfile.losses++;
-        myProfile.coins += 10;
+        _applyLossResult();
       }
       notifyListeners();
       return;
@@ -120,9 +127,22 @@ class OnlineGameProvider extends GameProvider {
     final mySideStr = _mySide == PlayerSide.player1 ? 'player1' : 'player2';
     await FirebaseService.abandonGame(gameCode, mySideStr);
     phase = GamePhase.gameOver;
+    _applyLossResult();
+    notifyListeners();
+  }
+
+  void _applyWinResult() {
+    if (_resultApplied) return;
+    myProfile.wins++;
+    myProfile.coins += 200;
+    _resultApplied = true;
+  }
+
+  void _applyLossResult() {
+    if (_resultApplied) return;
     myProfile.losses++;
     myProfile.coins += 10;
-    notifyListeners();
+    _resultApplied = true;
   }
 
   @override

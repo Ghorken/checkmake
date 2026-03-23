@@ -98,7 +98,7 @@ abstract class AppLocalizations {
     Locale('it')
   ];
 
-  /// Nome dell'app
+  /// Crea l'armata. Spezza la corona.
   ///
   /// In it, this message translates to:
   /// **'CheckMake'**
