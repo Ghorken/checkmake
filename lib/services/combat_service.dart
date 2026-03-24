@@ -28,13 +28,17 @@ class CombatService {
 
     if (!attackerDied) {
       survivingAttacker = attacker.copyWith(
-        stats: attacker.stats.copyWith(currentHp: defenderNewHp.clamp(0, attacker.stats.maxHp)),
+        stats: attacker.stats.copyWith(
+          currentHp: defenderNewHp.clamp(0, attacker.stats.maxHp),
+        ),
       );
     }
 
     if (!defenderDied) {
       survivingDefender = defender.copyWith(
-        stats: defender.stats.copyWith(currentHp: attackerNewHp.clamp(0, defender.stats.maxHp)),
+        stats: defender.stats.copyWith(
+          currentHp: attackerNewHp.clamp(0, defender.stats.maxHp),
+        ),
       );
     } else {
       coinsEarned += defender.stats.value;

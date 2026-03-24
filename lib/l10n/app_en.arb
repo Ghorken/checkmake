@@ -58,7 +58,6 @@
   "gameOpponentTurn": "Opponent's turn",
   "gameModeLocal": "Local",
   "gameModeOnline": "Online",
-  "gameEndTurn": "End turn",
   "gameOver": "End game",
   "gameLeaveConfirmTitle": "Leave match?",
   "gameLeaveConfirmBody": "If you leave now, you will concede the match to your opponent.",

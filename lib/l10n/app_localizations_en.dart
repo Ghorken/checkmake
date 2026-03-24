@@ -118,9 +118,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get gameModeOnline => 'Online';
 
   @override
-  String get gameEndTurn => 'End turn';
-
-  @override
   String get gameOver => 'End game';
 
   @override

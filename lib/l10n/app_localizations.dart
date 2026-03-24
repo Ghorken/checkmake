@@ -302,12 +302,6 @@ abstract class AppLocalizations {
   /// **'Online'**
   String get gameModeOnline;
 
-  /// No description provided for @gameEndTurn.
-  ///
-  /// In it, this message translates to:
-  /// **'Fine turno'**
-  String get gameEndTurn;
-
   /// No description provided for @gameOver.
   ///
   /// In it, this message translates to:

@@ -61,7 +61,6 @@
   "gameOpponentTurn": "Turno avversario",
   "gameModeLocal": "Locale",
   "gameModeOnline": "Online",
-  "gameEndTurn": "Fine turno",
   "gameOver": "Fine partita",
   "gameLeaveConfirmTitle": "Abbandonare la partita?",
   "gameLeaveConfirmBody": "Uscendo concederai la partita all'avversario.",

@@ -1,5 +1,7 @@
 // lib/providers/game_provider.dart
 
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:checkmake/models/board.dart';
 import 'package:checkmake/models/piece.dart';
@@ -13,6 +15,8 @@ enum GamePhase { myTurn, opponentTurn, combat, gameOver, waitingForOpponent }
 enum TurnAction { none, moved, usedAbility }
 
 class GameProvider extends ChangeNotifier {
+  static const int turnDurationSeconds = 30;
+
   late Board board;
   late PlayerProfile myProfile;
   late PlayerProfile opponentProfile; // in local multiplayer
@@ -25,6 +29,8 @@ class GameProvider extends ChangeNotifier {
   Position? selectedPosition;
   List<Position> validMoves = [];
   TurnAction turnAction = TurnAction.none;
+  Timer? _turnTimer;
+  int _turnSecondsLeft = turnDurationSeconds;
 
   // Il lato che il giocatore locale controlla (player1 per partite locali,
   // sovrascrivibile per il multiplayer online)
@@ -36,16 +42,26 @@ class GameProvider extends ChangeNotifier {
   /// La fase visualizzata nella UI: myTurn/opponentTurn sono calcolati in base
   /// a `localSide` così funzionano correttamente sia per player1 che player2.
   GamePhase get phase {
-    if (_phaseRaw == GamePhase.gameOver || _phaseRaw == GamePhase.waitingForOpponent) {
+    if (_phaseRaw == GamePhase.gameOver ||
+        _phaseRaw == GamePhase.waitingForOpponent) {
       return _phaseRaw;
     }
     return isLocalTurn ? GamePhase.myTurn : GamePhase.opponentTurn;
   }
 
-  set phase(GamePhase p) => _phaseRaw = p;
+  set phase(GamePhase p) {
+    _phaseRaw = p;
+    if (_phaseRaw == GamePhase.gameOver ||
+        _phaseRaw == GamePhase.waitingForOpponent) {
+      _stopTurnTimer();
+    }
+  }
 
-  bool get canMove => turnAction == TurnAction.none || turnAction == TurnAction.usedAbility;
-  bool get canUseAbility => turnAction == TurnAction.none || turnAction == TurnAction.moved;
+  bool get canMove =>
+      turnAction == TurnAction.none || turnAction == TurnAction.usedAbility;
+  bool get canUseAbility =>
+      turnAction == TurnAction.none || turnAction == TurnAction.moved;
+  int get turnSecondsLeft => _turnSecondsLeft;
 
   String? lastCombatLog;
   int myCoinsEarned = 0;
@@ -56,6 +72,7 @@ class GameProvider extends ChangeNotifier {
     this.hotseatMode = false,
   }) {
     _initBoard();
+    _startTurnTimer(notify: false);
   }
 
   void _initBoard() {
@@ -64,7 +81,8 @@ class GameProvider extends ChangeNotifier {
     _setupArmy(myProfile, PlayerSide.player1, isTop: false);
   }
 
-  void _setupArmy(PlayerProfile profile, PlayerSide side, {required bool isTop}) {
+  void _setupArmy(PlayerProfile profile, PlayerSide side,
+      {required bool isTop}) {
     final config = profile.armyConfig;
     final pieces = <PieceType>[];
     config.composition.forEach((type, count) {
@@ -77,8 +95,12 @@ class GameProvider extends ChangeNotifier {
     final pawnRow = isTop ? 1 : 6;
     final backRow = isTop ? 0 : 7;
 
-    final pawns = pieces.where((t) => pieceDefinitions[t]!.baseType == PieceBaseType.pawn).toList();
-    final backPieces = pieces.where((t) => pieceDefinitions[t]!.baseType != PieceBaseType.pawn).toList();
+    final pawns = pieces
+        .where((t) => pieceDefinitions[t]!.baseType == PieceBaseType.pawn)
+        .toList();
+    final backPieces = pieces
+        .where((t) => pieceDefinitions[t]!.baseType != PieceBaseType.pawn)
+        .toList();
 
     for (int i = 0; i < pawns.length && i < 8; i++) {
       _placePiece(pawns[i], Position(pawnRow, i), side, profile);
@@ -119,7 +141,8 @@ class GameProvider extends ChangeNotifier {
         PieceBaseType.king => PieceType.king,
       };
 
-  void _placePiece(PieceType type, Position pos, PlayerSide side, PlayerProfile profile) {
+  void _placePiece(
+      PieceType type, Position pos, PlayerSide side, PlayerProfile profile) {
     final def = pieceDefinitions[type]!;
     final stats = profile.getStatsForPiece(type);
     final piece = Piece(
@@ -134,8 +157,13 @@ class GameProvider extends ChangeNotifier {
   }
 
   void selectPosition(Position pos) {
-    if (!isLocalTurn) return;
-    if (_phaseRaw == GamePhase.gameOver || _phaseRaw == GamePhase.waitingForOpponent) return;
+    if (!isLocalTurn) {
+      return;
+    }
+    if (_phaseRaw == GamePhase.gameOver ||
+        _phaseRaw == GamePhase.waitingForOpponent) {
+      return;
+    }
 
     // Toggle selezione: tap sullo stesso pezzo già selezionato = deseleziona.
     if (selectedPosition == pos) {
@@ -190,9 +218,11 @@ class GameProvider extends ChangeNotifier {
       board.setPiece(to, null);
 
       if (result.survivingDefender != null) {
-        board.setPiece(to, result.survivingDefender);
+        final defenderFinalPos = result.survivingAttacker == null ? from : to;
+        board.setPiece(defenderFinalPos, result.survivingDefender);
       }
-      if (result.survivingAttacker != null && result.attackerNewPosition != null) {
+      if (result.survivingAttacker != null &&
+          result.attackerNewPosition != null) {
         board.setPiece(result.attackerNewPosition!, result.survivingAttacker);
       }
 
@@ -224,7 +254,8 @@ class GameProvider extends ChangeNotifier {
   String _buildCombatLog(Piece attacker, Piece defender, CombatResult result) {
     if (result.survivingAttacker == null && result.survivingDefender == null) {
       return 'Entrambi i pezzi si sono eliminati!';
-    } else if (result.survivingAttacker != null && result.survivingDefender == null) {
+    } else if (result.survivingAttacker != null &&
+        result.survivingDefender == null) {
       return '${pieceDefinitions[attacker.type]!.displayName} ha eliminato '
           '${pieceDefinitions[defender.type]!.displayName}! +${result.coinsEarned} monete';
     } else if (result.survivingAttacker == null) {
@@ -252,14 +283,29 @@ class GameProvider extends ChangeNotifier {
   }
 
   void _checkEndTurn() {
+    selectedPosition = null;
+    validMoves = [];
     turnAction = TurnAction.none;
-    currentTurn = currentTurn == PlayerSide.player1 ? PlayerSide.player2 : PlayerSide.player1;
+
+    if (_phaseRaw == GamePhase.gameOver ||
+        _phaseRaw == GamePhase.waitingForOpponent) {
+      _stopTurnTimer();
+      notifyListeners();
+      return;
+    }
+
+    currentTurn = currentTurn == PlayerSide.player1
+        ? PlayerSide.player2
+        : PlayerSide.player1;
+    _startTurnTimer(notify: false);
     // La fase viene calcolata automaticamente dal getter `phase` tramite `isLocalTurn`
     notifyListeners();
   }
 
   void _checkGameOver() {
-    final oppSide = localSide == PlayerSide.player1 ? PlayerSide.player2 : PlayerSide.player1;
+    final oppSide = localSide == PlayerSide.player1
+        ? PlayerSide.player2
+        : PlayerSide.player1;
     final myKing = board.findKing(localSide);
     final oppKing = board.findKing(oppSide);
 
@@ -272,5 +318,58 @@ class GameProvider extends ChangeNotifier {
       myProfile.wins++;
       myProfile.coins += 200; // premio vittoria
     }
+  }
+
+  void _startTurnTimer({bool notify = true}) {
+    _stopTurnTimer();
+    _turnSecondsLeft = turnDurationSeconds;
+
+    if (_phaseRaw == GamePhase.gameOver ||
+        _phaseRaw == GamePhase.waitingForOpponent) {
+      return;
+    }
+
+    _turnTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_phaseRaw == GamePhase.gameOver ||
+          _phaseRaw == GamePhase.waitingForOpponent) {
+        timer.cancel();
+        return;
+      }
+
+      if (_turnSecondsLeft > 0) {
+        _turnSecondsLeft--;
+      }
+
+      if (_turnSecondsLeft == 0) {
+        timer.cancel();
+        _handleTurnTimeout();
+        return;
+      }
+
+      notifyListeners();
+    });
+
+    if (notify) {
+      notifyListeners();
+    }
+  }
+
+  void _stopTurnTimer() {
+    _turnTimer?.cancel();
+    _turnTimer = null;
+  }
+
+  void _handleTurnTimeout() {
+    if (_phaseRaw == GamePhase.gameOver ||
+        _phaseRaw == GamePhase.waitingForOpponent) {
+      return;
+    }
+    _checkEndTurn();
+  }
+
+  @override
+  void dispose() {
+    _stopTurnTimer();
+    super.dispose();
   }
 }

@@ -32,7 +32,7 @@ class OnlineGameProvider extends GameProvider {
     required super.opponentProfile,
     required PlayerSide mySide,
     required this.gameCode,
-  })  : _mySide = mySide {
+  }) : _mySide = mySide {
     // Player1 inizia sempre; se siamo player2 aspettiamo la mossa avversaria
     if (_mySide == PlayerSide.player2) {
       currentTurn = PlayerSide.player1; // il turno appartiene a player1
@@ -53,6 +53,7 @@ class OnlineGameProvider extends GameProvider {
 
   @override
   void executeMove(Position from, Position to) {
+    final movingSide = currentTurn;
     super.executeMove(from, to);
 
     // Invia a Firebase solo se non stiamo applicando una mossa remota
@@ -61,7 +62,7 @@ class OnlineGameProvider extends GameProvider {
 
       // Se la partita è finita, notifica il server
       if (phase == GamePhase.gameOver) {
-        final winner = currentTurn == PlayerSide.player1 ? 'player2' : 'player1';
+        final winner = movingSide == PlayerSide.player1 ? 'player1' : 'player2';
         FirebaseService.setWinner(gameCode, winner);
       }
     }
@@ -91,7 +92,9 @@ class OnlineGameProvider extends GameProvider {
     // Partita terminata da remoto (es. avversario ha abbandonato)
     final serverWinner = data['winner'] as String?;
     final serverStatus = data['status'] as String?;
-    if (serverStatus == 'finished' && serverWinner != null && phase != GamePhase.gameOver) {
+    if (serverStatus == 'finished' &&
+        serverWinner != null &&
+        phase != GamePhase.gameOver) {
       phase = GamePhase.gameOver;
       final mySideStr = _mySide == PlayerSide.player1 ? 'player1' : 'player2';
       if (serverWinner == mySideStr) {

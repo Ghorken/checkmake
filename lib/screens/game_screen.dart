@@ -204,10 +204,6 @@ class _OpponentBar extends StatelessWidget {
                 style: const TextStyle(
                     color: Colors.white, fontWeight: FontWeight.bold),
               ),
-              Text(
-                '${game.opponentProfile.wins}V - ${game.opponentProfile.losses}S',
-                style: const TextStyle(color: Colors.white54, fontSize: 11),
-              ),
             ],
           ),
           const SizedBox(width: 8),
@@ -236,8 +232,10 @@ class _OpponentBar extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: Colors.red),
               ),
-              child: Text(l.gameOpponentTurn,
-                  style: const TextStyle(color: Colors.red, fontSize: 11)),
+              child: Text(
+                '${l.gameOpponentTurn} · ${game.turnSecondsLeft}s',
+                style: const TextStyle(color: Colors.red, fontSize: 11),
+              ),
             ),
         ],
       ),
@@ -310,11 +308,7 @@ class _PlayerBar extends StatelessWidget {
                   border: Border.all(color: Colors.cyan.withValues(alpha: 0.4)),
                 ),
                 child: Text(
-                  game.turnAction == TurnAction.moved
-                      ? l.gameTurnMoved
-                      : game.turnAction == TurnAction.usedAbility
-                          ? l.gameTurnAbility
-                          : l.gameTurnSelect,
+                  '${game.turnAction == TurnAction.moved ? l.gameTurnMoved : game.turnAction == TurnAction.usedAbility ? l.gameTurnAbility : l.gameTurnSelect} (${game.turnSecondsLeft}s)',
                   style: const TextStyle(color: Colors.cyan, fontSize: 11),
                   textAlign: TextAlign.center,
                 ),
