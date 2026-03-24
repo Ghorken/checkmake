@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:checkmake/models/board.dart';
-import 'package:checkmake/models/piece.dart';
 import 'package:checkmake/providers/game_provider.dart';
 import 'package:checkmake/widgets/piece_widget.dart';
 
@@ -12,9 +11,6 @@ class GameBoardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final game = context.watch<GameProvider>();
-    final shouldRotate = game.localSide == PlayerSide.player2;
-
     return AspectRatio(
       aspectRatio: 1,
       child: Container(
@@ -37,7 +33,7 @@ class GameBoardWidget extends StatelessWidget {
           itemBuilder: (context, index) {
             final row = index ~/ 8;
             final col = index % 8;
-            final pos = shouldRotate ? Position(7 - row, 7 - col) : Position(row, col);
+            final pos = Position(row, col);
             return _BoardCell(position: pos);
           },
         ),
@@ -58,7 +54,7 @@ class _BoardCell extends StatelessWidget {
     final isLight = (position.row + position.col) % 2 == 0;
     final isSelected = game.selectedPosition == position;
     final isValidMove = game.validMoves.contains(position);
-    final isMyPiece = piece?.side == game.localSide;
+    final isMyPiece = piece?.side == game.interactiveSide;
 
     Color cellColor;
     if (isSelected) {

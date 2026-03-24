@@ -25,6 +25,7 @@ class OnlineGameProvider extends GameProvider {
   /// True mentre si sta applicando una mossa remota (evita loop infiniti).
   bool _applyingRemote = false;
   bool _resultApplied = false;
+  bool _showVictoryDialog = false;
 
   OnlineGameProvider({
     required super.myProfile,
@@ -41,6 +42,12 @@ class OnlineGameProvider extends GameProvider {
 
   @override
   PlayerSide get localSide => _mySide;
+
+  bool get showVictoryDialog => _showVictoryDialog;
+
+  void consumeVictoryDialog() {
+    _showVictoryDialog = false;
+  }
 
   // ── Override executeMove: invia la mossa a Firebase se è locale ───────────
 
@@ -68,6 +75,7 @@ class OnlineGameProvider extends GameProvider {
         // Se il documento viene rimosso, consideriamo la partita chiusa lato server.
         if (phase != GamePhase.gameOver && !_resultApplied) {
           _applyWinResult();
+          _showVictoryDialog = true;
           phase = GamePhase.gameOver;
           notifyListeners();
         }
@@ -88,6 +96,7 @@ class OnlineGameProvider extends GameProvider {
       final mySideStr = _mySide == PlayerSide.player1 ? 'player1' : 'player2';
       if (serverWinner == mySideStr) {
         _applyWinResult();
+        _showVictoryDialog = true;
       } else {
         _applyLossResult();
       }

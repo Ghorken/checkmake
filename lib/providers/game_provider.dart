@@ -16,6 +16,7 @@ class GameProvider extends ChangeNotifier {
   late Board board;
   late PlayerProfile myProfile;
   late PlayerProfile opponentProfile; // in local multiplayer
+  final bool hotseatMode;
 
   // Stato interno della fase - la fase visibile è calcolata tramite il getter `phase`
   GamePhase _phaseRaw = GamePhase.myTurn;
@@ -29,7 +30,8 @@ class GameProvider extends ChangeNotifier {
   // sovrascrivibile per il multiplayer online)
   PlayerSide get localSide => PlayerSide.player1;
 
-  bool get isLocalTurn => currentTurn == localSide;
+  bool get isLocalTurn => hotseatMode || currentTurn == localSide;
+  PlayerSide get interactiveSide => hotseatMode ? currentTurn : localSide;
 
   /// La fase visualizzata nella UI: myTurn/opponentTurn sono calcolati in base
   /// a `localSide` così funzionano correttamente sia per player1 che player2.
@@ -48,7 +50,11 @@ class GameProvider extends ChangeNotifier {
   String? lastCombatLog;
   int myCoinsEarned = 0;
 
-  GameProvider({required this.myProfile, required this.opponentProfile}) {
+  GameProvider({
+    required this.myProfile,
+    required this.opponentProfile,
+    this.hotseatMode = false,
+  }) {
     _initBoard();
   }
 
@@ -131,6 +137,14 @@ class GameProvider extends ChangeNotifier {
     if (!isLocalTurn) return;
     if (_phaseRaw == GamePhase.gameOver || _phaseRaw == GamePhase.waitingForOpponent) return;
 
+    // Toggle selezione: tap sullo stesso pezzo già selezionato = deseleziona.
+    if (selectedPosition == pos) {
+      selectedPosition = null;
+      validMoves = [];
+      notifyListeners();
+      return;
+    }
+
     final piece = board.getPiece(pos);
 
     // Se ho già selezionato un pezzo e clicco su una mossa valida
@@ -140,7 +154,7 @@ class GameProvider extends ChangeNotifier {
     }
 
     // Seleziona il pezzo se è mio
-    if (piece != null && piece.side == localSide && canMove) {
+    if (piece != null && piece.side == interactiveSide && canMove) {
       selectedPosition = pos;
       validMoves = MovementService.getValidMoves(board, pos);
     } else {
@@ -223,7 +237,7 @@ class GameProvider extends ChangeNotifier {
   void useAbility(Position piecePos) {
     if (!canUseAbility) return;
     final piece = board.getPiece(piecePos);
-    if (piece == null || piece.side != localSide) return;
+    if (piece == null || piece.side != interactiveSide) return;
     if (piece.specialAbility == null || !piece.specialAbility!.isReady) return;
 
     // TODO: implementare effetti delle abilità specifiche

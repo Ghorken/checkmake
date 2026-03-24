@@ -131,7 +131,10 @@ class MainMenuScreen extends StatelessWidget {
   }
 
   void _startGame(BuildContext context, PlayerProfile myProfile) {
-    final opponent = PlayerProfile(name: 'Avversario');
+    final opponent = PlayerProfile.fromJson({
+      ...myProfile.toJson(),
+      'name': 'Giocatore 2',
+    });
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -139,6 +142,7 @@ class MainMenuScreen extends StatelessWidget {
           create: (_) => GameProvider(
             myProfile: myProfile,
             opponentProfile: opponent,
+            hotseatMode: true,
           ),
           child: const GameScreen(),
         ),

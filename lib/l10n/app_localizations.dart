@@ -137,7 +137,7 @@ abstract class AppLocalizations {
   /// No description provided for @btnPlay.
   ///
   /// In it, this message translates to:
-  /// **'GIOCA'**
+  /// **'GIOCA IN LOCALE'**
   String get btnPlay;
 
   /// No description provided for @btnMultiplayer.
@@ -290,6 +290,18 @@ abstract class AppLocalizations {
   /// **'Turno avversario'**
   String get gameOpponentTurn;
 
+  /// No description provided for @gameModeLocal.
+  ///
+  /// In it, this message translates to:
+  /// **'Locale'**
+  String get gameModeLocal;
+
+  /// No description provided for @gameModeOnline.
+  ///
+  /// In it, this message translates to:
+  /// **'Online'**
+  String get gameModeOnline;
+
   /// No description provided for @gameEndTurn.
   ///
   /// In it, this message translates to:
@@ -301,6 +313,48 @@ abstract class AppLocalizations {
   /// In it, this message translates to:
   /// **'Fine partita'**
   String get gameOver;
+
+  /// No description provided for @gameLeaveConfirmTitle.
+  ///
+  /// In it, this message translates to:
+  /// **'Abbandonare la partita?'**
+  String get gameLeaveConfirmTitle;
+
+  /// No description provided for @gameLeaveConfirmBody.
+  ///
+  /// In it, this message translates to:
+  /// **'Uscendo concederai la partita all\'avversario.'**
+  String get gameLeaveConfirmBody;
+
+  /// No description provided for @gameLeaveConfirmCancel.
+  ///
+  /// In it, this message translates to:
+  /// **'Annulla'**
+  String get gameLeaveConfirmCancel;
+
+  /// No description provided for @gameLeaveConfirmOk.
+  ///
+  /// In it, this message translates to:
+  /// **'Abbandona'**
+  String get gameLeaveConfirmOk;
+
+  /// No description provided for @gameWinByForfeitTitle.
+  ///
+  /// In it, this message translates to:
+  /// **'Vittoria assegnata'**
+  String get gameWinByForfeitTitle;
+
+  /// No description provided for @gameWinByForfeitBody.
+  ///
+  /// In it, this message translates to:
+  /// **'L\'avversario ha abbandonato la partita. Hai vinto!'**
+  String get gameWinByForfeitBody;
+
+  /// No description provided for @gameDialogClose.
+  ///
+  /// In it, this message translates to:
+  /// **'Chiudi'**
+  String get gameDialogClose;
 
   /// No description provided for @gameTurnMoved.
   ///

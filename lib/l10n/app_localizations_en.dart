@@ -27,7 +27,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statInitiative => 'Initiative';
 
   @override
-  String get btnPlay => 'PLAY';
+  String get btnPlay => 'LOCAL PLAY';
 
   @override
   String get btnMultiplayer => 'MULTIPLAYER';
@@ -112,10 +112,38 @@ class AppLocalizationsEn extends AppLocalizations {
   String get gameOpponentTurn => 'Opponent\'s turn';
 
   @override
+  String get gameModeLocal => 'Local';
+
+  @override
+  String get gameModeOnline => 'Online';
+
+  @override
   String get gameEndTurn => 'End turn';
 
   @override
   String get gameOver => 'End game';
+
+  @override
+  String get gameLeaveConfirmTitle => 'Leave match?';
+
+  @override
+  String get gameLeaveConfirmBody =>
+      'If you leave now, you will concede the match to your opponent.';
+
+  @override
+  String get gameLeaveConfirmCancel => 'Cancel';
+
+  @override
+  String get gameLeaveConfirmOk => 'Concede';
+
+  @override
+  String get gameWinByForfeitTitle => 'Victory awarded';
+
+  @override
+  String get gameWinByForfeitBody => 'Your opponent left the match. You win!';
+
+  @override
+  String get gameDialogClose => 'Close';
 
   @override
   String get gameTurnMoved =>
