@@ -66,6 +66,18 @@
   "gameWinByForfeitTitle": "Victory awarded",
   "gameWinByForfeitBody": "Your opponent left the match. You win!",
   "gameDialogClose": "Close",
+  "gameResultVictoryTitle": "Victory!",
+  "gameResultVictoryBody": "You won the online match.",
+  "gameResultDefeatTitle": "Defeat",
+  "gameResultDefeatBody": "You lost the online match.",
+  "gameResultAbandonedTitle": "Match abandoned",
+  "gameResultAbandonedBody": "You left the online match.",
+  "gameResultCoins": "Coins earned: +{coins}",
+  "@gameResultCoins": {
+    "placeholders": {
+      "coins": { "type": "int" }
+    }
+  },
   "gameTurnMoved": "You moved. You can use an ability or end your turn.",
   "gameTurnAbility": "Ability used. You can move or end your turn.",
   "gameTurnSelect": "🎮 Your turn — select a piece",

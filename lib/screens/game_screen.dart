@@ -18,7 +18,8 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
-  bool _showingVictoryDialog = false;
+  bool _showingEndDialog = false;
+  int? _coinsAtMatchStart;
 
   Future<void> _navigateHome() async {
     if (!mounted) return;
@@ -59,41 +60,72 @@ class _GameScreenState extends State<GameScreen> {
     if (!shouldLeave) return;
 
     if (game is OnlineGameProvider && game.phase != GamePhase.gameOver) {
-      unawaited(
-        game.abandonGame().catchError((_) {
-          // Navigazione prioritaria: ignoriamo eventuali errori di rete qui.
-        }),
-      );
+      await game.abandonGame();
+      return;
     }
 
     await _navigateHome();
   }
 
-  void _maybeShowVictoryDialog(GameProvider game) {
-    if (_showingVictoryDialog ||
+  void _maybeShowEndDialog(GameProvider game) {
+    if (_showingEndDialog ||
         game is! OnlineGameProvider ||
-        !game.showVictoryDialog) {
+        !game.showEndDialog) {
       return;
     }
+    final outcome = game.endDialogOutcome;
+    if (outcome == null) return;
 
-    _showingVictoryDialog = true;
-    game.consumeVictoryDialog();
+    _showingEndDialog = true;
+    game.consumeEndDialog();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (!mounted) return;
       final l = AppLocalizations.of(context)!;
+      final gainedRaw =
+          game.myProfile.coins - (_coinsAtMatchStart ?? game.myProfile.coins);
+      final gained = gainedRaw < 0 ? 0 : gainedRaw;
+      final (title, body) = switch (outcome) {
+        OnlineMatchOutcome.victory => (
+            l.gameResultVictoryTitle,
+            l.gameResultVictoryBody
+          ),
+        OnlineMatchOutcome.defeat => (
+            l.gameResultDefeatTitle,
+            l.gameResultDefeatBody
+          ),
+        OnlineMatchOutcome.abandoned => (
+            l.gameResultAbandonedTitle,
+            l.gameResultAbandonedBody
+          ),
+      };
+
       await showDialog<void>(
         context: context,
-        barrierDismissible: true,
+        barrierDismissible: false,
         builder: (ctx) => AlertDialog(
           backgroundColor: const Color(0xFF16213E),
           title: Text(
-            l.gameWinByForfeitTitle,
+            title,
             style: const TextStyle(color: Colors.amber),
           ),
-          content: Text(
-            l.gameWinByForfeitBody,
-            style: const TextStyle(color: Colors.white70),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                body,
+                style: const TextStyle(color: Colors.white70),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                l.gameResultCoins(gained),
+                style: const TextStyle(
+                  color: Colors.amber,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
           ),
           actions: [
             ElevatedButton(
@@ -107,7 +139,7 @@ class _GameScreenState extends State<GameScreen> {
           ],
         ),
       );
-      _showingVictoryDialog = false;
+      _showingEndDialog = false;
       await _navigateHome();
     });
   }
@@ -115,7 +147,8 @@ class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     final game = context.watch<GameProvider>();
-    _maybeShowVictoryDialog(game);
+    _coinsAtMatchStart ??= game.myProfile.coins;
+    _maybeShowEndDialog(game);
 
     return PopScope(
       canPop: false,
@@ -163,7 +196,19 @@ class _GameScreenState extends State<GameScreen> {
                   ),
                 ),
               ),
-              _PlayerBar(game: game),
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  _PlayerBar(game: game),
+                  if (game.phase == GamePhase.myTurn)
+                    Positioned(
+                      left: 12,
+                      right: 12,
+                      top: -34,
+                      child: _TurnBanner(game: game),
+                    ),
+                ],
+              ),
             ],
           ),
         ),
@@ -254,9 +299,6 @@ class _PlayerBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l = AppLocalizations.of(context)!;
-    final isMyTurn = game.phase == GamePhase.myTurn;
-
     return Container(
       padding: const EdgeInsets.all(12),
       color: const Color(0xFF111626),
@@ -293,7 +335,7 @@ class _PlayerBar extends StatelessWidget {
                 ],
               ),
               const Spacer(),
-              if (isMyTurn) ...[
+              if (game.phase == GamePhase.myTurn) ...[
                 if (game.selectedPosition != null) ...[
                   _AbilityButton(game: game),
                   const SizedBox(width: 8),
@@ -301,27 +343,38 @@ class _PlayerBar extends StatelessWidget {
               ],
             ],
           ),
-          if (isMyTurn)
-            Padding(
-              padding: const EdgeInsets.only(top: 6),
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF1E3A8A).withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(6),
-                  border: Border.all(
-                      color: const Color(0xFFD4AF37).withValues(alpha: 0.8)),
-                ),
-                child: Text(
-                  '${game.turnAction == TurnAction.moved ? l.gameTurnMoved : game.turnAction == TurnAction.usedAbility ? l.gameTurnAbility : l.gameTurnSelect} (${game.turnSecondsLeft}s)',
-                  style:
-                      const TextStyle(color: Color(0xFFF8F7F2), fontSize: 11),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
         ],
+      ),
+    );
+  }
+}
+
+class _TurnBanner extends StatelessWidget {
+  final GameProvider game;
+  const _TurnBanner({required this.game});
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context)!;
+    final message = game.turnAction == TurnAction.moved
+        ? l.gameTurnMoved
+        : game.turnAction == TurnAction.usedAbility
+            ? l.gameTurnAbility
+            : l.gameTurnSelect;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1E3A8A).withValues(alpha: 0.2),
+        borderRadius: BorderRadius.circular(6),
+        border:
+            Border.all(color: const Color(0xFFD4AF37).withValues(alpha: 0.8)),
+      ),
+      child: Text(
+        '$message (${game.turnSecondsLeft}s)',
+        style: const TextStyle(color: Color(0xFFF8F7F2), fontSize: 11),
+        textAlign: TextAlign.center,
       ),
     );
   }

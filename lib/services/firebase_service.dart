@@ -31,7 +31,8 @@ class FirebaseService {
 
   /// Genera un codice partita di 6 caratteri (lettere maiuscole + cifre).
   static String generateGameCode() {
-    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no caratteri ambigui (0,O,1,I)
+    const chars =
+        'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no caratteri ambigui (0,O,1,I)
     final random = Random.secure();
     return List.generate(6, (_) => chars[random.nextInt(chars.length)]).join();
   }
@@ -91,19 +92,20 @@ class FirebaseService {
     int toCol,
   ) async {
     final docRef = _db.collection('games').doc(gameCode);
-    final snap = await docRef.get();
-    final moveCount = (snap.data()?['moveCount'] as int?) ?? 0;
-
-    await docRef.update({
-      'lastMove': {
-        'fromRow': fromRow,
-        'fromCol': fromCol,
-        'toRow': toRow,
-        'toCol': toCol,
-        'moveIndex': moveCount,
-        'movedBy': currentUserId,
-      },
-      'moveCount': moveCount + 1,
+    await _db.runTransaction((tx) async {
+      final snap = await tx.get(docRef);
+      final moveCount = (snap.data()?['moveCount'] as int?) ?? 0;
+      tx.update(docRef, {
+        'lastMove': {
+          'fromRow': fromRow,
+          'fromCol': fromCol,
+          'toRow': toRow,
+          'toCol': toCol,
+          'moveIndex': moveCount,
+          'movedBy': currentUserId,
+        },
+        'moveCount': moveCount + 1,
+      });
     });
   }
 
@@ -118,7 +120,8 @@ class FirebaseService {
   }
 
   /// Stream dei dati della partita in tempo reale.
-  static Stream<DocumentSnapshot<Map<String, dynamic>>> watchGame(String gameCode) {
+  static Stream<DocumentSnapshot<Map<String, dynamic>>> watchGame(
+      String gameCode) {
     return _db.collection('games').doc(gameCode).snapshots();
   }
 

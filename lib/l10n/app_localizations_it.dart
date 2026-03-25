@@ -144,6 +144,29 @@ class AppLocalizationsIt extends AppLocalizations {
   String get gameDialogClose => 'Chiudi';
 
   @override
+  String get gameResultVictoryTitle => 'Vittoria!';
+
+  @override
+  String get gameResultVictoryBody => 'Hai vinto la partita online.';
+
+  @override
+  String get gameResultDefeatTitle => 'Sconfitta';
+
+  @override
+  String get gameResultDefeatBody => 'Hai perso la partita online.';
+
+  @override
+  String get gameResultAbandonedTitle => 'Partita abbandonata';
+
+  @override
+  String get gameResultAbandonedBody => 'Hai abbandonato la partita online.';
+
+  @override
+  String gameResultCoins(int coins) {
+    return 'Monete guadagnate: +$coins';
+  }
+
+  @override
   String get gameTurnMoved =>
       'Hai mosso. Puoi usare un\'abilità o finire il turno.';
 

@@ -7,6 +7,8 @@ import 'package:checkmake/models/piece.dart';
 import 'package:checkmake/providers/game_provider.dart';
 import 'package:checkmake/services/firebase_service.dart';
 
+enum OnlineMatchOutcome { victory, defeat, abandoned }
+
 /// Provider per il multiplayer online via Firebase.
 ///
 /// Estende [GameProvider] aggiungendo:
@@ -25,7 +27,8 @@ class OnlineGameProvider extends GameProvider {
   /// True mentre si sta applicando una mossa remota (evita loop infiniti).
   bool _applyingRemote = false;
   bool _resultApplied = false;
-  bool _showVictoryDialog = false;
+  bool _showEndDialog = false;
+  OnlineMatchOutcome? _endDialogOutcome;
 
   OnlineGameProvider({
     required super.myProfile,
@@ -43,10 +46,12 @@ class OnlineGameProvider extends GameProvider {
   @override
   PlayerSide get localSide => _mySide;
 
-  bool get showVictoryDialog => _showVictoryDialog;
+  bool get showEndDialog => _showEndDialog;
+  OnlineMatchOutcome? get endDialogOutcome => _endDialogOutcome;
 
-  void consumeVictoryDialog() {
-    _showVictoryDialog = false;
+  void consumeEndDialog() {
+    _showEndDialog = false;
+    _endDialogOutcome = null;
   }
 
   // ── Override executeMove: invia la mossa a Firebase se è locale ───────────
@@ -55,6 +60,13 @@ class OnlineGameProvider extends GameProvider {
   void executeMove(Position from, Position to) {
     final movingSide = currentTurn;
     super.executeMove(from, to);
+
+    if (phase == GamePhase.gameOver && !_showEndDialog) {
+      final myKingAlive = board.findKing(localSide) != null;
+      _showEndDialog = true;
+      _endDialogOutcome =
+          myKingAlive ? OnlineMatchOutcome.victory : OnlineMatchOutcome.defeat;
+    }
 
     // Invia a Firebase solo se non stiamo applicando una mossa remota
     if (!_applyingRemote) {
@@ -76,7 +88,8 @@ class OnlineGameProvider extends GameProvider {
         // Se il documento viene rimosso, consideriamo la partita chiusa lato server.
         if (phase != GamePhase.gameOver && !_resultApplied) {
           _applyWinResult();
-          _showVictoryDialog = true;
+          _showEndDialog = true;
+          _endDialogOutcome = OnlineMatchOutcome.victory;
           phase = GamePhase.gameOver;
           notifyListeners();
         }
@@ -99,9 +112,12 @@ class OnlineGameProvider extends GameProvider {
       final mySideStr = _mySide == PlayerSide.player1 ? 'player1' : 'player2';
       if (serverWinner == mySideStr) {
         _applyWinResult();
-        _showVictoryDialog = true;
+        _showEndDialog = true;
+        _endDialogOutcome = OnlineMatchOutcome.victory;
       } else {
         _applyLossResult();
+        _showEndDialog = true;
+        _endDialogOutcome = OnlineMatchOutcome.defeat;
       }
       notifyListeners();
       return;
@@ -121,11 +137,6 @@ class OnlineGameProvider extends GameProvider {
       return;
     }
 
-    // Applica la mossa solo se:
-    // 1. È più recente dell'ultima che abbiamo applicato
-    // 2. Il turno corrente NON è il nostro (è la mossa dell'avversario)
-    if (isLocalTurn) return;
-
     final from = Position(
       lastMoveData['fromRow'] as int,
       lastMoveData['fromCol'] as int,
@@ -142,6 +153,9 @@ class OnlineGameProvider extends GameProvider {
       return;
     }
 
+    // Riallinea esplicitamente il turno al lato che ha mosso lato server.
+    // Evita ritardi/desync quando i turni locali si sono sfalsati.
+    currentTurn = attacker.side;
     _lastAppliedMoveIndex = moveIndex;
     _applyingRemote = true;
     executeMove(from, to);
@@ -151,9 +165,15 @@ class OnlineGameProvider extends GameProvider {
   /// Abbandona la partita in corso.
   Future<void> abandonGame() async {
     final mySideStr = _mySide == PlayerSide.player1 ? 'player1' : 'player2';
-    await FirebaseService.abandonGame(gameCode, mySideStr);
+    try {
+      await FirebaseService.abandonGame(gameCode, mySideStr);
+    } catch (_) {
+      // Anche in caso di errore rete mostriamo l'esito locale al giocatore.
+    }
     phase = GamePhase.gameOver;
     _applyLossResult();
+    _showEndDialog = true;
+    _endDialogOutcome = OnlineMatchOutcome.abandoned;
     notifyListeners();
   }
 

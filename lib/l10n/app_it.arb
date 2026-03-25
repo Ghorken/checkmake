@@ -69,6 +69,18 @@
   "gameWinByForfeitTitle": "Vittoria assegnata",
   "gameWinByForfeitBody": "L'avversario ha abbandonato la partita. Hai vinto!",
   "gameDialogClose": "Chiudi",
+  "gameResultVictoryTitle": "Vittoria!",
+  "gameResultVictoryBody": "Hai vinto la partita online.",
+  "gameResultDefeatTitle": "Sconfitta",
+  "gameResultDefeatBody": "Hai perso la partita online.",
+  "gameResultAbandonedTitle": "Partita abbandonata",
+  "gameResultAbandonedBody": "Hai abbandonato la partita online.",
+  "gameResultCoins": "Monete guadagnate: +{coins}",
+  "@gameResultCoins": {
+    "placeholders": {
+      "coins": { "type": "int" }
+    }
+  },
   "gameTurnMoved": "Hai mosso. Puoi usare un'abilità o finire il turno.",
   "gameTurnAbility": "Abilità usata. Puoi muovere o finire il turno.",
   "gameTurnSelect": "🎮 Il tuo turno — seleziona un pezzo",

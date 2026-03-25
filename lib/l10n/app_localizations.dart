@@ -350,6 +350,48 @@ abstract class AppLocalizations {
   /// **'Chiudi'**
   String get gameDialogClose;
 
+  /// No description provided for @gameResultVictoryTitle.
+  ///
+  /// In it, this message translates to:
+  /// **'Vittoria!'**
+  String get gameResultVictoryTitle;
+
+  /// No description provided for @gameResultVictoryBody.
+  ///
+  /// In it, this message translates to:
+  /// **'Hai vinto la partita online.'**
+  String get gameResultVictoryBody;
+
+  /// No description provided for @gameResultDefeatTitle.
+  ///
+  /// In it, this message translates to:
+  /// **'Sconfitta'**
+  String get gameResultDefeatTitle;
+
+  /// No description provided for @gameResultDefeatBody.
+  ///
+  /// In it, this message translates to:
+  /// **'Hai perso la partita online.'**
+  String get gameResultDefeatBody;
+
+  /// No description provided for @gameResultAbandonedTitle.
+  ///
+  /// In it, this message translates to:
+  /// **'Partita abbandonata'**
+  String get gameResultAbandonedTitle;
+
+  /// No description provided for @gameResultAbandonedBody.
+  ///
+  /// In it, this message translates to:
+  /// **'Hai abbandonato la partita online.'**
+  String get gameResultAbandonedBody;
+
+  /// No description provided for @gameResultCoins.
+  ///
+  /// In it, this message translates to:
+  /// **'Monete guadagnate: +{coins}'**
+  String gameResultCoins(int coins);
+
   /// No description provided for @gameTurnMoved.
   ///
   /// In it, this message translates to:

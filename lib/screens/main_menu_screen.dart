@@ -87,62 +87,79 @@ class MainMenuScreen extends StatelessWidget {
                   ),
                 ),
 
-                const Spacer(),
-
-                _MenuButton(
-                  icon: Icons.sports_esports,
-                  label: l.btnPlay,
-                  color: const Color(0xFFD4AF37),
-                  onTap: () => _startGame(context, profile),
-                ),
-                const SizedBox(height: 12),
-                _MenuButton(
-                  icon: Icons.wifi,
-                  label: l.btnMultiplayer,
-                  color: const Color(0xFF8B1E2D),
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) =>
-                          ChangeNotifierProvider<PlayerProfile>.value(
-                        value: profile,
-                        child: const MatchmakingScreen(),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 430),
+                        child: AspectRatio(
+                          aspectRatio: 1,
+                          child: GridView.count(
+                            physics: const NeverScrollableScrollPhysics(),
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 8,
+                            mainAxisSpacing: 8,
+                            children: [
+                              _ChessMenuButton(
+                                icon: Icons.sports_esports,
+                                label: l.btnPlay,
+                                isLightSquare: true,
+                                onTap: () => _startGame(context, profile),
+                              ),
+                              _ChessMenuButton(
+                                icon: Icons.wifi,
+                                label: l.btnMultiplayer,
+                                isLightSquare: false,
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => ChangeNotifierProvider<
+                                        PlayerProfile>.value(
+                                      value: profile,
+                                      child: const MatchmakingScreen(),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              _ChessMenuButton(
+                                icon: Icons.shield,
+                                label: l.btnBuildArmy,
+                                isLightSquare: false,
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => ChangeNotifierProvider<
+                                        PlayerProfile>.value(
+                                      value: profile,
+                                      child: const ArmyBuilderScreen(),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              _ChessMenuButton(
+                                icon: Icons.store,
+                                label: l.btnShop,
+                                isLightSquare: true,
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => ChangeNotifierProvider(
+                                      create: (_) =>
+                                          ShopProvider(profile: profile),
+                                      child: const ShopScreen(),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 12),
-                _MenuButton(
-                  icon: Icons.shield,
-                  label: l.btnBuildArmy,
-                  color: const Color(0xFF1E3A8A),
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) =>
-                          ChangeNotifierProvider<PlayerProfile>.value(
-                        value: profile,
-                        child: const ArmyBuilderScreen(),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                _MenuButton(
-                  icon: Icons.store,
-                  label: l.btnShop,
-                  color: const Color(0xFFF8F7F2),
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => ChangeNotifierProvider(
-                        create: (_) => ShopProvider(profile: profile),
-                        child: const ShopScreen(),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 40),
+                const SizedBox(height: 16),
               ],
             ),
           ),
@@ -172,44 +189,55 @@ class MainMenuScreen extends StatelessWidget {
   }
 }
 
-class _MenuButton extends StatelessWidget {
+class _ChessMenuButton extends StatelessWidget {
   final IconData icon;
   final String label;
-  final Color color;
+  final bool isLightSquare;
   final VoidCallback onTap;
 
-  const _MenuButton({
+  const _ChessMenuButton({
     required this.icon,
     required this.label,
-    required this.color,
+    required this.isLightSquare,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32),
-      child: SizedBox(
-        width: double.infinity,
-        height: 52,
-        child: ElevatedButton.icon(
-          onPressed: onTap,
-          icon: Icon(icon, color: color),
-          label: Text(
+    final bgColor =
+        isLightSquare ? const Color(0xFFF8F7F2) : const Color(0xFF0B0B10);
+    final fgColor =
+        isLightSquare ? const Color(0xFF0B0B10) : const Color(0xFFF8F7F2);
+
+    return ElevatedButton(
+      onPressed: onTap,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: bgColor,
+        foregroundColor: fgColor,
+        elevation: 0,
+        side: const BorderSide(color: Color(0xFFD4AF37), width: 1.8),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+        padding: const EdgeInsets.all(10),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 30, color: fgColor),
+          const SizedBox(height: 8),
+          Text(
             label,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              color: color,
+              color: fgColor,
               fontWeight: FontWeight.bold,
-              letterSpacing: 2,
+              letterSpacing: 1.1,
+              fontSize: 12,
+              height: 1.2,
             ),
           ),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF0B0B10).withValues(alpha: 0.74),
-            side: BorderSide(color: color, width: 1.8),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          ),
-        ),
+        ],
       ),
     );
   }
