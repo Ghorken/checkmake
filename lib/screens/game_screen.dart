@@ -225,26 +225,19 @@ class _GameScreenState extends State<GameScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      if (game.lastCombatLog != null && game.hotseatMode) ...[
+                        _CombatLogBanner(
+                          message: game.lastCombatLog!,
+                          upsideDown: true,
+                        ),
+                        const SizedBox(height: 8),
+                      ],
                       const GameBoardWidget(),
                       const SizedBox(height: 8),
                       if (game.lastCombatLog != null)
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF111626),
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: const Color(0xFFD4AF37)
-                                  .withValues(alpha: 0.3),
-                            ),
-                          ),
-                          child: Text(
-                            game.lastCombatLog!,
-                            style: const TextStyle(
-                                color: Color(0xFFF8F7F2), fontSize: 12),
-                            textAlign: TextAlign.center,
-                          ),
+                        _CombatLogBanner(
+                          message: game.lastCombatLog!,
+                          upsideDown: false,
                         ),
                     ],
                   ),
@@ -268,6 +261,34 @@ class _GameScreenState extends State<GameScreen> {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CombatLogBanner extends StatelessWidget {
+  final String message;
+  final bool upsideDown;
+  const _CombatLogBanner({required this.message, required this.upsideDown});
+
+  @override
+  Widget build(BuildContext context) {
+    return Transform.rotate(
+      angle: upsideDown ? math.pi : 0,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: const Color(0xFF111626),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: const Color(0xFFD4AF37).withValues(alpha: 0.3),
+          ),
+        ),
+        child: Text(
+          message,
+          style: const TextStyle(color: Color(0xFFF8F7F2), fontSize: 12),
+          textAlign: TextAlign.center,
         ),
       ),
     );

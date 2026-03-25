@@ -30,6 +30,7 @@ class GameProvider extends ChangeNotifier {
   List<Position> validMoves = [];
   TurnAction turnAction = TurnAction.none;
   Timer? _turnTimer;
+  Timer? _combatLogTimer;
   int _turnSecondsLeft = turnDurationSeconds;
 
   // Il lato che il giocatore locale controlla (player1 per partite locali,
@@ -243,7 +244,7 @@ class GameProvider extends ChangeNotifier {
         board.setPiece(result.attackerNewPosition!, result.survivingAttacker);
       }
 
-      lastCombatLog = _buildCombatLog(attacker, defender, result);
+      _showCombatLog(_buildCombatLog(attacker, defender, result));
     } else {
       // SPOSTAMENTO SEMPLICE
       board.movePiece(from, to);
@@ -273,13 +274,27 @@ class GameProvider extends ChangeNotifier {
       return 'Entrambi i pezzi si sono eliminati!';
     } else if (result.survivingAttacker != null &&
         result.survivingDefender == null) {
-      return '${pieceDefinitions[attacker.type]!.displayName} ha eliminato '
-          '${pieceDefinitions[defender.type]!.displayName}! +${result.coinsEarned} monete';
+      final baseMessage =
+          '${pieceDefinitions[attacker.type]!.displayName} ha eliminato '
+          '${pieceDefinitions[defender.type]!.displayName}!';
+      if (hotseatMode) {
+        return baseMessage;
+      }
+      return '$baseMessage +${result.coinsEarned} monete';
     } else if (result.survivingAttacker == null) {
       return '${pieceDefinitions[defender.type]!.displayName} ha respinto l\'attacco!';
     } else {
       return 'Scontro! Entrambi i pezzi sopravvivono.';
     }
+  }
+
+  void _showCombatLog(String message) {
+    _combatLogTimer?.cancel();
+    lastCombatLog = message;
+    _combatLogTimer = Timer(const Duration(seconds: 3), () {
+      lastCombatLog = null;
+      notifyListeners();
+    });
   }
 
   void useAbility(Position piecePos) {
@@ -378,6 +393,11 @@ class GameProvider extends ChangeNotifier {
     _turnTimer = null;
   }
 
+  void _stopCombatLogTimer() {
+    _combatLogTimer?.cancel();
+    _combatLogTimer = null;
+  }
+
   void _handleTurnTimeout() {
     if (_phaseRaw == GamePhase.gameOver ||
         _phaseRaw == GamePhase.waitingForOpponent) {
@@ -389,6 +409,7 @@ class GameProvider extends ChangeNotifier {
   @override
   void dispose() {
     _stopTurnTimer();
+    _stopCombatLogTimer();
     super.dispose();
   }
 }
