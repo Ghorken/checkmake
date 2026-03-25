@@ -80,7 +80,7 @@
   },
   "gameTurnMoved": "You moved. You can use an ability or end your turn.",
   "gameTurnAbility": "Ability used. You can move or end your turn.",
-  "gameTurnSelect": "🎮 Your turn — select a piece",
+  "gameTurnSelect": "🎮 Your turn",
 
   "pieceNamePawn": "Pawn",
   "pieceDescPawn": "The basic soldier, moves forward and captures diagonally.",

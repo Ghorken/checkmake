@@ -25,7 +25,8 @@ class UpgradeLevel {
       };
 
   factory UpgradeLevel.fromJson(Map<String, dynamic> json) => UpgradeLevel(
-        pieceType: PieceType.values.firstWhere((e) => e.name == json['pieceType']),
+        pieceType:
+            PieceType.values.firstWhere((e) => e.name == json['pieceType']),
         hpLevel: json['hpLevel'],
         attackLevel: json['attackLevel'],
         valueLevel: json['valueLevel'],
@@ -51,7 +52,8 @@ class ArmyConfig {
   // Mappa pieceType -> count (quanti ne metti nell'esercito)
   final Map<PieceType, int> composition;
 
-  ArmyConfig({Map<PieceType, int>? composition}) : composition = composition ?? _defaultComposition();
+  ArmyConfig({Map<PieceType, int>? composition})
+      : composition = composition ?? _defaultComposition();
 
   static Map<PieceType, int> _defaultComposition() => {
         PieceType.pawn: 8,
@@ -69,7 +71,8 @@ class ArmyConfig {
       if (entry.value <= 0) continue;
       final def = pieceDefinitions[entry.key];
       if (def == null) continue;
-      countByBase[def.baseType] = (countByBase[def.baseType] ?? 0) + entry.value;
+      countByBase[def.baseType] =
+          (countByBase[def.baseType] ?? 0) + entry.value;
     }
     for (final entry in countByBase.entries) {
       final max = pieceMaxCount[entry.key] ?? 0;
@@ -141,12 +144,33 @@ class PlayerProfile extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Registra una vittoria con eventuale ricompensa in coins.
+  void registerWin({int coinsReward = 0}) {
+    wins++;
+    if (coinsReward > 0) {
+      coins += coinsReward;
+    }
+    notifyListeners();
+  }
+
+  /// Registra una sconfitta con eventuale ricompensa in coins.
+  void registerLoss({int coinsReward = 0}) {
+    losses++;
+    if (coinsReward > 0) {
+      coins += coinsReward;
+    }
+    notifyListeners();
+  }
+
   bool hasPiece(PieceType type) => unlockedPieces.contains(type);
 
-  UpgradeLevel getUpgradeLevel(PieceType type) => upgradeLevels[type] ?? UpgradeLevel(pieceType: type);
+  UpgradeLevel getUpgradeLevel(PieceType type) =>
+      upgradeLevels[type] ?? UpgradeLevel(pieceType: type);
 
   Map<String, dynamic> toJson() => {
         'name': name,
+        'coins': coins,
+        'initiative': initiative,
         'army': armyConfig.toJson(),
         'upgrades': upgradeLevels.values.map((u) => u.toJson()).toList(),
         'wins': wins,
@@ -161,6 +185,8 @@ class PlayerProfile extends ChangeNotifier {
     }
     return PlayerProfile(
       name: json['name'] as String,
+      coins: (json['coins'] as int?) ?? 500,
+      initiative: (json['initiative'] as int?) ?? 1,
       armyConfig: ArmyConfig.fromJson(json['army'] as Map<String, dynamic>),
       upgradeLevels: upgrades,
       wins: (json['wins'] as int?) ?? 0,
@@ -173,9 +199,12 @@ class PlayerProfile extends ChangeNotifier {
     final levels = getUpgradeLevel(type);
     return PieceStats(
       maxHp: def.getStatAtLevel(def.baseHp, def.hpScaleFactor, levels.hpLevel),
-      currentHp: def.getStatAtLevel(def.baseHp, def.hpScaleFactor, levels.hpLevel),
-      attack: def.getStatAtLevel(def.baseAttack, def.attackScaleFactor, levels.attackLevel),
-      value: def.getStatAtLevel(def.baseValue, def.valueScaleFactor, levels.valueLevel),
+      currentHp:
+          def.getStatAtLevel(def.baseHp, def.hpScaleFactor, levels.hpLevel),
+      attack: def.getStatAtLevel(
+          def.baseAttack, def.attackScaleFactor, levels.attackLevel),
+      value: def.getStatAtLevel(
+          def.baseValue, def.valueScaleFactor, levels.valueLevel),
     );
   }
 }

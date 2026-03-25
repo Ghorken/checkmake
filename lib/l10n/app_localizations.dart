@@ -407,7 +407,7 @@ abstract class AppLocalizations {
   /// No description provided for @gameTurnSelect.
   ///
   /// In it, this message translates to:
-  /// **'🎮 Il tuo turno — seleziona un pezzo'**
+  /// **'🎮 Il tuo turno'**
   String get gameTurnSelect;
 
   /// No description provided for @pieceNamePawn.

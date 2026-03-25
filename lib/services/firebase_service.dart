@@ -13,6 +13,8 @@ import 'package:checkmake/models/player_profile.dart';
 ///   createdAt: Timestamp
 ///   player1:   { uid, name, army, upgrades, wins, losses }
 ///   player2:   null | { uid, name, army, upgrades, wins, losses }
+///   startingSide: 'player1' | 'player2'
+///   initiativeTie: bool
 ///   lastMove:  null | { fromRow, fromCol, toRow, toCol, moveIndex }
 ///   moveCount: int
 ///   winner:    null | 'player1' | 'player2'
@@ -51,6 +53,8 @@ class FirebaseService {
         'uid': uid,
       },
       'player2': null,
+      'startingSide': null,
+      'initiativeTie': null,
       'lastMove': null,
       'moveCount': 0,
       'winner': null,
@@ -72,12 +76,24 @@ class FirebaseService {
     if (data['status'] != 'waiting') return false;
     if (data['player2'] != null) return false;
 
+    final player1Data = data['player1'] as Map<String, dynamic>?;
+    final p1Initiative = (player1Data?['initiative'] as int?) ?? 1;
+    final p2Initiative = profile.initiative;
+    final tie = p2Initiative == p1Initiative;
+    final startingSide = p2Initiative > p1Initiative
+        ? 'player2'
+        : p2Initiative < p1Initiative
+            ? 'player1'
+            : (Random.secure().nextBool() ? 'player1' : 'player2');
+
     await docRef.update({
       'player2': {
         ...profile.toJson(),
         'uid': uid,
       },
       'status': 'playing',
+      'startingSide': startingSide,
+      'initiativeTie': tie,
     });
 
     return true;

@@ -25,7 +25,7 @@ class GameProvider extends ChangeNotifier {
   // Stato interno della fase - la fase visibile è calcolata tramite il getter `phase`
   GamePhase _phaseRaw = GamePhase.myTurn;
 
-  PlayerSide currentTurn = PlayerSide.player1;
+  late PlayerSide currentTurn;
   Position? selectedPosition;
   List<Position> validMoves = [];
   TurnAction turnAction = TurnAction.none;
@@ -70,9 +70,27 @@ class GameProvider extends ChangeNotifier {
     required this.myProfile,
     required this.opponentProfile,
     this.hotseatMode = false,
+    PlayerSide initialTurn = PlayerSide.player1,
+    bool startPaused = false,
   }) {
+    currentTurn = initialTurn;
     _initBoard();
+    if (startPaused) {
+      _phaseRaw = GamePhase.waitingForOpponent;
+    } else {
+      _startTurnTimer(notify: false);
+    }
+  }
+
+  void startHotseatMatch(PlayerSide startingSide) {
+    if (!hotseatMode || _phaseRaw == GamePhase.gameOver) return;
+    currentTurn = startingSide;
+    selectedPosition = null;
+    validMoves = [];
+    turnAction = TurnAction.none;
+    _phaseRaw = GamePhase.myTurn;
     _startTurnTimer(notify: false);
+    notifyListeners();
   }
 
   void _initBoard() {
@@ -208,10 +226,11 @@ class GameProvider extends ChangeNotifier {
         board: board,
       );
 
-      // Guadagna monete solo quando è il turno del giocatore locale
-      if (attacker.side == localSide) {
+      // In locale non si guadagnano monete.
+      // Online: guadagna monete solo quando è il turno del giocatore locale.
+      if (!hotseatMode && attacker.side == localSide) {
         myCoinsEarned += result.coinsEarned;
-        myProfile.coins += result.coinsEarned;
+        myProfile.addCoins(result.coinsEarned);
       }
 
       board.setPiece(from, null);
@@ -309,12 +328,14 @@ class GameProvider extends ChangeNotifier {
 
     if (myKing == null) {
       _phaseRaw = GamePhase.gameOver;
-      myProfile.losses++;
-      myProfile.coins += 10; // premio piccolo per la sconfitta
+      myProfile.registerLoss(
+        coinsReward: hotseatMode ? 0 : 10,
+      ); // in locale nessuna moneta
     } else if (oppKing == null) {
       _phaseRaw = GamePhase.gameOver;
-      myProfile.wins++;
-      myProfile.coins += 200; // premio vittoria
+      myProfile.registerWin(
+        coinsReward: hotseatMode ? 0 : 200,
+      ); // in locale nessuna moneta
     }
   }
 

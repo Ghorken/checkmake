@@ -175,7 +175,7 @@ class AppLocalizationsIt extends AppLocalizations {
       'Abilità usata. Puoi muovere o finire il turno.';
 
   @override
-  String get gameTurnSelect => '🎮 Il tuo turno — seleziona un pezzo';
+  String get gameTurnSelect => '🎮 Il tuo turno';
 
   @override
   String get pieceNamePawn => 'Pedone';

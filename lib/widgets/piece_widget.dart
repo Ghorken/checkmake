@@ -1,5 +1,7 @@
 // lib/widgets/piece_widget.dart
 
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:checkmake/models/piece.dart';
 import 'package:checkmake/models/piece_definitions.dart';
@@ -144,40 +146,54 @@ class PieceWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final rotateForPlayer2 = piece.side == PlayerSide.player2;
+    final visualLayer = Stack(
+      children: [
+        // ── Immagine principale ──────────────────────────────────────────
+        // Prova a caricare l'asset; se non esiste (ancora) usa il placeholder.
+        Positioned.fill(
+          child: Image.asset(
+            piece.imagePath,
+            fit: BoxFit.contain,
+            errorBuilder: (_, __, ___) => _buildPlaceholder(),
+          ),
+        ),
+
+        // ── Bordo selezione ──────────────────────────────────────────────
+        if (isSelected)
+          Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: const Color(0xFFD4AF37), width: 3),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFFD4AF37).withValues(alpha: 0.5),
+                  blurRadius: 8,
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
+
     return SizedBox(
       width: size,
       height: size,
       child: Stack(
         children: [
-          // ── Immagine principale ──────────────────────────────────────────
-          // Prova a caricare l'asset; se non esiste (ancora) usa il placeholder.
-          Positioned.fill(
-            child: Image.asset(
-              piece.imagePath,
-              fit: BoxFit.contain,
-              errorBuilder: (_, __, ___) => _buildPlaceholder(),
-            ),
-          ),
-
-          // ── Bordo selezione ──────────────────────────────────────────────
-          if (isSelected)
-            Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: const Color(0xFFD4AF37), width: 3),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFFD4AF37).withValues(alpha: 0.5),
-                    blurRadius: 8,
-                  ),
-                ],
-              ),
-            ),
+          if (rotateForPlayer2)
+            Transform.rotate(
+              angle: math.pi,
+              child: visualLayer,
+            )
+          else
+            visualLayer,
 
           // ── Barra HP ─────────────────────────────────────────────────────
           if (showStats)
             Positioned(
-              bottom: 0,
+              top: rotateForPlayer2 ? 0 : null,
+              bottom: rotateForPlayer2 ? null : 0,
               left: 2,
               right: 2,
               child: _HpBar(

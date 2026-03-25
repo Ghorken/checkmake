@@ -181,6 +181,7 @@ class MainMenuScreen extends StatelessWidget {
             myProfile: myProfile,
             opponentProfile: opponent,
             hotseatMode: true,
+            startPaused: true,
           ),
           child: const GameScreen(),
         ),

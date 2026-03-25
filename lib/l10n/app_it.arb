@@ -83,7 +83,7 @@
   },
   "gameTurnMoved": "Hai mosso. Puoi usare un'abilità o finire il turno.",
   "gameTurnAbility": "Abilità usata. Puoi muovere o finire il turno.",
-  "gameTurnSelect": "🎮 Il tuo turno — seleziona un pezzo",
+  "gameTurnSelect": "🎮 Il tuo turno",
 
   "pieceNamePawn": "Pedone",
   "pieceDescPawn": "Il soldato base, muove avanti e cattura in diagonale.",

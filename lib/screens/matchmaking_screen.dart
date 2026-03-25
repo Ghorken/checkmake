@@ -1,6 +1,7 @@
 // lib/screens/matchmaking_screen.dart
 
 import 'dart:async';
+import 'dart:math' as math;
 import 'package:checkmake/providers/game_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -99,11 +100,21 @@ class _MatchmakingScreenState extends State<MatchmakingScreen> {
       );
 
       if (mounted) {
+        final startingSide =
+            _parseStartingSide(data['startingSide'] as String?);
+        final initiativeTie = data['initiativeTie'] == true;
+        await _maybeShowCoinFlipDialog(
+          initiativeTie: initiativeTie,
+          startingSide: startingSide,
+          mySide: PlayerSide.player2,
+        );
+        if (!mounted) return;
         _navigateToGame(
           myProfile: profile,
           opponentProfile: opponentProfile,
           mySide: PlayerSide.player2,
           gameCode: code,
+          startingSide: startingSide,
         );
       }
     } catch (e) {
@@ -117,7 +128,7 @@ class _MatchmakingScreenState extends State<MatchmakingScreen> {
   // ── Attende che player2 si unisca (dopo aver creato la partita) ───────────
 
   void _waitForOpponent(String code, PlayerSide mySide, PlayerProfile profile) {
-    _waitingSubscription = FirebaseService.watchGame(code).listen((snap) {
+    _waitingSubscription = FirebaseService.watchGame(code).listen((snap) async {
       if (!snap.exists) {
         if (!mounted) return;
         setState(() {
@@ -136,11 +147,21 @@ class _MatchmakingScreenState extends State<MatchmakingScreen> {
         );
 
         if (mounted) {
+          final startingSide =
+              _parseStartingSide(data['startingSide'] as String?);
+          final initiativeTie = data['initiativeTie'] == true;
+          await _maybeShowCoinFlipDialog(
+            initiativeTie: initiativeTie,
+            startingSide: startingSide,
+            mySide: mySide,
+          );
+          if (!mounted) return;
           _navigateToGame(
             myProfile: profile,
             opponentProfile: opponentProfile,
             mySide: mySide,
             gameCode: code,
+            startingSide: startingSide,
           );
         }
       }
@@ -154,6 +175,7 @@ class _MatchmakingScreenState extends State<MatchmakingScreen> {
     required PlayerProfile opponentProfile,
     required PlayerSide mySide,
     required String gameCode,
+    required PlayerSide startingSide,
   }) {
     Navigator.pushReplacement(
       context,
@@ -164,10 +186,30 @@ class _MatchmakingScreenState extends State<MatchmakingScreen> {
             opponentProfile: opponentProfile,
             mySide: mySide,
             gameCode: gameCode,
+            startingSide: startingSide,
           ),
           child: const GameScreen(),
         ),
       ),
+    );
+  }
+
+  PlayerSide _parseStartingSide(String? side) {
+    return side == 'player2' ? PlayerSide.player2 : PlayerSide.player1;
+  }
+
+  Future<void> _maybeShowCoinFlipDialog({
+    required bool initiativeTie,
+    required PlayerSide startingSide,
+    required PlayerSide mySide,
+  }) async {
+    if (!initiativeTie || !mounted) return;
+    final iStart = startingSide == mySide;
+
+    await showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => _CoinFlipDialog(iStart: iStart),
     );
   }
 
@@ -567,5 +609,134 @@ class UpperCaseTextFormatter extends TextInputFormatter {
     TextEditingValue newValue,
   ) {
     return newValue.copyWith(text: newValue.text.toUpperCase());
+  }
+}
+
+class _CoinFlipDialog extends StatefulWidget {
+  final bool iStart;
+  const _CoinFlipDialog({required this.iStart});
+
+  @override
+  State<_CoinFlipDialog> createState() => _CoinFlipDialogState();
+}
+
+class _CoinFlipDialogState extends State<_CoinFlipDialog>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _angle;
+  bool _finished = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final targetExtra = widget.iStart ? 0.0 : math.pi;
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 3),
+    );
+    _angle = Tween<double>(
+      begin: 0,
+      end: (2 * math.pi * 8) + targetExtra,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
+    _controller.forward().whenComplete(() {
+      if (!mounted) return;
+      setState(() => _finished = true);
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      backgroundColor: const Color(0xFF111626),
+      title: const Text(
+        'Parità iniziativa',
+        style: TextStyle(color: _gold),
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AnimatedBuilder(
+            animation: _angle,
+            builder: (_, __) {
+              final angle = _angle.value;
+              final frontVisible = math.cos(angle) >= 0;
+              final sideLabel = frontVisible ? 'TU' : 'AVV';
+              return Transform(
+                alignment: Alignment.center,
+                transform: Matrix4.identity()
+                  ..setEntry(3, 2, 0.001)
+                  ..rotateY(angle),
+                child: Container(
+                  width: 76,
+                  height: 76,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _gold,
+                    border: Border.all(color: _white, width: 2),
+                    boxShadow: [
+                      BoxShadow(
+                        color: _gold.withValues(alpha: 0.45),
+                        blurRadius: 14,
+                      ),
+                    ],
+                  ),
+                  child: Center(
+                    child: Transform(
+                      alignment: Alignment.center,
+                      transform: Matrix4.diagonal3Values(
+                        frontVisible ? 1 : -1,
+                        1,
+                        1,
+                      ),
+                      child: Text(
+                        sideLabel,
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 10),
+          if (!_finished)
+            const Text(
+              'Lancio della moneta in corso...',
+              style: TextStyle(color: _white),
+              textAlign: TextAlign.center,
+            ),
+          if (_finished)
+            Text(
+              widget.iStart
+                  ? 'Hai vinto il lancio: inizi tu.'
+                  : 'L\'avversario vince il lancio: inizia lui.',
+              style: const TextStyle(color: _white),
+              textAlign: TextAlign.center,
+            ),
+        ],
+      ),
+      actions: [
+        if (_finished)
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context),
+            style: ElevatedButton.styleFrom(backgroundColor: _gold),
+            child: const Text(
+              'Inizia partita',
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
+      ],
+    );
   }
 }

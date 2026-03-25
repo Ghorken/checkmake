@@ -173,7 +173,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get gameTurnAbility => 'Ability used. You can move or end your turn.';
 
   @override
-  String get gameTurnSelect => '🎮 Your turn — select a piece';
+  String get gameTurnSelect => '🎮 Your turn';
 
   @override
   String get pieceNamePawn => 'Pawn';

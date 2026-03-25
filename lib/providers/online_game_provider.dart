@@ -29,17 +29,16 @@ class OnlineGameProvider extends GameProvider {
   bool _resultApplied = false;
   bool _showEndDialog = false;
   OnlineMatchOutcome? _endDialogOutcome;
+  bool _isDisposed = false;
 
   OnlineGameProvider({
     required super.myProfile,
     required super.opponentProfile,
     required PlayerSide mySide,
     required this.gameCode,
-  }) : _mySide = mySide {
-    // Player1 inizia sempre; se siamo player2 aspettiamo la mossa avversaria
-    if (_mySide == PlayerSide.player2) {
-      currentTurn = PlayerSide.player1; // il turno appartiene a player1
-    }
+    required PlayerSide startingSide,
+  })  : _mySide = mySide,
+        super(initialTurn: startingSide) {
     _listenToGame();
   }
 
@@ -84,6 +83,7 @@ class OnlineGameProvider extends GameProvider {
 
   void _listenToGame() {
     _gameSubscription = FirebaseService.watchGame(gameCode).listen((snap) {
+      if (_isDisposed) return;
       if (!snap.exists) {
         // Se il documento viene rimosso, consideriamo la partita chiusa lato server.
         if (phase != GamePhase.gameOver && !_resultApplied) {
@@ -91,7 +91,7 @@ class OnlineGameProvider extends GameProvider {
           _showEndDialog = true;
           _endDialogOutcome = OnlineMatchOutcome.victory;
           phase = GamePhase.gameOver;
-          notifyListeners();
+          _safeNotifyListeners();
         }
         return;
       }
@@ -119,7 +119,7 @@ class OnlineGameProvider extends GameProvider {
         _showEndDialog = true;
         _endDialogOutcome = OnlineMatchOutcome.defeat;
       }
-      notifyListeners();
+      _safeNotifyListeners();
       return;
     }
 
@@ -164,35 +164,41 @@ class OnlineGameProvider extends GameProvider {
 
   /// Abbandona la partita in corso.
   Future<void> abandonGame() async {
+    if (_isDisposed) return;
     final mySideStr = _mySide == PlayerSide.player1 ? 'player1' : 'player2';
     try {
       await FirebaseService.abandonGame(gameCode, mySideStr);
     } catch (_) {
       // Anche in caso di errore rete mostriamo l'esito locale al giocatore.
     }
+    if (_isDisposed) return;
     phase = GamePhase.gameOver;
     _applyLossResult();
     _showEndDialog = true;
     _endDialogOutcome = OnlineMatchOutcome.abandoned;
-    notifyListeners();
+    _safeNotifyListeners();
   }
 
   void _applyWinResult() {
-    if (_resultApplied) return;
-    myProfile.wins++;
-    myProfile.coins += 200;
+    if (_resultApplied || _isDisposed) return;
+    myProfile.registerWin(coinsReward: 200);
     _resultApplied = true;
   }
 
   void _applyLossResult() {
-    if (_resultApplied) return;
-    myProfile.losses++;
-    myProfile.coins += 10;
+    if (_resultApplied || _isDisposed) return;
+    myProfile.registerLoss(coinsReward: 10);
     _resultApplied = true;
+  }
+
+  void _safeNotifyListeners() {
+    if (_isDisposed) return;
+    notifyListeners();
   }
 
   @override
   void dispose() {
+    _isDisposed = true;
     _gameSubscription?.cancel();
     super.dispose();
   }
