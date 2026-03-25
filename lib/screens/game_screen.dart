@@ -124,7 +124,7 @@ class _GameScreenState extends State<GameScreen> {
         unawaited(_handleBackRequested());
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFF1A1A2E),
+        backgroundColor: const Color(0xFF0B0B10),
         body: SafeArea(
           child: Column(
             children: [
@@ -145,13 +145,17 @@ class _GameScreenState extends State<GameScreen> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
-                            color: Colors.black54,
+                            color: const Color(0xFF111626),
                             borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: const Color(0xFFD4AF37)
+                                  .withValues(alpha: 0.3),
+                            ),
                           ),
                           child: Text(
                             game.lastCombatLog!,
                             style: const TextStyle(
-                                color: Colors.amber, fontSize: 12),
+                                color: Color(0xFFF8F7F2), fontSize: 12),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -182,7 +186,7 @@ class _OpponentBar extends StatelessWidget {
     return Container(
       height: 68,
       padding: const EdgeInsets.symmetric(horizontal: 8),
-      color: const Color(0xFF16213E),
+      color: const Color(0xFF111626),
       child: Row(
         children: [
           IconButton(
@@ -191,7 +195,7 @@ class _OpponentBar extends StatelessWidget {
             tooltip: MaterialLocalizations.of(context).backButtonTooltip,
           ),
           const CircleAvatar(
-            backgroundColor: Colors.red,
+            backgroundColor: Color(0xFF8B1E2D),
             child: Icon(Icons.person, color: Colors.white),
           ),
           const SizedBox(width: 8),
@@ -212,12 +216,13 @@ class _OpponentBar extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.white24),
+              border: Border.all(
+                  color: const Color(0xFFD4AF37).withValues(alpha: 0.5)),
             ),
             child: Text(
               modeLabel,
               style: const TextStyle(
-                color: Colors.white70,
+                color: Color(0xFFF8F7F2),
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
               ),
@@ -228,13 +233,13 @@ class _OpponentBar extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
-                color: Colors.red.withValues(alpha: 0.3),
+                color: const Color(0xFF8B1E2D).withValues(alpha: 0.35),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.red),
+                border: Border.all(color: const Color(0xFFD4AF37)),
               ),
               child: Text(
                 '${l.gameOpponentTurn} · ${game.turnSecondsLeft}s',
-                style: const TextStyle(color: Colors.red, fontSize: 11),
+                style: const TextStyle(color: Color(0xFFF8F7F2), fontSize: 11),
               ),
             ),
         ],
@@ -254,14 +259,14 @@ class _PlayerBar extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.all(12),
-      color: const Color(0xFF16213E),
+      color: const Color(0xFF111626),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             children: [
               const CircleAvatar(
-                backgroundColor: Colors.cyan,
+                backgroundColor: Color(0xFF1E3A8A),
                 child: Icon(Icons.person, color: Colors.white),
               ),
               const SizedBox(width: 12),
@@ -276,12 +281,12 @@ class _PlayerBar extends StatelessWidget {
                   Row(
                     children: [
                       const Icon(Icons.monetization_on,
-                          color: Colors.amber, size: 14),
+                          color: Color(0xFFD4AF37), size: 14),
                       const SizedBox(width: 4),
                       Text(
                         '${game.myProfile.coins}',
-                        style:
-                            const TextStyle(color: Colors.amber, fontSize: 12),
+                        style: const TextStyle(
+                            color: Color(0xFFD4AF37), fontSize: 12),
                       ),
                     ],
                   ),
@@ -303,13 +308,15 @@ class _PlayerBar extends StatelessWidget {
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.cyan.withValues(alpha: 0.15),
+                  color: const Color(0xFF1E3A8A).withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(6),
-                  border: Border.all(color: Colors.cyan.withValues(alpha: 0.4)),
+                  border: Border.all(
+                      color: const Color(0xFFD4AF37).withValues(alpha: 0.8)),
                 ),
                 child: Text(
                   '${game.turnAction == TurnAction.moved ? l.gameTurnMoved : game.turnAction == TurnAction.usedAbility ? l.gameTurnAbility : l.gameTurnSelect} (${game.turnSecondsLeft}s)',
-                  style: const TextStyle(color: Colors.cyan, fontSize: 11),
+                  style:
+                      const TextStyle(color: Color(0xFFF8F7F2), fontSize: 11),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -343,7 +350,7 @@ class _AbilityButton extends StatelessWidget {
         icon: const Icon(Icons.flash_on, size: 14),
         label: Text(abilityName, style: const TextStyle(fontSize: 11)),
         style: ElevatedButton.styleFrom(
-          backgroundColor: canUse ? Colors.purple : Colors.grey,
+          backgroundColor: canUse ? const Color(0xFF8B1E2D) : Colors.grey,
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
         ),

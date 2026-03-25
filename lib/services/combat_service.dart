@@ -14,22 +14,22 @@ class CombatService {
     required Board board,
   }) {
     // Entrambi si colpiscono simultaneamente
-    final attackerNewHp = defender.stats.currentHp - attacker.stats.attack;
-    final defenderNewHp = attacker.stats.currentHp - defender.stats.attack;
+    final defenderNewHp = defender.stats.currentHp - attacker.stats.attack;
+    final attackerNewHp = attacker.stats.currentHp - defender.stats.attack;
 
-    final attackerDied = defenderNewHp <= 0;
-    final defenderDied = attackerNewHp <= 0;
+    final attackerDied = attackerNewHp <= 0;
+    final defenderDied = defenderNewHp <= 0;
 
     Piece? survivingAttacker;
     Piece? survivingDefender;
     int coinsEarned = 0;
     Position? attackerNewPos;
-    bool attackerMoved = false;
+    Position? defenderNewPos;
 
     if (!attackerDied) {
       survivingAttacker = attacker.copyWith(
         stats: attacker.stats.copyWith(
-          currentHp: defenderNewHp.clamp(0, attacker.stats.maxHp),
+          currentHp: attackerNewHp.clamp(0, attacker.stats.maxHp),
         ),
       );
     }
@@ -37,7 +37,7 @@ class CombatService {
     if (!defenderDied) {
       survivingDefender = defender.copyWith(
         stats: defender.stats.copyWith(
-          currentHp: attackerNewHp.clamp(0, defender.stats.maxHp),
+          currentHp: defenderNewHp.clamp(0, defender.stats.maxHp),
         ),
       );
     } else {
@@ -47,7 +47,9 @@ class CombatService {
     if (defenderDied && !attackerDied) {
       // Attaccante avanza
       attackerNewPos = defenderPos;
-      attackerMoved = true;
+    } else if (attackerDied && !defenderDied) {
+      // Difensore avanza
+      defenderNewPos = attackerPos;
     } else if (!attackerDied && !defenderDied) {
       // Entrambi sopravvivono: attaccante torna indietro
       final path = _getPathPositions(attackerPos, defenderPos);
@@ -60,16 +62,15 @@ class CombatService {
         }
       }
       attackerNewPos = fallback ?? attackerPos;
-      attackerMoved = false;
+      defenderNewPos = defenderPos;
     }
-    // Se l'attaccante muore, rimane solo il difensore (o nessuno se doppia morte)
 
     return CombatResult(
       survivingAttacker: survivingAttacker,
       survivingDefender: survivingDefender,
       coinsEarned: coinsEarned,
       attackerNewPosition: attackerNewPos,
-      attackerMoved: attackerMoved,
+      defenderNewPosition: defenderNewPos,
     );
   }
 

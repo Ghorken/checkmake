@@ -9,6 +9,12 @@ import 'package:checkmake/models/piece_definitions.dart';
 import 'package:checkmake/models/player_profile.dart';
 import 'package:checkmake/widgets/piece_widget.dart';
 
+const _gold = Color(0xFFD4AF37);
+const _blue = Color(0xFF1E3A8A);
+const _red = Color(0xFF8B1E2D);
+const _black = Color(0xFF0B0B10);
+const _white = Color(0xFFF8F7F2);
+
 class ArmyBuilderScreen extends StatefulWidget {
   const ArmyBuilderScreen({super.key});
 
@@ -69,7 +75,10 @@ class _ArmyBuilderScreenState extends State<ArmyBuilderScreen> {
     _profile.armyConfig = ArmyConfig(composition: _draft);
     Navigator.pop(context);
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l.armySaved), backgroundColor: Colors.green),
+      SnackBar(
+        content: Text(l.armySaved),
+        backgroundColor: _blue,
+      ),
     );
   }
 
@@ -85,15 +94,15 @@ class _ArmyBuilderScreenState extends State<ArmyBuilderScreen> {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A2E),
+      backgroundColor: _black,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF16213E),
-        title: Text(l.armyBuilderTitle, style: const TextStyle(color: Colors.amber)),
+        backgroundColor: const Color(0xFF111626),
+        title: Text(l.armyBuilderTitle, style: const TextStyle(color: _gold)),
         actions: [
           TextButton.icon(
             onPressed: _isValid ? () => _save(context) : null,
-            icon: const Icon(Icons.save, color: Colors.amber),
-            label: Text(l.armySave, style: const TextStyle(color: Colors.amber)),
+            icon: const Icon(Icons.save, color: _gold),
+            label: Text(l.armySave, style: const TextStyle(color: _gold)),
           ),
         ],
       ),
@@ -102,7 +111,7 @@ class _ArmyBuilderScreenState extends State<ArmyBuilderScreen> {
           // Summary header
           Container(
             padding: const EdgeInsets.all(12),
-            color: const Color(0xFF0F3460),
+            color: const Color(0xFF111626),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: PieceBaseType.values.map((base) {
@@ -112,12 +121,12 @@ class _ArmyBuilderScreenState extends State<ArmyBuilderScreen> {
                   children: [
                     Text(
                       l.baseTypeLabel(base),
-                      style: const TextStyle(color: Colors.white54, fontSize: 10),
+                      style: const TextStyle(color: _white, fontSize: 10),
                     ),
                     Text(
                       '$current/$max',
                       style: TextStyle(
-                        color: current == max ? Colors.amber : Colors.white,
+                        color: current == max ? _gold : _white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -142,7 +151,7 @@ class _ArmyBuilderScreenState extends State<ArmyBuilderScreen> {
                       child: Text(
                         '${l.baseTypeLabel(base)} (${_countForBase(base)}/${pieceMaxCount[base]})',
                         style: const TextStyle(
-                          color: Colors.amber,
+                          color: _gold,
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
                         ),
@@ -155,7 +164,7 @@ class _ArmyBuilderScreenState extends State<ArmyBuilderScreen> {
                           onAdd: () => _add(def.type),
                           onRemove: () => _remove(def.type),
                         )),
-                    const Divider(color: Colors.white12),
+                    const Divider(color: _gold),
                   ],
                 );
               }).toList(),
@@ -187,7 +196,7 @@ class _PieceRow extends StatelessWidget {
     final l = AppLocalizations.of(context)!;
 
     return Card(
-      color: const Color(0xFF16213E),
+      color: const Color(0xFF111626),
       margin: const EdgeInsets.only(bottom: 6),
       child: Padding(
         padding: const EdgeInsets.all(8),
@@ -212,10 +221,12 @@ class _PieceRow extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(l.pieceNameFor(def.type), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                  Text(l.pieceNameFor(def.type),
+                      style: const TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold)),
                   Text(
                     '❤️${def.baseHp} ⚔️${def.baseAttack} 🪙${def.baseValue}',
-                    style: const TextStyle(color: Colors.white54, fontSize: 10),
+                    style: const TextStyle(color: _white, fontSize: 10),
                   ),
                 ],
               ),
@@ -224,10 +235,11 @@ class _PieceRow extends StatelessWidget {
               children: [
                 IconButton(
                   onPressed: count > 0 ? onRemove : null,
-                  icon: const Icon(Icons.remove_circle, color: Colors.red),
+                  icon: const Icon(Icons.remove_circle, color: _red),
                   iconSize: 20,
                   padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                  constraints:
+                      const BoxConstraints(minWidth: 32, minHeight: 32),
                 ),
                 SizedBox(
                   width: 24,
@@ -242,10 +254,12 @@ class _PieceRow extends StatelessWidget {
                 ),
                 IconButton(
                   onPressed: canAdd ? onAdd : null,
-                  icon: Icon(Icons.add_circle, color: canAdd ? Colors.green : Colors.grey),
+                  icon: Icon(Icons.add_circle,
+                      color: canAdd ? _gold : Colors.grey),
                   iconSize: 20,
                   padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                  constraints:
+                      const BoxConstraints(minWidth: 32, minHeight: 32),
                 ),
               ],
             ),

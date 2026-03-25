@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:checkmake/firebase_options.dart';
 import 'package:checkmake/l10n/app_localizations.dart';
@@ -34,6 +35,13 @@ class Checkmake extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const medievalGold = Color(0xFFD4AF37);
+    const royalBlue = Color(0xFF1E3A8A);
+    const warRed = Color(0xFF8B1E2D);
+    const ironBlack = Color(0xFF0B0B10);
+    const parchmentWhite = Color(0xFFF8F7F2);
+
+    final base = ThemeData.dark(useMaterial3: true);
     return ChangeNotifierProvider(
       create: (_) => PlayerProfile(name: 'Giocatore'),
       child: MaterialApp(
@@ -53,13 +61,45 @@ class Checkmake extends StatelessWidget {
         ],
         // ────────────────────────────────────────────────────────────
 
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.amber,
-            brightness: Brightness.dark,
+        theme: base.copyWith(
+          colorScheme: const ColorScheme.dark(
+            primary: medievalGold,
+            onPrimary: ironBlack,
+            secondary: warRed,
+            onSecondary: parchmentWhite,
+            surface: Color(0xFF111626),
+            onSurface: parchmentWhite,
+            error: warRed,
+            onError: parchmentWhite,
           ),
-          useMaterial3: true,
-          scaffoldBackgroundColor: const Color(0xFF1A1A2E),
+          scaffoldBackgroundColor: ironBlack,
+          textTheme: GoogleFonts.cinzelTextTheme(base.textTheme).apply(
+            bodyColor: parchmentWhite,
+            displayColor: medievalGold,
+          ),
+          appBarTheme: AppBarTheme(
+            backgroundColor: royalBlue.withValues(alpha: 0.35),
+            foregroundColor: parchmentWhite,
+            elevation: 0,
+            titleTextStyle: GoogleFonts.cinzel(
+              color: medievalGold,
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 1.6,
+            ),
+          ),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              foregroundColor: parchmentWhite,
+              textStyle: GoogleFonts.cinzel(
+                fontWeight: FontWeight.w700,
+                letterSpacing: 1.2,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          ),
         ),
         home: const MainMenuScreen(),
       ),

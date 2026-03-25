@@ -22,12 +22,12 @@ class PiecePlaceholderPainter extends CustomPainter {
   });
 
   static Color _pieceColor(PieceType type) => switch (type) {
-        PieceType.pawn => const Color(0xFF8BC34A),
-        PieceType.rook => const Color(0xFF607D8B),
-        PieceType.knight => const Color(0xFF9C27B0),
-        PieceType.bishop => const Color(0xFF2196F3),
-        PieceType.queen => const Color(0xFFFF9800),
-        PieceType.king => const Color(0xFFFFD700),
+        PieceType.pawn => const Color(0xFFF8F7F2),
+        PieceType.rook => const Color(0xFF1E3A8A),
+        PieceType.knight => const Color(0xFF8B1E2D),
+        PieceType.bishop => const Color(0xFF274690),
+        PieceType.queen => const Color(0xFFD4AF37),
+        PieceType.king => const Color(0xFFF3DE9B),
       };
 
   static String _symbol(PieceBaseType base) => switch (base) {
@@ -45,8 +45,10 @@ class PiecePlaceholderPainter extends CustomPainter {
     var color = _pieceColor(type);
     if (isHalfHp) color = color.withValues(alpha: 0.6);
 
-    // Bordo ciano = player1 (giocatore), rosso = player2 (avversario)
-    final borderColor = side == PlayerSide.player1 ? const Color(0xFF00E5FF) : const Color(0xFFFF5252);
+    // Bordo blu = player1 (giocatore), rosso = player2 (avversario)
+    final borderColor = side == PlayerSide.player1
+        ? const Color(0xFF1E3A8A)
+        : const Color(0xFF8B1E2D);
 
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width / 2 - 2;
@@ -107,7 +109,8 @@ class PiecePlaceholderPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(PiecePlaceholderPainter old) => old.type != type || old.side != side || old.isHalfHp != isHalfHp;
+  bool shouldRepaint(PiecePlaceholderPainter old) =>
+      old.type != type || old.side != side || old.isHalfHp != isHalfHp;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -161,10 +164,10 @@ class PieceWidget extends StatelessWidget {
             Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.yellowAccent, width: 3),
+                border: Border.all(color: const Color(0xFFD4AF37), width: 3),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.yellowAccent.withValues(alpha: 0.5),
+                    color: const Color(0xFFD4AF37).withValues(alpha: 0.5),
                     blurRadius: 8,
                   ),
                 ],
@@ -206,16 +209,12 @@ class _HpBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ratio = current / max;
-    final color = ratio > 0.5
-        ? Colors.green
-        : ratio > 0.25
-            ? Colors.orange
-            : Colors.red;
+    const color = Colors.green;
 
     return Container(
       height: 4,
       decoration: BoxDecoration(
-        color: Colors.black54,
+        color: const Color(0xFF0B0B10).withValues(alpha: 0.75),
         borderRadius: BorderRadius.circular(2),
       ),
       child: FractionallySizedBox(

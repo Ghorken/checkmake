@@ -20,9 +20,24 @@ class MainMenuScreen extends StatelessWidget {
     final l = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A2E),
+      backgroundColor: const Color(0xFF0B0B10),
       body: Stack(
         children: [
+          Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    const Color(0xFF0B0B10),
+                    const Color(0xFF12244D).withValues(alpha: 0.95),
+                    const Color(0xFF8B1E2D).withValues(alpha: 0.45),
+                  ],
+                ),
+              ),
+            ),
+          ),
           Positioned.fill(
             child: CustomPaint(painter: _BackgroundPainter()),
           ),
@@ -33,18 +48,22 @@ class MainMenuScreen extends StatelessWidget {
                 Text(
                   l.appTitle,
                   style: const TextStyle(
-                    color: Colors.amber,
+                    color: Color(0xFFD4AF37),
                     fontSize: 36,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 4,
                     shadows: [
-                      Shadow(color: Colors.orange, blurRadius: 20),
+                      Shadow(color: Color(0xFF8B1E2D), blurRadius: 16),
                     ],
                   ),
                 ),
                 Text(
                   l.appSubtitle,
-                  style: const TextStyle(color: Colors.white54, fontSize: 16, letterSpacing: 2),
+                  style: const TextStyle(
+                    color: Color(0xFFF8F7F2),
+                    fontSize: 16,
+                    letterSpacing: 2,
+                  ),
                 ),
                 const SizedBox(height: 20),
 
@@ -55,7 +74,8 @@ class MainMenuScreen extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: const Color(0xFF16213E),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.amber.withValues(alpha: 0.3)),
+                    border: Border.all(
+                        color: const Color(0xFFD4AF37).withValues(alpha: 0.45)),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -63,7 +83,6 @@ class MainMenuScreen extends StatelessWidget {
                       _Stat('🪙', '${profile.coins}', l.statCoins),
                       _Stat('🏆', '${profile.wins}', l.statWins),
                       _Stat('💀', '${profile.losses}', l.statLosses),
-                      _Stat('⚡', '${profile.initiative}', l.statInitiative),
                     ],
                   ),
                 ),
@@ -73,18 +92,19 @@ class MainMenuScreen extends StatelessWidget {
                 _MenuButton(
                   icon: Icons.sports_esports,
                   label: l.btnPlay,
-                  color: Colors.amber,
+                  color: const Color(0xFFD4AF37),
                   onTap: () => _startGame(context, profile),
                 ),
                 const SizedBox(height: 12),
                 _MenuButton(
                   icon: Icons.wifi,
                   label: l.btnMultiplayer,
-                  color: Colors.green,
+                  color: const Color(0xFF8B1E2D),
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => ChangeNotifierProvider<PlayerProfile>.value(
+                      builder: (_) =>
+                          ChangeNotifierProvider<PlayerProfile>.value(
                         value: profile,
                         child: const MatchmakingScreen(),
                       ),
@@ -95,11 +115,12 @@ class MainMenuScreen extends StatelessWidget {
                 _MenuButton(
                   icon: Icons.shield,
                   label: l.btnBuildArmy,
-                  color: Colors.cyan,
+                  color: const Color(0xFF1E3A8A),
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => ChangeNotifierProvider<PlayerProfile>.value(
+                      builder: (_) =>
+                          ChangeNotifierProvider<PlayerProfile>.value(
                         value: profile,
                         child: const ArmyBuilderScreen(),
                       ),
@@ -110,7 +131,7 @@ class MainMenuScreen extends StatelessWidget {
                 _MenuButton(
                   icon: Icons.store,
                   label: l.btnShop,
-                  color: Colors.purple,
+                  color: const Color(0xFFF8F7F2),
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -173,19 +194,20 @@ class _MenuButton extends StatelessWidget {
         height: 52,
         child: ElevatedButton.icon(
           onPressed: onTap,
-          icon: Icon(icon, color: Colors.white),
+          icon: Icon(icon, color: color),
           label: Text(
             label,
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: color,
               fontWeight: FontWeight.bold,
               letterSpacing: 2,
             ),
           ),
           style: ElevatedButton.styleFrom(
-            backgroundColor: color.withValues(alpha: 0.2),
-            side: BorderSide(color: color, width: 1.5),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            backgroundColor: const Color(0xFF0B0B10).withValues(alpha: 0.74),
+            side: BorderSide(color: color, width: 1.8),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           ),
         ),
       ),
@@ -202,8 +224,11 @@ class _Stat extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Column(
         children: [
-          Text('$emoji $value', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-          Text(label, style: const TextStyle(color: Colors.white38, fontSize: 10)),
+          Text('$emoji $value',
+              style: const TextStyle(
+                  color: Color(0xFFD4AF37), fontWeight: FontWeight.bold)),
+          Text(label,
+              style: const TextStyle(color: Color(0xFFF8F7F2), fontSize: 10)),
         ],
       );
 }
@@ -212,7 +237,7 @@ class _BackgroundPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.02)
+      ..color = const Color(0xFFD4AF37).withValues(alpha: 0.09)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.5;
 

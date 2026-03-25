@@ -12,6 +12,12 @@ import 'package:checkmake/providers/online_game_provider.dart';
 import 'package:checkmake/screens/game_screen.dart';
 import 'package:checkmake/services/firebase_service.dart';
 
+const _gold = Color(0xFFD4AF37);
+const _blue = Color(0xFF1E3A8A);
+const _red = Color(0xFF8B1E2D);
+const _black = Color(0xFF0B0B10);
+const _white = Color(0xFFF8F7F2);
+
 /// Schermata per creare o unirsi a una partita online.
 class MatchmakingScreen extends StatefulWidget {
   const MatchmakingScreen({super.key});
@@ -191,20 +197,37 @@ class _MatchmakingScreenState extends State<MatchmakingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A2E),
+      backgroundColor: _black,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF16213E),
-        foregroundColor: Colors.white,
+        backgroundColor: const Color(0xFF111626),
+        foregroundColor: _white,
         title: const Text(
           'SFIDA ONLINE',
-          style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold, letterSpacing: 3),
+          style: TextStyle(
+            color: _gold,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 3,
+          ),
         ),
         centerTitle: true,
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          child: _buildBody(),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              _black,
+              _blue.withValues(alpha: 0.55),
+              _red.withValues(alpha: 0.3),
+            ],
+          ),
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            child: _buildBody(),
+          ),
         ),
       ),
     );
@@ -223,9 +246,9 @@ class _MatchmakingScreenState extends State<MatchmakingScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              CircularProgressIndicator(color: Colors.amber),
+              CircularProgressIndicator(color: _gold),
               SizedBox(height: 16),
-              Text('Connessione in corso…', style: TextStyle(color: Colors.white70)),
+              Text('Connessione in corso…', style: TextStyle(color: _white)),
             ],
           ),
         );
@@ -274,7 +297,7 @@ class _IdleView extends StatelessWidget {
 
                 // Sezione "Crea partita"
                 _SectionCard(
-                  color: Colors.amber,
+                  color: _gold,
                   icon: Icons.add_circle_outline,
                   title: 'Crea Partita',
                   subtitle: 'Genera un codice e condividilo con l\'amico',
@@ -283,28 +306,29 @@ class _IdleView extends StatelessWidget {
                     icon: const Icon(Icons.play_arrow),
                     label: const Text('CREA PARTITA'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.amber,
+                      backgroundColor: _gold,
                       foregroundColor: Colors.black,
                       minimumSize: const Size(double.infinity, 48),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
                     ),
                   ),
                 ),
 
                 const SizedBox(height: 20),
                 const Row(children: [
-                  Expanded(child: Divider(color: Colors.white24)),
+                  Expanded(child: Divider(color: _gold)),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 12),
-                    child: Text('oppure', style: TextStyle(color: Colors.white38)),
+                    child: Text('oppure', style: TextStyle(color: _white)),
                   ),
-                  Expanded(child: Divider(color: Colors.white24)),
+                  Expanded(child: Divider(color: _gold)),
                 ]),
                 const SizedBox(height: 20),
 
                 // Sezione "Unisciti"
                 _SectionCard(
-                  color: Colors.cyan,
+                  color: _blue,
                   icon: Icons.link,
                   title: 'Unisciti a una Partita',
                   subtitle: 'Inserisci il codice ricevuto dall\'avversario',
@@ -314,12 +338,13 @@ class _IdleView extends StatelessWidget {
                         controller: codeController,
                         textCapitalization: TextCapitalization.characters,
                         inputFormatters: [
-                          FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
+                          FilteringTextInputFormatter.allow(
+                              RegExp(r'[a-zA-Z0-9]')),
                           const UpperCaseTextFormatter(),
                         ],
                         maxLength: 6,
                         style: const TextStyle(
-                          color: Colors.white,
+                          color: _white,
                           fontSize: 22,
                           letterSpacing: 6,
                           fontWeight: FontWeight.bold,
@@ -328,16 +353,18 @@ class _IdleView extends StatelessWidget {
                         decoration: InputDecoration(
                           counterText: '',
                           hintText: 'CODICE',
-                          hintStyle: const TextStyle(color: Colors.white24, letterSpacing: 4),
+                          hintStyle:
+                              const TextStyle(color: _white, letterSpacing: 4),
                           filled: true,
-                          fillColor: const Color(0xFF0F3460),
+                          fillColor: const Color(0xFF111626),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
-                            borderSide: const BorderSide(color: Colors.cyan),
+                            borderSide: const BorderSide(color: _gold),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
-                            borderSide: const BorderSide(color: Colors.cyan, width: 1.5),
+                            borderSide:
+                                const BorderSide(color: _blue, width: 1.5),
                           ),
                         ),
                       ),
@@ -347,10 +374,11 @@ class _IdleView extends StatelessWidget {
                         icon: const Icon(Icons.login),
                         label: const Text('UNISCITI'),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.cyan,
-                          foregroundColor: Colors.black,
+                          backgroundColor: _red,
+                          foregroundColor: _white,
                           minimumSize: const Size(double.infinity, 48),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8)),
                         ),
                       ),
                     ],
@@ -362,16 +390,19 @@ class _IdleView extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.red.withValues(alpha: 0.15),
+                      color: _red.withValues(alpha: 0.18),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.red.withValues(alpha: 0.5)),
+                      border: Border.all(color: _gold.withValues(alpha: 0.7)),
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.error_outline, color: Colors.red, size: 18),
+                        const Icon(Icons.error_outline, color: _gold, size: 18),
                         const SizedBox(width: 8),
                         Expanded(
-                          child: Text(errorMessage!, style: const TextStyle(color: Colors.red, fontSize: 13)),
+                          child: Text(
+                            errorMessage!,
+                            style: const TextStyle(color: _white, fontSize: 13),
+                          ),
                         ),
                       ],
                     ),
@@ -392,7 +423,8 @@ class _WaitingForOpponentView extends StatelessWidget {
   final String gameCode;
   final VoidCallback onCancel;
 
-  const _WaitingForOpponentView({required this.gameCode, required this.onCancel});
+  const _WaitingForOpponentView(
+      {required this.gameCode, required this.onCancel});
 
   @override
   Widget build(BuildContext context) {
@@ -400,16 +432,17 @@ class _WaitingForOpponentView extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.wifi_tethering, color: Colors.amber, size: 64),
+          const Icon(Icons.wifi_tethering, color: _gold, size: 64),
           const SizedBox(height: 24),
           const Text(
             'In attesa dell\'avversario…',
-            style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                color: _white, fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           const Text(
             'Condividi questo codice con il tuo amico:',
-            style: TextStyle(color: Colors.white54, fontSize: 13),
+            style: TextStyle(color: _white, fontSize: 13),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
@@ -418,9 +451,9 @@ class _WaitingForOpponentView extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             decoration: BoxDecoration(
-              color: const Color(0xFF16213E),
+              color: const Color(0xFF111626),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.amber, width: 2),
+              border: Border.all(color: _gold, width: 2),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -428,7 +461,7 @@ class _WaitingForOpponentView extends StatelessWidget {
                 Text(
                   gameCode,
                   style: const TextStyle(
-                    color: Colors.amber,
+                    color: _gold,
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 8,
@@ -436,7 +469,7 @@ class _WaitingForOpponentView extends StatelessWidget {
                 ),
                 const SizedBox(width: 16),
                 IconButton(
-                  icon: const Icon(Icons.copy, color: Colors.amber),
+                  icon: const Icon(Icons.copy, color: _gold),
                   tooltip: 'Copia codice',
                   onPressed: () {
                     Clipboard.setData(ClipboardData(text: gameCode));
@@ -456,14 +489,14 @@ class _WaitingForOpponentView extends StatelessWidget {
           const SizedBox(
             width: 32,
             height: 32,
-            child: CircularProgressIndicator(color: Colors.amber, strokeWidth: 3),
+            child: CircularProgressIndicator(color: _gold, strokeWidth: 3),
           ),
           const SizedBox(height: 32),
 
           TextButton.icon(
             onPressed: onCancel,
-            icon: const Icon(Icons.cancel_outlined, color: Colors.red),
-            label: const Text('Annulla', style: TextStyle(color: Colors.red)),
+            icon: const Icon(Icons.cancel_outlined, color: _red),
+            label: const Text('Annulla', style: TextStyle(color: _red)),
           ),
         ],
       ),
@@ -493,9 +526,9 @@ class _SectionCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFF16213E),
+        color: const Color(0xFF111626),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withValues(alpha: 0.4)),
+        border: Border.all(color: _gold.withValues(alpha: 0.4)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -516,7 +549,7 @@ class _SectionCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 4),
-          Text(subtitle, style: const TextStyle(color: Colors.white38, fontSize: 12)),
+          Text(subtitle, style: const TextStyle(color: _white, fontSize: 12)),
           const SizedBox(height: 16),
           child,
         ],

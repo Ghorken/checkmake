@@ -218,11 +218,9 @@ class GameProvider extends ChangeNotifier {
       board.setPiece(to, null);
 
       if (result.survivingDefender != null) {
-        final defenderFinalPos = result.survivingAttacker == null ? from : to;
-        board.setPiece(defenderFinalPos, result.survivingDefender);
+        board.setPiece(result.defenderNewPosition!, result.survivingDefender);
       }
-      if (result.survivingAttacker != null &&
-          result.attackerNewPosition != null) {
+      if (result.survivingAttacker != null) {
         board.setPiece(result.attackerNewPosition!, result.survivingAttacker);
       }
 

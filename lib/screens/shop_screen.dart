@@ -9,6 +9,12 @@ import 'package:checkmake/models/piece_definitions.dart';
 import 'package:checkmake/providers/shop_provider.dart';
 import 'package:checkmake/widgets/piece_widget.dart';
 
+const _gold = Color(0xFFD4AF37);
+const _blue = Color(0xFF1E3A8A);
+const _red = Color(0xFF8B1E2D);
+const _black = Color(0xFF0B0B10);
+const _white = Color(0xFFF8F7F2);
+
 class ShopScreen extends StatefulWidget {
   const ShopScreen({super.key});
 
@@ -16,7 +22,8 @@ class ShopScreen extends StatefulWidget {
   State<ShopScreen> createState() => _ShopScreenState();
 }
 
-class _ShopScreenState extends State<ShopScreen> with SingleTickerProviderStateMixin {
+class _ShopScreenState extends State<ShopScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabs;
 
   @override
@@ -31,26 +38,26 @@ class _ShopScreenState extends State<ShopScreen> with SingleTickerProviderStateM
     final l = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A2E),
+      backgroundColor: _black,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF16213E),
+        backgroundColor: const Color(0xFF111626),
         title: Row(
           children: [
-            Text(l.shopTitle, style: const TextStyle(color: Colors.amber)),
+            Text(l.shopTitle, style: const TextStyle(color: _gold)),
             const Spacer(),
-            const Icon(Icons.monetization_on, color: Colors.amber, size: 18),
+            const Icon(Icons.monetization_on, color: _gold, size: 18),
             const SizedBox(width: 4),
             Text(
               '${shop.profile.coins}',
-              style: const TextStyle(color: Colors.amber, fontWeight: FontWeight.bold),
+              style: const TextStyle(color: _gold, fontWeight: FontWeight.bold),
             ),
           ],
         ),
         bottom: TabBar(
           controller: _tabs,
-          indicatorColor: Colors.amber,
-          labelColor: Colors.amber,
-          unselectedLabelColor: Colors.white54,
+          indicatorColor: _gold,
+          labelColor: _gold,
+          unselectedLabelColor: _white,
           tabs: [
             Tab(text: l.shopTabPieces),
             Tab(text: l.shopTabUpgrades),
@@ -78,7 +85,8 @@ class _PiecesTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
-    final unlockable = pieceDefinitions.values.where((d) => d.isUnlockable).toList();
+    final unlockable =
+        pieceDefinitions.values.where((d) => d.isUnlockable).toList();
 
     return ListView.builder(
       padding: const EdgeInsets.all(16),
@@ -89,7 +97,7 @@ class _PiecesTab extends StatelessWidget {
         final canBuy = shop.canUnlock(def.type);
 
         return Card(
-          color: const Color(0xFF16213E),
+          color: const Color(0xFF111626),
           margin: const EdgeInsets.only(bottom: 10),
           child: ListTile(
             leading: SizedBox(
@@ -104,12 +112,14 @@ class _PiecesTab extends StatelessWidget {
             ),
             title: Text(
               l.pieceNameFor(def.type),
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              style:
+                  const TextStyle(color: _white, fontWeight: FontWeight.bold),
             ),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(l.pieceDescFor(def.type), style: const TextStyle(color: Colors.white54, fontSize: 11)),
+                Text(l.pieceDescFor(def.type),
+                    style: const TextStyle(color: _white, fontSize: 11)),
                 const SizedBox(height: 4),
                 Row(
                   children: [
@@ -123,18 +133,21 @@ class _PiecesTab extends StatelessWidget {
                 if (def.abilityFactory != null)
                   Padding(
                     padding: const EdgeInsets.only(top: 4),
-                    child: _StatChip('✨ ${l.abilityNameFor(def.abilityFactory!()?.id ?? '')}'),
+                    child: _StatChip(
+                        '✨ ${l.abilityNameFor(def.abilityFactory!()?.id ?? '')}'),
                   ),
               ],
             ),
             isThreeLine: true,
             trailing: owned
-                ? const Icon(Icons.check_circle, color: Colors.green)
+                ? const Icon(Icons.check_circle, color: _gold)
                 : ElevatedButton(
-                    onPressed: canBuy ? () => _buy(context, shop, def.type) : null,
+                    onPressed:
+                        canBuy ? () => _buy(context, shop, def.type) : null,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: canBuy ? Colors.amber : Colors.grey,
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      backgroundColor: canBuy ? _gold : Colors.grey,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 6),
                     ),
                     child: Text(
                       '${def.unlockCost}🪙',
@@ -154,7 +167,7 @@ class _PiecesTab extends StatelessWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(l.shopUnlockSuccess(l.pieceNameFor(type))),
-          backgroundColor: Colors.green,
+          backgroundColor: _blue,
         ),
       );
     }
@@ -176,7 +189,9 @@ class _UpgradesTab extends StatelessWidget {
       children: [
         _InitiativeCard(shop: shop),
         const SizedBox(height: 12),
-        Text(l.shopUpgradePieces, style: const TextStyle(color: Colors.amber, fontWeight: FontWeight.bold, fontSize: 16)),
+        Text(l.shopUpgradePieces,
+            style: const TextStyle(
+                color: _gold, fontWeight: FontWeight.bold, fontSize: 16)),
         const SizedBox(height: 8),
         ...owned.map((type) => _PieceUpgradeCard(shop: shop, type: type)),
       ],
@@ -193,7 +208,7 @@ class _InitiativeCard extends StatelessWidget {
     final l = AppLocalizations.of(context)!;
 
     return Card(
-      color: const Color(0xFF0F3460),
+      color: const Color(0xFF111626),
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
@@ -201,23 +216,26 @@ class _InitiativeCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                const Icon(Icons.flash_on, color: Colors.yellow),
+                const Icon(Icons.flash_on, color: _gold),
                 const SizedBox(width: 8),
                 Text(
                   l.shopInitiativeLabel(shop.profile.initiative),
-                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      color: _white, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
             const SizedBox(height: 4),
             Text(
               l.shopInitiativeDesc,
-              style: const TextStyle(color: Colors.white54, fontSize: 11),
+              style: const TextStyle(color: _white, fontSize: 11),
             ),
             const SizedBox(height: 8),
             ElevatedButton(
-              onPressed: shop.profile.coins >= shop.initiativeUpgradeCost ? () => shop.upgradeInitiative() : null,
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.yellow),
+              onPressed: shop.profile.coins >= shop.initiativeUpgradeCost
+                  ? () => shop.upgradeInitiative()
+                  : null,
+              style: ElevatedButton.styleFrom(backgroundColor: _gold),
               child: Text(
                 l.shopUpgradeBtn(shop.initiativeUpgradeCost),
                 style: const TextStyle(color: Colors.black, fontSize: 12),
@@ -241,14 +259,16 @@ class _PieceUpgradeCard extends StatelessWidget {
     final levels = shop.profile.getUpgradeLevel(type);
 
     return Card(
-      color: const Color(0xFF16213E),
+      color: const Color(0xFF111626),
       margin: const EdgeInsets.only(bottom: 8),
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(l.pieceNameFor(type), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            Text(l.pieceNameFor(type),
+                style: const TextStyle(
+                    color: _white, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             _UpgradeRow(
               label: '❤️ HP',
@@ -261,14 +281,16 @@ class _PieceUpgradeCard extends StatelessWidget {
               label: '⚔️ ATK',
               level: levels.attackLevel,
               cost: shop.getUpgradeCost(type, 'attack'),
-              canAfford: shop.profile.coins >= shop.getUpgradeCost(type, 'attack'),
+              canAfford:
+                  shop.profile.coins >= shop.getUpgradeCost(type, 'attack'),
               onUpgrade: () => shop.upgradeStat(type, 'attack'),
             ),
             _UpgradeRow(
               label: l.shopStatValue,
               level: levels.valueLevel,
               cost: shop.getUpgradeCost(type, 'value'),
-              canAfford: shop.profile.coins >= shop.getUpgradeCost(type, 'value'),
+              canAfford:
+                  shop.profile.coins >= shop.getUpgradeCost(type, 'value'),
               onUpgrade: () => shop.upgradeStat(type, 'value'),
             ),
           ],
@@ -301,7 +323,8 @@ class _UpgradeRow extends StatelessWidget {
         children: [
           SizedBox(
             width: 80,
-            child: Text(label, style: const TextStyle(color: Colors.white70, fontSize: 12)),
+            child: Text(label,
+                style: const TextStyle(color: Colors.white70, fontSize: 12)),
           ),
           Row(
             children: List.generate(
@@ -311,20 +334,20 @@ class _UpgradeRow extends StatelessWidget {
                 height: 8,
                 margin: const EdgeInsets.only(right: 2),
                 decoration: const BoxDecoration(
-                  color: Colors.amber,
+                  color: _gold,
                   shape: BoxShape.circle,
                 ),
               ),
             ),
           ),
-          Text('Lv.$level', style: const TextStyle(color: Colors.amber, fontSize: 10)),
+          Text('Lv.$level', style: const TextStyle(color: _gold, fontSize: 10)),
           const Spacer(),
           TextButton(
             onPressed: canAfford ? onUpgrade : null,
             child: Text(
               '+1 ($cost🪙)',
               style: TextStyle(
-                color: canAfford ? Colors.cyan : Colors.grey,
+                color: canAfford ? _red : Colors.grey,
                 fontSize: 11,
               ),
             ),
@@ -359,7 +382,7 @@ class _SkinsTab extends StatelessWidget {
         final canBuy = !owned && shop.profile.coins >= skin.cost;
 
         return Card(
-          color: const Color(0xFF16213E),
+          color: const Color(0xFF111626),
           margin: const EdgeInsets.only(bottom: 10),
           child: ListTile(
             leading: Container(
@@ -369,10 +392,10 @@ class _SkinsTab extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
                 gradient: LinearGradient(
                   colors: skin.skinId.contains('fire')
-                      ? [Colors.orange, Colors.red]
+                      ? [_gold, _red]
                       : skin.skinId.contains('ice')
-                          ? [Colors.cyan, Colors.blue]
-                          : [Colors.purple, Colors.deepPurple],
+                          ? [_white, _blue]
+                          : [_blue, _black],
                 ),
               ),
               child: Icon(
@@ -384,21 +407,27 @@ class _SkinsTab extends StatelessWidget {
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(skinDesc, style: const TextStyle(color: Colors.white54, fontSize: 11)),
-                if (skin.targetPiece == null) Text(l.shopSkinForArmy, style: const TextStyle(color: Colors.amber, fontSize: 10)),
+                Text(skinDesc,
+                    style: const TextStyle(color: _white, fontSize: 11)),
+                if (skin.targetPiece == null)
+                  Text(l.shopSkinForArmy,
+                      style: const TextStyle(color: _gold, fontSize: 10)),
               ],
             ),
             trailing: owned
                 ? TextButton(
                     onPressed: () => shop.equipSkin(skin.skinId),
-                    child: Text(l.shopEquip, style: const TextStyle(color: Colors.cyan)),
+                    child:
+                        Text(l.shopEquip, style: const TextStyle(color: _blue)),
                   )
                 : ElevatedButton(
                     onPressed: canBuy ? () => shop.buySkin(skin) : null,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: canBuy ? Colors.amber : Colors.grey,
+                      backgroundColor: canBuy ? _gold : Colors.grey,
                     ),
-                    child: Text('${skin.cost}🪙', style: const TextStyle(color: Colors.black, fontSize: 12)),
+                    child: Text('${skin.cost}🪙',
+                        style:
+                            const TextStyle(color: Colors.black, fontSize: 12)),
                   ),
           ),
         );
@@ -411,7 +440,8 @@ class _SkinsTab extends StatelessWidget {
       _LocalizedSkin(availableSkins[0], l.skinFireArmy, l.skinFireArmyDesc),
       _LocalizedSkin(availableSkins[1], l.skinIceArmy, l.skinIceArmyDesc),
       _LocalizedSkin(availableSkins[2], l.skinPawnShadow, l.skinPawnShadowDesc),
-      _LocalizedSkin(availableSkins[3], l.skinQueenGolden, l.skinQueenGoldenDesc),
+      _LocalizedSkin(
+          availableSkins[3], l.skinQueenGolden, l.skinQueenGoldenDesc),
     ];
   }
 }
@@ -432,10 +462,11 @@ class _StatChip extends StatelessWidget {
   Widget build(BuildContext context) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
         decoration: BoxDecoration(
-          color: Colors.white12,
+          color: _blue.withValues(alpha: 0.2),
+          border: Border.all(color: _gold.withValues(alpha: 0.5)),
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Text(label, style: const TextStyle(color: Colors.white70, fontSize: 10)),
+        child: Text(label, style: const TextStyle(color: _white, fontSize: 10)),
       );
 }
 
@@ -446,11 +477,12 @@ class _LockedPieceIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
         decoration: BoxDecoration(
-          color: Colors.grey[800],
+          color: _black,
           shape: BoxShape.circle,
+          border: Border.all(color: _gold.withValues(alpha: 0.5)),
         ),
         child: const Center(
-          child: Icon(Icons.lock, color: Colors.grey, size: 24),
+          child: Icon(Icons.lock, color: _white, size: 24),
         ),
       );
 }

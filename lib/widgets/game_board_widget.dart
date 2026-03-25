@@ -15,27 +15,36 @@ class GameBoardWidget extends StatelessWidget {
       aspectRatio: 1,
       child: Container(
         decoration: BoxDecoration(
-          border: Border.all(color: const Color(0xFF5D4037), width: 4),
+          border: Border.all(color: const Color(0xFFD4AF37), width: 4),
+          borderRadius: BorderRadius.circular(8),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.6),
               blurRadius: 20,
               offset: const Offset(0, 8),
-            )
+            ),
+            BoxShadow(
+              color: const Color(0xFF8B1E2D).withValues(alpha: 0.2),
+              blurRadius: 28,
+              spreadRadius: 1,
+            ),
           ],
         ),
-        child: GridView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 8,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: GridView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 8,
+            ),
+            itemCount: 64,
+            itemBuilder: (context, index) {
+              final row = index ~/ 8;
+              final col = index % 8;
+              final pos = Position(row, col);
+              return _BoardCell(position: pos);
+            },
           ),
-          itemCount: 64,
-          itemBuilder: (context, index) {
-            final row = index ~/ 8;
-            final col = index % 8;
-            final pos = Position(row, col);
-            return _BoardCell(position: pos);
-          },
         ),
       ),
     );
@@ -58,13 +67,14 @@ class _BoardCell extends StatelessWidget {
 
     Color cellColor;
     if (isSelected) {
-      cellColor = const Color(0xFFF9A825).withValues(alpha: 0.8);
+      cellColor = const Color(0xFFD4AF37).withValues(alpha: 0.8);
     } else if (isValidMove) {
       cellColor = piece != null
-          ? Colors.red.withValues(alpha: 0.5) // casella con nemico
-          : const Color(0xFF00E5FF).withValues(alpha: 0.4);
+          ? const Color(0xFF8B1E2D)
+              .withValues(alpha: 0.55) // casella con nemico
+          : const Color(0xFF1E3A8A).withValues(alpha: 0.45);
     } else {
-      cellColor = isLight ? const Color(0xFFECCB82) : const Color(0xFF8B4513);
+      cellColor = isLight ? const Color(0xFFF8F7F2) : const Color(0xFF1E3A8A);
     }
 
     return GestureDetector(
@@ -81,7 +91,7 @@ class _BoardCell extends StatelessWidget {
                 height: 14,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.cyan.withValues(alpha: 0.7),
+                  color: const Color(0xFFD4AF37).withValues(alpha: 0.75),
                 ),
               ),
 

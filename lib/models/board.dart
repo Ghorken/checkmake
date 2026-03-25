@@ -27,14 +27,14 @@ class CombatResult {
   final Piece? survivingDefender; // null = morto
   final int coinsEarned;
   final Position? attackerNewPosition; // dove si posiziona l'attaccante se sopravvive
-  final bool attackerMoved; // true se l'attaccante occupa la cella del difensore
+  final Position? defenderNewPosition; // dove si posiziona il difensore se sopravvive
 
   CombatResult({
     required this.survivingAttacker,
     required this.survivingDefender,
     required this.coinsEarned,
     this.attackerNewPosition,
-    this.attackerMoved = false,
+    this.defenderNewPosition,
   });
 }
 
