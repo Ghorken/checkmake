@@ -343,14 +343,14 @@ class GameProvider extends ChangeNotifier {
 
     if (myKing == null) {
       _phaseRaw = GamePhase.gameOver;
-      myProfile.registerLoss(
-        coinsReward: hotseatMode ? 0 : 10,
-      ); // in locale nessuna moneta
+      if (!hotseatMode) {
+        myProfile.registerLoss(coinsReward: 10);
+      }
     } else if (oppKing == null) {
       _phaseRaw = GamePhase.gameOver;
-      myProfile.registerWin(
-        coinsReward: hotseatMode ? 0 : 200,
-      ); // in locale nessuna moneta
+      if (!hotseatMode) {
+        myProfile.registerWin(coinsReward: 200);
+      }
     }
   }
 

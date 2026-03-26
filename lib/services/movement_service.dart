@@ -13,15 +13,36 @@ class MovementService {
       PieceBaseType.pawn => _pawnMoves(board, from, piece),
       PieceBaseType.rook => _slidingMoves(board, from, piece, _rookDirections),
       PieceBaseType.knight => _knightMoves(board, from, piece),
-      PieceBaseType.bishop => _slidingMoves(board, from, piece, _bishopDirections),
-      PieceBaseType.queen => _slidingMoves(board, from, piece, _queenDirections),
+      PieceBaseType.bishop =>
+        _slidingMoves(board, from, piece, _bishopDirections),
+      PieceBaseType.queen =>
+        _slidingMoves(board, from, piece, _queenDirections),
       PieceBaseType.king => _kingMoves(board, from, piece),
     };
   }
 
-  static const _rookDirections = [Position(1, 0), Position(-1, 0), Position(0, 1), Position(0, -1)];
-  static const _bishopDirections = [Position(1, 1), Position(1, -1), Position(-1, 1), Position(-1, -1)];
-  static const _queenDirections = [Position(1, 0), Position(-1, 0), Position(0, 1), Position(0, -1), Position(1, 1), Position(1, -1), Position(-1, 1), Position(-1, -1)];
+  static const _rookDirections = [
+    Position(1, 0),
+    Position(-1, 0),
+    Position(0, 1),
+    Position(0, -1)
+  ];
+  static const _bishopDirections = [
+    Position(1, 1),
+    Position(1, -1),
+    Position(-1, 1),
+    Position(-1, -1)
+  ];
+  static const _queenDirections = [
+    Position(1, 0),
+    Position(-1, 0),
+    Position(0, 1),
+    Position(0, -1),
+    Position(1, 1),
+    Position(1, -1),
+    Position(-1, 1),
+    Position(-1, -1)
+  ];
 
   static List<Position> _pawnMoves(Board board, Position from, Piece piece) {
     final moves = <Position>[];
@@ -53,7 +74,8 @@ class MovementService {
     return moves;
   }
 
-  static List<Position> _slidingMoves(Board board, Position from, Piece piece, List<Position> directions) {
+  static List<Position> _slidingMoves(
+      Board board, Position from, Piece piece, List<Position> directions) {
     final moves = <Position>[];
     for (final dir in directions) {
       var pos = from + dir;
@@ -106,7 +128,8 @@ class MovementService {
 
   /// Ritorna la casella libera più vicina lungo il percorso
   /// usata quando l'attaccante non riesce a conquistare la casella
-  static Position? getNearestFreePositionOnPath(Board board, Position from, Position to) {
+  static Position? getNearestFreePositionOnPath(
+      Board board, Position from, Position to) {
     // Calcola il percorso rettilineo (per torri/regine) o la posizione precedente
     final positions = getPathPositions(from, to);
     // Cerca all'indietro l'ultima posizione libera prima della destinazione
@@ -119,6 +142,15 @@ class MovementService {
   }
 
   static List<Position> getPathPositions(Position from, Position to) {
+    final rowDiff = (to.row - from.row).abs();
+    final colDiff = (to.col - from.col).abs();
+    final isLinearPath =
+        from.row == to.row || from.col == to.col || rowDiff == colDiff;
+    if (!isLinearPath) {
+      // Es. cavallo: nessun percorso lineare tra partenza e destinazione.
+      return [to];
+    }
+
     final positions = <Position>[];
     final dr = (to.row - from.row).sign;
     final dc = (to.col - from.col).sign;

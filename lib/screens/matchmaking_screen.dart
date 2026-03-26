@@ -71,8 +71,9 @@ class _MatchmakingScreenState extends State<MatchmakingScreen> {
 
   Future<void> _joinGame() async {
     final code = _codeController.text.trim().toUpperCase();
-    if (code.length != 6) {
-      setState(() => _errorMessage = 'Il codice deve essere di 6 caratteri.');
+    if (!FirebaseService.isValidGameCode(code)) {
+      setState(() => _errorMessage =
+          'Codice non valido. Usa 6 caratteri alfanumerici (A-Z, 0-9).');
       return;
     }
 

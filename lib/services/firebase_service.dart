@@ -21,8 +21,23 @@ import 'package:checkmake/models/player_profile.dart';
 class FirebaseService {
   static final FirebaseFirestore _db = FirebaseFirestore.instance;
   static final FirebaseAuth _auth = FirebaseAuth.instance;
+  static final RegExp _gameCodePattern = RegExp(r'^[A-Z0-9]{6}$');
 
   static String get currentUserId => _auth.currentUser?.uid ?? '';
+  static bool isValidGameCode(String input) =>
+      _gameCodePattern.hasMatch(input.trim().toUpperCase());
+
+  static String _normalizeGameCode(String input) {
+    final code = input.trim().toUpperCase();
+    if (!_gameCodePattern.hasMatch(code)) {
+      throw ArgumentError.value(
+        input,
+        'gameCode',
+        'Codice partita non valido. Usa 6 caratteri alfanumerici (A-Z, 0-9).',
+      );
+    }
+    return code;
+  }
 
   /// Accesso anonimo (nessuna registrazione richiesta al giocatore).
   static Future<String> signInAnonymously() async {
@@ -68,7 +83,8 @@ class FirebaseService {
   /// o la stanza è già piena.
   static Future<bool> joinGame(String code, PlayerProfile profile) async {
     final uid = await signInAnonymously();
-    final docRef = _db.collection('games').doc(code.toUpperCase());
+    final normalizedCode = _normalizeGameCode(code);
+    final docRef = _db.collection('games').doc(normalizedCode);
     final doc = await docRef.get();
 
     if (!doc.exists) return false;
@@ -107,7 +123,8 @@ class FirebaseService {
     int toRow,
     int toCol,
   ) async {
-    final docRef = _db.collection('games').doc(gameCode);
+    final normalizedCode = _normalizeGameCode(gameCode);
+    final docRef = _db.collection('games').doc(normalizedCode);
     await _db.runTransaction((tx) async {
       final snap = await tx.get(docRef);
       final moveCount = (snap.data()?['moveCount'] as int?) ?? 0;
@@ -127,7 +144,8 @@ class FirebaseService {
 
   /// Notifica il server della fine della partita.
   static Future<void> setWinner(String gameCode, String winner) async {
-    final docRef = _db.collection('games').doc(gameCode);
+    final normalizedCode = _normalizeGameCode(gameCode);
+    final docRef = _db.collection('games').doc(normalizedCode);
     await docRef.update({
       'status': 'finished',
       'winner': winner,
@@ -138,7 +156,8 @@ class FirebaseService {
   /// Stream dei dati della partita in tempo reale.
   static Stream<DocumentSnapshot<Map<String, dynamic>>> watchGame(
       String gameCode) {
-    return _db.collection('games').doc(gameCode).snapshots();
+    final normalizedCode = _normalizeGameCode(gameCode);
+    return _db.collection('games').doc(normalizedCode).snapshots();
   }
 
   /// Estrae un [PlayerProfile] dai dati Firestore di un giocatore.
@@ -149,7 +168,8 @@ class FirebaseService {
   /// Abbandona la partita (imposta lo stato a 'abandoned').
   static Future<void> abandonGame(String gameCode, String loserSide) async {
     final winner = loserSide == 'player1' ? 'player2' : 'player1';
-    final docRef = _db.collection('games').doc(gameCode);
+    final normalizedCode = _normalizeGameCode(gameCode);
+    final docRef = _db.collection('games').doc(normalizedCode);
     await docRef.update({
       'status': 'finished',
       'winner': winner,
@@ -159,7 +179,8 @@ class FirebaseService {
 
   /// Cancella una stanza in attesa (usato quando il creator annulla il matchmaking).
   static Future<void> cancelWaitingGame(String gameCode) async {
-    final docRef = _db.collection('games').doc(gameCode);
+    final normalizedCode = _normalizeGameCode(gameCode);
+    final docRef = _db.collection('games').doc(normalizedCode);
     final snap = await docRef.get();
     if (!snap.exists) return;
 

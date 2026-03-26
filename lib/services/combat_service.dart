@@ -75,6 +75,15 @@ class CombatService {
   }
 
   static List<Position> _getPathPositions(Position from, Position to) {
+    final rowDiff = (to.row - from.row).abs();
+    final colDiff = (to.col - from.col).abs();
+    final isLinearPath =
+        from.row == to.row || from.col == to.col || rowDiff == colDiff;
+    if (!isLinearPath) {
+      // Es. cavallo: non esiste un percorso "a step costante" da attraversare.
+      return [to];
+    }
+
     final positions = <Position>[];
     final dr = (to.row - from.row).sign;
     final dc = (to.col - from.col).sign;

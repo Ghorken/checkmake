@@ -105,81 +105,160 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   void _maybeShowEndDialog(GameProvider game) {
-    if (_showingEndDialog ||
-        game is! OnlineGameProvider ||
-        !game.showEndDialog) {
-      return;
-    }
-    final outcome = game.endDialogOutcome;
-    if (outcome == null) return;
+    if (_showingEndDialog) return;
 
-    _showingEndDialog = true;
-    game.consumeEndDialog();
+    if (game is OnlineGameProvider) {
+      if (!game.showEndDialog) return;
+      final outcome = game.endDialogOutcome;
+      if (outcome == null) return;
 
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (!mounted) return;
-      final l = AppLocalizations.of(context)!;
-      final gainedRaw =
-          game.myProfile.coins - (_coinsAtMatchStart ?? game.myProfile.coins);
-      final gained = gainedRaw < 0 ? 0 : gainedRaw;
-      final (title, body) = switch (outcome) {
-        OnlineMatchOutcome.victory => (
-            l.gameResultVictoryTitle,
-            l.gameResultVictoryBody
-          ),
-        OnlineMatchOutcome.defeat => (
-            l.gameResultDefeatTitle,
-            l.gameResultDefeatBody
-          ),
-        OnlineMatchOutcome.abandoned => (
-            l.gameResultAbandonedTitle,
-            l.gameResultAbandonedBody
-          ),
-      };
+      _showingEndDialog = true;
+      game.consumeEndDialog();
 
-      await showDialog<void>(
-        context: context,
-        barrierDismissible: false,
-        builder: (ctx) => AlertDialog(
-          backgroundColor: const Color(0xFF16213E),
-          title: Text(
-            title,
-            style: const TextStyle(color: Colors.amber),
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                body,
-                style: const TextStyle(color: Colors.white70),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                l.gameResultCoins(gained),
-                style: const TextStyle(
-                  color: Colors.amber,
-                  fontWeight: FontWeight.bold,
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        if (!mounted) return;
+        final l = AppLocalizations.of(context)!;
+        final gainedRaw =
+            game.myProfile.coins - (_coinsAtMatchStart ?? game.myProfile.coins);
+        final gained = gainedRaw < 0 ? 0 : gainedRaw;
+        final (title, body) = switch (outcome) {
+          OnlineMatchOutcome.victory => (
+              l.gameResultVictoryTitle,
+              l.gameResultVictoryBody
+            ),
+          OnlineMatchOutcome.defeat => (
+              l.gameResultDefeatTitle,
+              l.gameResultDefeatBody
+            ),
+          OnlineMatchOutcome.abandoned => (
+              l.gameResultAbandonedTitle,
+              l.gameResultAbandonedBody
+            ),
+        };
+
+        await showDialog<void>(
+          context: context,
+          barrierDismissible: false,
+          builder: (ctx) => AlertDialog(
+            backgroundColor: const Color(0xFF16213E),
+            title: Text(
+              title,
+              style: const TextStyle(color: Colors.amber),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  body,
+                  style: const TextStyle(color: Colors.white70),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  l.gameResultCoins(gained),
+                  style: const TextStyle(
+                    color: Colors.amber,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              ElevatedButton(
+                onPressed: () => Navigator.pop(ctx),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
+                child: Text(
+                  l.gameDialogClose,
+                  style: const TextStyle(color: Colors.black),
                 ),
               ),
             ],
           ),
-          actions: [
-            ElevatedButton(
-              onPressed: () => Navigator.pop(ctx),
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
-              child: Text(
-                l.gameDialogClose,
-                style: const TextStyle(color: Colors.black),
-              ),
+        );
+        _showingEndDialog = false;
+        await _navigateHome();
+      });
+      return;
+    }
+
+    if (!game.hotseatMode || game.phase != GamePhase.gameOver) return;
+
+    _showingEndDialog = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+      final p1HasKing = game.board.findKing(PlayerSide.player1) != null;
+      final p2HasKing = game.board.findKing(PlayerSide.player2) != null;
+
+      _LocalMatchOutcome p1Outcome;
+      _LocalMatchOutcome p2Outcome;
+      if (p1HasKing && !p2HasKing) {
+        p1Outcome = _LocalMatchOutcome.victory;
+        p2Outcome = _LocalMatchOutcome.defeat;
+      } else if (!p1HasKing && p2HasKing) {
+        p1Outcome = _LocalMatchOutcome.defeat;
+        p2Outcome = _LocalMatchOutcome.victory;
+      } else {
+        p1Outcome = _LocalMatchOutcome.draw;
+        p2Outcome = _LocalMatchOutcome.draw;
+      }
+
+      bool closing = false;
+      await showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (ctx) => StatefulBuilder(
+          builder: (ctx, setState) => AlertDialog(
+            backgroundColor: const Color(0xFF16213E),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Transform.rotate(
+                  angle: math.pi,
+                  child: _LocalEndSection(
+                    title: _titleForLocalOutcome(p2Outcome),
+                    body: _bodyForLocalOutcome(p2Outcome),
+                    buttonLabel: 'Torna alla home',
+                    isClosing: closing,
+                    onClose: () async {
+                      if (closing) return;
+                      setState(() => closing = true);
+                      Navigator.pop(ctx);
+                      await _navigateHome();
+                    },
+                  ),
+                ),
+                const Divider(color: Color(0xFFD4AF37), height: 20),
+                _LocalEndSection(
+                  title: _titleForLocalOutcome(p1Outcome),
+                  body: _bodyForLocalOutcome(p1Outcome),
+                  buttonLabel: 'Torna alla home',
+                  isClosing: closing,
+                  onClose: () async {
+                    if (closing) return;
+                    setState(() => closing = true);
+                    Navigator.pop(ctx);
+                    await _navigateHome();
+                  },
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       );
-      _showingEndDialog = false;
-      await _navigateHome();
     });
   }
+
+  String _titleForLocalOutcome(_LocalMatchOutcome outcome) => switch (outcome) {
+        _LocalMatchOutcome.victory => 'Vittoria!',
+        _LocalMatchOutcome.defeat => 'Sconfitta',
+        _LocalMatchOutcome.draw => 'Pareggio',
+      };
+
+  String _bodyForLocalOutcome(_LocalMatchOutcome outcome) => switch (outcome) {
+        _LocalMatchOutcome.victory => 'Hai vinto la partita.',
+        _LocalMatchOutcome.defeat => 'Hai perso la partita.',
+        _LocalMatchOutcome.draw => 'La partita è terminata in pareggio.',
+      };
 
   @override
   Widget build(BuildContext context) {
@@ -233,12 +312,25 @@ class _GameScreenState extends State<GameScreen> {
                         const SizedBox(height: 8),
                       ],
                       const GameBoardWidget(),
-                      const SizedBox(height: 8),
-                      if (game.lastCombatLog != null)
-                        _CombatLogBanner(
-                          message: game.lastCombatLog!,
-                          upsideDown: false,
+                      if (game.hotseatMode) ...[
+                        const SizedBox(height: 8),
+                        if (game.lastCombatLog != null)
+                          _CombatLogBanner(
+                            message: game.lastCombatLog!,
+                            upsideDown: false,
+                          ),
+                      ] else ...[
+                        const SizedBox(height: 8),
+                        SizedBox(
+                          height: 34,
+                          child: game.lastCombatLog != null
+                              ? _CombatLogBanner(
+                                  message: game.lastCombatLog!,
+                                  upsideDown: false,
+                                )
+                              : const SizedBox.shrink(),
                         ),
+                      ],
                     ],
                   ),
                 ),
@@ -263,6 +355,57 @@ class _GameScreenState extends State<GameScreen> {
           ),
         ),
       ),
+    );
+  }
+}
+
+enum _LocalMatchOutcome { victory, defeat, draw }
+
+class _LocalEndSection extends StatelessWidget {
+  final String title;
+  final String body;
+  final String buttonLabel;
+  final bool isClosing;
+  final Future<void> Function() onClose;
+
+  const _LocalEndSection({
+    required this.title,
+    required this.body,
+    required this.buttonLabel,
+    required this.isClosing,
+    required this.onClose,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            color: Colors.amber,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          body,
+          style: const TextStyle(color: Colors.white70),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 10),
+        ElevatedButton(
+          onPressed: isClosing ? null : () => unawaited(onClose()),
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
+          child: Text(
+            buttonLabel,
+            style: const TextStyle(color: Colors.black),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -447,7 +590,7 @@ class _OpponentBar extends StatelessWidget {
         game is OnlineGameProvider ? l.gameModeOnline : l.gameModeLocal;
 
     return Transform.rotate(
-      angle: math.pi,
+      angle: game.hotseatMode ? math.pi : 0,
       child: Container(
         height: 68,
         padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -490,16 +633,17 @@ class _OpponentBar extends StatelessWidget {
               ],
             ),
             const Spacer(),
-            IconButton(
-              onPressed: () => unawaited(
-                onSurrenderPressed(
-                  PlayerSide.player2,
-                  upsideDown: true,
+            if (game.hotseatMode)
+              IconButton(
+                onPressed: () => unawaited(
+                  onSurrenderPressed(
+                    PlayerSide.player2,
+                    upsideDown: true,
+                  ),
                 ),
+                icon: const Icon(Icons.flag, color: Colors.redAccent),
+                tooltip: l.gameLeaveConfirmTitle,
               ),
-              icon: const Icon(Icons.flag, color: Colors.redAccent),
-              tooltip: l.gameLeaveConfirmTitle,
-            ),
             if (!game.hotseatMode && game.phase == GamePhase.opponentTurn)
               Container(
                 padding:

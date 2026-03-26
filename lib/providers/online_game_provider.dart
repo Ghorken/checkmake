@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:checkmake/models/board.dart';
 import 'package:checkmake/models/piece.dart';
 import 'package:checkmake/providers/game_provider.dart';
@@ -69,13 +70,30 @@ class OnlineGameProvider extends GameProvider {
 
     // Invia a Firebase solo se non stiamo applicando una mossa remota
     if (!_applyingRemote) {
-      FirebaseService.sendMove(gameCode, from.row, from.col, to.row, to.col);
+      unawaited(_syncMoveToServer(from, to, movingSide));
+    }
+  }
 
-      // Se la partita è finita, notifica il server
-      if (phase == GamePhase.gameOver) {
-        final winner = movingSide == PlayerSide.player1 ? 'player1' : 'player2';
-        FirebaseService.setWinner(gameCode, winner);
-      }
+  Future<void> _syncMoveToServer(
+    Position from,
+    Position to,
+    PlayerSide movingSide,
+  ) async {
+    try {
+      await FirebaseService.sendMove(
+          gameCode, from.row, from.col, to.row, to.col);
+    } catch (e, st) {
+      debugPrint('OnlineGameProvider.sendMove error: $e\n$st');
+      return;
+    }
+
+    if (phase != GamePhase.gameOver) return;
+
+    final winner = movingSide == PlayerSide.player1 ? 'player1' : 'player2';
+    try {
+      await FirebaseService.setWinner(gameCode, winner);
+    } catch (e, st) {
+      debugPrint('OnlineGameProvider.setWinner error: $e\n$st');
     }
   }
 

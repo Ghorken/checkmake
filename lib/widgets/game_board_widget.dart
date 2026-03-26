@@ -1,8 +1,11 @@
 // lib/widgets/game_board_widget.dart
 
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:checkmake/models/board.dart';
+import 'package:checkmake/models/piece.dart';
 import 'package:checkmake/providers/game_provider.dart';
 import 'package:checkmake/widgets/piece_widget.dart';
 
@@ -11,6 +14,10 @@ class GameBoardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final game = context.watch<GameProvider>();
+    final rotateForOnlinePlayer2 =
+        !game.hotseatMode && game.localSide == PlayerSide.player2;
+
     return AspectRatio(
       aspectRatio: 1,
       child: Container(
@@ -32,18 +39,21 @@ class GameBoardWidget extends StatelessWidget {
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(4),
-          child: GridView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 8,
+          child: Transform.rotate(
+            angle: rotateForOnlinePlayer2 ? math.pi : 0,
+            child: GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 8,
+              ),
+              itemCount: 64,
+              itemBuilder: (context, index) {
+                final row = index ~/ 8;
+                final col = index % 8;
+                final pos = Position(row, col);
+                return _BoardCell(position: pos);
+              },
             ),
-            itemCount: 64,
-            itemBuilder: (context, index) {
-              final row = index ~/ 8;
-              final col = index % 8;
-              final pos = Position(row, col);
-              return _BoardCell(position: pos);
-            },
           ),
         ),
       ),
