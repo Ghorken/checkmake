@@ -9,11 +9,11 @@ import 'package:checkmake/models/piece_definitions.dart';
 import 'package:checkmake/providers/shop_provider.dart';
 import 'package:checkmake/widgets/piece_widget.dart';
 
-const _gold = Color(0xFFD4AF37);
-const _blue = Color(0xFF1E3A8A);
-const _red = Color(0xFF8B1E2D);
-const _black = Color(0xFF0B0B10);
-const _white = Color(0xFFF8F7F2);
+const _gold = Color(0xFFFFD700);
+const _blue = Color(0xFF1A468E);
+const _red = Color(0xFFB22222);
+const _black = Color(0xFFFDF5E6);
+const _white = Color(0xFFFDF5E6);
 
 class ShopScreen extends StatefulWidget {
   const ShopScreen({super.key});
@@ -40,7 +40,7 @@ class _ShopScreenState extends State<ShopScreen>
     return Scaffold(
       backgroundColor: _black,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF111626),
+        backgroundColor: const Color(0xFF2C3E50),
         title: Row(
           children: [
             Text(l.shopTitle, style: const TextStyle(color: _gold)),
@@ -97,7 +97,7 @@ class _PiecesTab extends StatelessWidget {
         final canBuy = shop.canUnlock(def.type);
 
         return Card(
-          color: const Color(0xFF111626),
+          color: const Color(0xFF2C3E50),
           margin: const EdgeInsets.only(bottom: 10),
           child: ListTile(
             leading: SizedBox(
@@ -151,7 +151,7 @@ class _PiecesTab extends StatelessWidget {
                     ),
                     child: Text(
                       '${def.unlockCost}🪙',
-                      style: const TextStyle(color: Colors.black, fontSize: 12),
+                      style: const TextStyle(color: Color(0xFF2C3E50), fontSize: 12),
                     ),
                   ),
           ),
@@ -208,7 +208,7 @@ class _InitiativeCard extends StatelessWidget {
     final l = AppLocalizations.of(context)!;
 
     return Card(
-      color: const Color(0xFF111626),
+      color: const Color(0xFF2C3E50),
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
@@ -238,7 +238,7 @@ class _InitiativeCard extends StatelessWidget {
               style: ElevatedButton.styleFrom(backgroundColor: _gold),
               child: Text(
                 l.shopUpgradeBtn(shop.initiativeUpgradeCost),
-                style: const TextStyle(color: Colors.black, fontSize: 12),
+                style: const TextStyle(color: Color(0xFF2C3E50), fontSize: 12),
               ),
             ),
           ],
@@ -259,7 +259,7 @@ class _PieceUpgradeCard extends StatelessWidget {
     final levels = shop.profile.getUpgradeLevel(type);
 
     return Card(
-      color: const Color(0xFF111626),
+      color: const Color(0xFF2C3E50),
       margin: const EdgeInsets.only(bottom: 8),
       child: Padding(
         padding: const EdgeInsets.all(12),
@@ -324,7 +324,7 @@ class _UpgradeRow extends StatelessWidget {
           SizedBox(
             width: 80,
             child: Text(label,
-                style: const TextStyle(color: Colors.white70, fontSize: 12)),
+                style: const TextStyle(color: Color(0xCCFDF5E6), fontSize: 12)),
           ),
           Row(
             children: List.generate(
@@ -353,7 +353,7 @@ class _UpgradeRow extends StatelessWidget {
             child: Text(
               '+1 ($cost🪙)',
               style: const TextStyle(
-                color: Colors.black,
+                color: Color(0xFF2C3E50),
                 fontSize: 11,
               ),
             ),
@@ -388,7 +388,7 @@ class _SkinsTab extends StatelessWidget {
         final canBuy = !owned && shop.profile.coins >= skin.cost;
 
         return Card(
-          color: const Color(0xFF111626),
+          color: const Color(0xFF2C3E50),
           margin: const EdgeInsets.only(bottom: 10),
           child: ListTile(
             leading: Container(
@@ -406,10 +406,10 @@ class _SkinsTab extends StatelessWidget {
               ),
               child: Icon(
                 skin.targetPiece == null ? Icons.shield : Icons.person,
-                color: Colors.white,
+                color: Color(0xFFFDF5E6),
               ),
             ),
-            title: Text(skinName, style: const TextStyle(color: Colors.white)),
+            title: Text(skinName, style: const TextStyle(color: Color(0xFFFDF5E6))),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -433,7 +433,7 @@ class _SkinsTab extends StatelessWidget {
                     ),
                     child: Text('${skin.cost}🪙',
                         style:
-                            const TextStyle(color: Colors.black, fontSize: 12)),
+                            const TextStyle(color: Color(0xFF2C3E50), fontSize: 12)),
                   ),
           ),
         );

@@ -9,11 +9,11 @@ import 'package:checkmake/models/piece_definitions.dart';
 import 'package:checkmake/models/player_profile.dart';
 import 'package:checkmake/widgets/piece_widget.dart';
 
-const _gold = Color(0xFFD4AF37);
-const _blue = Color(0xFF1E3A8A);
-const _red = Color(0xFF8B1E2D);
-const _black = Color(0xFF0B0B10);
-const _white = Color(0xFFF8F7F2);
+const _gold = Color(0xFFFFD700);
+const _blue = Color(0xFF1A468E);
+const _red = Color(0xFFB22222);
+const _black = Color(0xFFFDF5E6);
+const _white = Color(0xFFFDF5E6);
 
 class ArmyBuilderScreen extends StatefulWidget {
   const ArmyBuilderScreen({super.key});
@@ -96,7 +96,7 @@ class _ArmyBuilderScreenState extends State<ArmyBuilderScreen> {
     return Scaffold(
       backgroundColor: _black,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF111626),
+        backgroundColor: const Color(0xFF2C3E50),
         title: Text(l.armyBuilderTitle, style: const TextStyle(color: _gold)),
         actions: [
           TextButton.icon(
@@ -111,7 +111,7 @@ class _ArmyBuilderScreenState extends State<ArmyBuilderScreen> {
           // Summary header
           Container(
             padding: const EdgeInsets.all(12),
-            color: const Color(0xFF111626),
+            color: const Color(0xFF2C3E50),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: PieceBaseType.values.map((base) {
@@ -196,7 +196,7 @@ class _PieceRow extends StatelessWidget {
     final l = AppLocalizations.of(context)!;
 
     return Card(
-      color: const Color(0xFF111626),
+      color: const Color(0xFF2C3E50),
       margin: const EdgeInsets.only(bottom: 6),
       child: Padding(
         padding: const EdgeInsets.all(8),
@@ -223,7 +223,7 @@ class _PieceRow extends StatelessWidget {
                 children: [
                   Text(l.pieceNameFor(def.type),
                       style: const TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold)),
+                          color: Color(0xFFFDF5E6), fontWeight: FontWeight.bold)),
                   Text(
                     '❤️${def.baseHp} ⚔️${def.baseAttack} 🪙${def.baseValue}',
                     style: const TextStyle(color: _white, fontSize: 10),
@@ -247,7 +247,7 @@ class _PieceRow extends StatelessWidget {
                     '$count',
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                      color: Colors.white,
+                      color: Color(0xFFFDF5E6),
                       fontWeight: FontWeight.bold,
                     ),
                   ),

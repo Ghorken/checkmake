@@ -35,13 +35,14 @@ class Checkmake extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const medievalGold = Color(0xFFD4AF37);
-    const royalBlue = Color(0xFF1E3A8A);
-    const warRed = Color(0xFF8B1E2D);
-    const ironBlack = Color(0xFF0B0B10);
-    const parchmentWhite = Color(0xFFF8F7F2);
+    const brightGold = Color(0xFFFFD700);
+    const shadowGold = Color(0xFFB8860B);
+    const regalBlue = Color(0xFF1A468E);
+    const imperialRed = Color(0xFFB22222);
+    const darkStone = Color(0xFF2C3E50);
+    const parchmentWhite = Color(0xFFFDF5E6);
 
-    final base = ThemeData.dark(useMaterial3: true);
+    final base = ThemeData.light(useMaterial3: true);
     return ChangeNotifierProvider(
       create: (_) => PlayerProfile(name: 'Giocatore'),
       child: MaterialApp(
@@ -62,42 +63,48 @@ class Checkmake extends StatelessWidget {
         // ────────────────────────────────────────────────────────────
 
         theme: base.copyWith(
-          colorScheme: const ColorScheme.dark(
-            primary: medievalGold,
-            onPrimary: ironBlack,
-            secondary: warRed,
+          colorScheme: const ColorScheme.light(
+            primary: regalBlue,
+            onPrimary: parchmentWhite,
+            secondary: imperialRed,
             onSecondary: parchmentWhite,
-            surface: Color(0xFF111626),
-            onSurface: parchmentWhite,
-            error: warRed,
+            surface: parchmentWhite,
+            onSurface: darkStone,
+            error: imperialRed,
             onError: parchmentWhite,
           ),
-          scaffoldBackgroundColor: ironBlack,
+          scaffoldBackgroundColor: parchmentWhite,
           textTheme: GoogleFonts.cinzelTextTheme(base.textTheme).apply(
-            bodyColor: parchmentWhite,
-            displayColor: medievalGold,
+            bodyColor: darkStone,
+            displayColor: shadowGold,
           ),
           appBarTheme: AppBarTheme(
-            backgroundColor: royalBlue.withValues(alpha: 0.35),
-            foregroundColor: parchmentWhite,
-            elevation: 0,
-            titleTextStyle: GoogleFonts.cinzel(
-              color: medievalGold,
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 1.6,
+            backgroundColor: darkStone,
+            foregroundColor: brightGold,
+            elevation: 4,
+            shadowColor: Colors.black45,
+            centerTitle: true,
+            titleTextStyle: GoogleFonts.macondo(
+              color: brightGold,
+              fontSize: 24,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 2.0,
             ),
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
-              foregroundColor: parchmentWhite,
-              textStyle: GoogleFonts.cinzel(
-                fontWeight: FontWeight.w700,
+              backgroundColor: darkStone,
+              foregroundColor: brightGold,
+              textStyle: GoogleFonts.macondo(
+                fontWeight: FontWeight.w600,
+                fontSize: 18,
                 letterSpacing: 1.2,
               ),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(4),
+                side: const BorderSide(color: shadowGold, width: 2),
               ),
+              elevation: 4,
             ),
           ),
         ),

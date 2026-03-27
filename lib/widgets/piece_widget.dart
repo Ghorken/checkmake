@@ -24,11 +24,11 @@ class PiecePlaceholderPainter extends CustomPainter {
   });
 
   static Color _pieceColor(PieceType type) => switch (type) {
-        PieceType.pawn => const Color(0xFFF8F7F2),
-        PieceType.rook => const Color(0xFF1E3A8A),
-        PieceType.knight => const Color(0xFF8B1E2D),
+        PieceType.pawn => const Color(0xFFFDF5E6),
+        PieceType.rook => const Color(0xFF1A468E),
+        PieceType.knight => const Color(0xFFB22222),
         PieceType.bishop => const Color(0xFF274690),
-        PieceType.queen => const Color(0xFFD4AF37),
+        PieceType.queen => const Color(0xFFFFD700),
         PieceType.king => const Color(0xFFF3DE9B),
       };
 
@@ -49,8 +49,8 @@ class PiecePlaceholderPainter extends CustomPainter {
 
     // Bordo blu = player1 (giocatore), rosso = player2 (avversario)
     final borderColor = side == PlayerSide.player1
-        ? const Color(0xFF1E3A8A)
-        : const Color(0xFF8B1E2D);
+        ? const Color(0xFF1A468E)
+        : const Color(0xFFB22222);
 
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width / 2 - 2;
@@ -71,7 +71,7 @@ class PiecePlaceholderPainter extends CustomPainter {
     // Crepa a metà vita
     if (isHalfHp) {
       final crackPaint = Paint()
-        ..color = Colors.black.withValues(alpha: 0.5)
+        ..color = Color(0xFF2C3E50).withValues(alpha: 0.5)
         ..strokeWidth = 1.5
         ..style = PaintingStyle.stroke;
       final path = Path()
@@ -88,7 +88,7 @@ class PiecePlaceholderPainter extends CustomPainter {
         text: symbol,
         style: TextStyle(
           fontSize: size.width * 0.55,
-          color: Colors.white.withValues(alpha: isHalfHp ? 0.6 : 0.95),
+          color: Color(0xFFFDF5E6).withValues(alpha: isHalfHp ? 0.6 : 0.95),
         ),
       ),
       textDirection: TextDirection.ltr,
@@ -164,10 +164,10 @@ class PieceWidget extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: const Color(0xFFD4AF37), width: 3),
+              border: Border.all(color: const Color(0xFFFFD700), width: 3),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFFD4AF37).withValues(alpha: 0.5),
+                  color: const Color(0xFFFFD700).withValues(alpha: 0.5),
                   blurRadius: 8,
                 ),
               ],
@@ -230,7 +230,7 @@ class _HpBar extends StatelessWidget {
     return Container(
       height: 4,
       decoration: BoxDecoration(
-        color: const Color(0xFF0B0B10).withValues(alpha: 0.75),
+        color: const Color(0xFFFDF5E6).withValues(alpha: 0.75),
         borderRadius: BorderRadius.circular(2),
       ),
       child: FractionallySizedBox(

@@ -22,16 +22,16 @@ class GameBoardWidget extends StatelessWidget {
       aspectRatio: 1,
       child: Container(
         decoration: BoxDecoration(
-          border: Border.all(color: const Color(0xFFD4AF37), width: 4),
+          border: Border.all(color: const Color(0xFFFFD700), width: 4),
           borderRadius: BorderRadius.circular(8),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.6),
+              color: Color(0xFF2C3E50).withValues(alpha: 0.6),
               blurRadius: 20,
               offset: const Offset(0, 8),
             ),
             BoxShadow(
-              color: const Color(0xFF8B1E2D).withValues(alpha: 0.2),
+              color: const Color(0xFFB22222).withValues(alpha: 0.2),
               blurRadius: 28,
               spreadRadius: 1,
             ),
@@ -77,14 +77,14 @@ class _BoardCell extends StatelessWidget {
 
     Color cellColor;
     if (isSelected) {
-      cellColor = const Color(0xFFD4AF37).withValues(alpha: 0.8);
+      cellColor = const Color(0xFFFFD700).withValues(alpha: 0.8);
     } else if (isValidMove) {
       cellColor = piece != null
-          ? const Color(0xFF8B1E2D)
+          ? const Color(0xFFB22222)
               .withValues(alpha: 0.55) // casella con nemico
-          : const Color(0xFF1E3A8A).withValues(alpha: 0.45);
+          : const Color(0xFF1A468E).withValues(alpha: 0.45);
     } else {
-      cellColor = isLight ? const Color(0xFFF8F7F2) : const Color(0xFF1E3A8A);
+      cellColor = isLight ? const Color(0xFFFDF5E6) : const Color(0xFF1A468E);
     }
 
     return GestureDetector(
@@ -101,7 +101,7 @@ class _BoardCell extends StatelessWidget {
                 height: 14,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: const Color(0xFFD4AF37).withValues(alpha: 0.75),
+                  color: const Color(0xFFFFD700).withValues(alpha: 0.75),
                 ),
               ),
 

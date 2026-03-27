@@ -67,16 +67,16 @@ class _GameScreenState extends State<GameScreen> {
           builder: (ctx) => Transform.rotate(
             angle: upsideDown ? math.pi : 0,
             child: AlertDialog(
-              backgroundColor: const Color(0xFF16213E),
+              backgroundColor: const Color(0xFF2C3E50),
               title: Text(
                 l.gameLeaveConfirmTitle,
-                style: const TextStyle(color: Colors.amber),
+                style: const TextStyle(color: Color(0xFFFFD700)),
               ),
               content: Text(
                 game.hotseatMode
                     ? 'Giocatore ${side == PlayerSide.player1 ? 1 : 2}, vuoi ritirarti dalla partita?'
                     : l.gameLeaveConfirmBody,
-                style: const TextStyle(color: Colors.white70),
+                style: const TextStyle(color: Color(0xCCFDF5E6)),
               ),
               actions: [
                 TextButton(
@@ -140,10 +140,10 @@ class _GameScreenState extends State<GameScreen> {
           context: context,
           barrierDismissible: false,
           builder: (ctx) => AlertDialog(
-            backgroundColor: const Color(0xFF16213E),
+            backgroundColor: const Color(0xFF2C3E50),
             title: Text(
               title,
-              style: const TextStyle(color: Colors.amber),
+              style: const TextStyle(color: Color(0xFFFFD700)),
             ),
             content: Column(
               mainAxisSize: MainAxisSize.min,
@@ -151,13 +151,13 @@ class _GameScreenState extends State<GameScreen> {
               children: [
                 Text(
                   body,
-                  style: const TextStyle(color: Colors.white70),
+                  style: const TextStyle(color: Color(0xCCFDF5E6)),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   l.gameResultCoins(gained),
                   style: const TextStyle(
-                    color: Colors.amber,
+                    color: Color(0xFFFFD700),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -166,10 +166,10 @@ class _GameScreenState extends State<GameScreen> {
             actions: [
               ElevatedButton(
                 onPressed: () => Navigator.pop(ctx),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
+                style: ElevatedButton.styleFrom(backgroundColor: Color(0xFFFFD700)),
                 child: Text(
                   l.gameDialogClose,
-                  style: const TextStyle(color: Colors.black),
+                  style: const TextStyle(color: Color(0xFF2C3E50)),
                 ),
               ),
             ],
@@ -208,7 +208,7 @@ class _GameScreenState extends State<GameScreen> {
         barrierDismissible: false,
         builder: (ctx) => StatefulBuilder(
           builder: (ctx, setState) => AlertDialog(
-            backgroundColor: const Color(0xFF16213E),
+            backgroundColor: const Color(0xFF2C3E50),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -227,7 +227,7 @@ class _GameScreenState extends State<GameScreen> {
                     },
                   ),
                 ),
-                const Divider(color: Color(0xFFD4AF37), height: 20),
+                const Divider(color: Color(0xFFFFD700), height: 20),
                 _LocalEndSection(
                   title: _titleForLocalOutcome(p1Outcome),
                   body: _bodyForLocalOutcome(p1Outcome),
@@ -278,7 +278,7 @@ class _GameScreenState extends State<GameScreen> {
         unawaited(_handleBackRequested());
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFF0B0B10),
+        backgroundColor: const Color(0xFFFDF5E6),
         body: SafeArea(
           child: Column(
             children: [
@@ -384,7 +384,7 @@ class _LocalEndSection extends StatelessWidget {
         Text(
           title,
           style: const TextStyle(
-            color: Colors.amber,
+            color: Color(0xFFFFD700),
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
@@ -393,16 +393,16 @@ class _LocalEndSection extends StatelessWidget {
         const SizedBox(height: 8),
         Text(
           body,
-          style: const TextStyle(color: Colors.white70),
+          style: const TextStyle(color: Color(0xCCFDF5E6)),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 10),
         ElevatedButton(
           onPressed: isClosing ? null : () => unawaited(onClose()),
-          style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
+          style: ElevatedButton.styleFrom(backgroundColor: Color(0xFFFFD700)),
           child: Text(
             buttonLabel,
-            style: const TextStyle(color: Colors.black),
+            style: const TextStyle(color: Color(0xFF2C3E50)),
           ),
         ),
       ],
@@ -422,15 +422,15 @@ class _CombatLogBanner extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color: const Color(0xFF111626),
+          color: const Color(0xFF2C3E50),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: const Color(0xFFD4AF37).withValues(alpha: 0.3),
+            color: const Color(0xFFFFD700).withValues(alpha: 0.3),
           ),
         ),
         child: Text(
           message,
-          style: const TextStyle(color: Color(0xFFF8F7F2), fontSize: 12),
+          style: const TextStyle(color: Color(0xFFFDF5E6), fontSize: 12),
           textAlign: TextAlign.center,
         ),
       ),
@@ -483,10 +483,10 @@ class _LocalCoinFlipDialogState extends State<_LocalCoinFlipDialog>
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: const Color(0xFF111626),
+      backgroundColor: const Color(0xFF2C3E50),
       title: const Text(
         'Lancio della moneta',
-        style: TextStyle(color: Color(0xFFD4AF37)),
+        style: TextStyle(color: Color(0xFFFFD700)),
       ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
@@ -507,12 +507,12 @@ class _LocalCoinFlipDialogState extends State<_LocalCoinFlipDialog>
                   height: 76,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: const Color(0xFFD4AF37),
+                    color: const Color(0xFFFFD700),
                     border:
-                        Border.all(color: const Color(0xFFF8F7F2), width: 2),
+                        Border.all(color: const Color(0xFFFDF5E6), width: 2),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFFD4AF37).withValues(alpha: 0.45),
+                        color: const Color(0xFFFFD700).withValues(alpha: 0.45),
                         blurRadius: 14,
                       ),
                     ],
@@ -528,7 +528,7 @@ class _LocalCoinFlipDialogState extends State<_LocalCoinFlipDialog>
                       child: Text(
                         label,
                         style: const TextStyle(
-                          color: Colors.black,
+                          color: Color(0xFF2C3E50),
                           fontWeight: FontWeight.bold,
                           fontSize: 24,
                         ),
@@ -543,7 +543,7 @@ class _LocalCoinFlipDialogState extends State<_LocalCoinFlipDialog>
           if (!_finished)
             const Text(
               'Lancio in corso...',
-              style: TextStyle(color: Color(0xFFF8F7F2)),
+              style: TextStyle(color: Color(0xFFFDF5E6)),
               textAlign: TextAlign.center,
             ),
           if (_finished)
@@ -551,7 +551,7 @@ class _LocalCoinFlipDialogState extends State<_LocalCoinFlipDialog>
               _winner == PlayerSide.player1
                   ? 'Il giocatore 1 inizia la partita.'
                   : 'Il giocatore 2 inizia la partita.',
-              style: const TextStyle(color: Color(0xFFF8F7F2)),
+              style: const TextStyle(color: Color(0xFFFDF5E6)),
               textAlign: TextAlign.center,
             ),
         ],
@@ -561,10 +561,10 @@ class _LocalCoinFlipDialogState extends State<_LocalCoinFlipDialog>
           ElevatedButton(
             onPressed: () => Navigator.pop(context, _winner),
             style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFD4AF37)),
+                backgroundColor: const Color(0xFFFFD700)),
             child: const Text(
               'Inizia partita',
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(color: Color(0xFF2C3E50)),
             ),
           ),
       ],
@@ -594,12 +594,12 @@ class _OpponentBar extends StatelessWidget {
       child: Container(
         height: 68,
         padding: const EdgeInsets.symmetric(horizontal: 8),
-        color: const Color(0xFF111626),
+        color: const Color(0xFF2C3E50),
         child: Row(
           children: [
             const CircleAvatar(
-              backgroundColor: Color(0xFF8B1E2D),
-              child: Icon(Icons.person, color: Colors.white),
+              backgroundColor: Color(0xFFB22222),
+              child: Icon(Icons.person, color: Color(0xFFFDF5E6)),
             ),
             const SizedBox(width: 8),
             Column(
@@ -609,22 +609,22 @@ class _OpponentBar extends StatelessWidget {
                 Text(
                   game.hotseatMode ? 'Giocatore 2' : game.opponentProfile.name,
                   style: const TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
+                      color: Color(0xFFFDF5E6), fontWeight: FontWeight.bold),
                 ),
                 Container(
                   margin: const EdgeInsets.only(top: 2),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.08),
+                    color: Color(0xFFFDF5E6).withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                        color: const Color(0xFFD4AF37).withValues(alpha: 0.5)),
+                        color: const Color(0xFFFFD700).withValues(alpha: 0.5)),
                   ),
                   child: Text(
                     modeLabel,
                     style: const TextStyle(
-                      color: Color(0xFFF8F7F2),
+                      color: Color(0xFFFDF5E6),
                       fontSize: 10,
                       fontWeight: FontWeight.w600,
                     ),
@@ -649,14 +649,14 @@ class _OpponentBar extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF8B1E2D).withValues(alpha: 0.35),
+                  color: const Color(0xFFB22222).withValues(alpha: 0.35),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFFD4AF37)),
+                  border: Border.all(color: const Color(0xFFFFD700)),
                 ),
                 child: Text(
                   '${l.gameOpponentTurn} · ${game.turnSecondsLeft}s',
                   style:
-                      const TextStyle(color: Color(0xFFF8F7F2), fontSize: 11),
+                      const TextStyle(color: Color(0xFFFDF5E6), fontSize: 11),
                 ),
               ),
           ],
@@ -685,15 +685,15 @@ class _PlayerBar extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.all(12),
-      color: const Color(0xFF111626),
+      color: const Color(0xFF2C3E50),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             children: [
               const CircleAvatar(
-                backgroundColor: Color(0xFF1E3A8A),
-                child: Icon(Icons.person, color: Colors.white),
+                backgroundColor: Color(0xFF1A468E),
+                child: Icon(Icons.person, color: Color(0xFFFDF5E6)),
               ),
               const SizedBox(width: 12),
               Column(
@@ -702,23 +702,23 @@ class _PlayerBar extends StatelessWidget {
                   Text(
                     game.hotseatMode ? 'Giocatore 1' : game.myProfile.name,
                     style: const TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
+                        color: Color(0xFFFDF5E6), fontWeight: FontWeight.bold),
                   ),
                   Container(
                     margin: const EdgeInsets.only(top: 2),
                     padding:
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.08),
+                      color: Color(0xFFFDF5E6).withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
                           color:
-                              const Color(0xFFD4AF37).withValues(alpha: 0.5)),
+                              const Color(0xFFFFD700).withValues(alpha: 0.5)),
                     ),
                     child: Text(
                       modeLabel,
                       style: const TextStyle(
-                        color: Color(0xFFF8F7F2),
+                        color: Color(0xFFFDF5E6),
                         fontSize: 10,
                         fontWeight: FontWeight.w600,
                       ),
@@ -728,12 +728,12 @@ class _PlayerBar extends StatelessWidget {
                     Row(
                       children: [
                         const Icon(Icons.monetization_on,
-                            color: Color(0xFFD4AF37), size: 14),
+                            color: Color(0xFFFFD700), size: 14),
                         const SizedBox(width: 4),
                         Text(
                           '${game.myProfile.coins}',
                           style: const TextStyle(
-                              color: Color(0xFFD4AF37), fontSize: 12),
+                              color: Color(0xFFFFD700), fontSize: 12),
                         ),
                       ],
                     ),
@@ -784,16 +784,16 @@ class _TurnBanner extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 4),
         decoration: BoxDecoration(
-          color: const Color(0xFF1E3A8A).withValues(alpha: 0.2),
+          color: const Color(0xFF1A468E).withValues(alpha: 0.2),
           borderRadius: BorderRadius.circular(6),
           border:
-              Border.all(color: const Color(0xFFD4AF37).withValues(alpha: 0.8)),
+              Border.all(color: const Color(0xFFFFD700).withValues(alpha: 0.8)),
         ),
         child: Text(
           message != null
               ? '$message (${game.turnSecondsLeft}s)'
               : '${l.gameTurnSelect} (${game.turnSecondsLeft}s)',
-          style: const TextStyle(color: Color(0xFFF8F7F2), fontSize: 11),
+          style: const TextStyle(color: Color(0xFFFDF5E6), fontSize: 11),
           textAlign: TextAlign.center,
         ),
       ),
@@ -824,8 +824,8 @@ class _AbilityButton extends StatelessWidget {
         icon: const Icon(Icons.flash_on, size: 14),
         label: Text(abilityName, style: const TextStyle(fontSize: 11)),
         style: ElevatedButton.styleFrom(
-          backgroundColor: canUse ? const Color(0xFF8B1E2D) : Colors.grey,
-          foregroundColor: Colors.white,
+          backgroundColor: canUse ? const Color(0xFFB22222) : Colors.grey,
+          foregroundColor: Color(0xFFFDF5E6),
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
         ),
       ),

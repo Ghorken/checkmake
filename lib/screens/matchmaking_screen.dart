@@ -13,11 +13,11 @@ import 'package:checkmake/providers/online_game_provider.dart';
 import 'package:checkmake/screens/game_screen.dart';
 import 'package:checkmake/services/firebase_service.dart';
 
-const _gold = Color(0xFFD4AF37);
-const _blue = Color(0xFF1E3A8A);
-const _red = Color(0xFF8B1E2D);
-const _black = Color(0xFF0B0B10);
-const _white = Color(0xFFF8F7F2);
+const _gold = Color(0xFFFFD700);
+const _blue = Color(0xFF1A468E);
+const _red = Color(0xFFB22222);
+const _black = Color(0xFFFDF5E6);
+const _white = Color(0xFFFDF5E6);
 
 /// Schermata per creare o unirsi a una partita online.
 class MatchmakingScreen extends StatefulWidget {
@@ -242,7 +242,7 @@ class _MatchmakingScreenState extends State<MatchmakingScreen> {
     return Scaffold(
       backgroundColor: _black,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF111626),
+        backgroundColor: const Color(0xFF2C3E50),
         foregroundColor: _white,
         title: const Text(
           'SFIDA ONLINE',
@@ -350,7 +350,7 @@ class _IdleView extends StatelessWidget {
                     label: const Text('CREA PARTITA'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _gold,
-                      foregroundColor: Colors.black,
+                      foregroundColor: Color(0xFF2C3E50),
                       minimumSize: const Size(double.infinity, 48),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8)),
@@ -399,7 +399,7 @@ class _IdleView extends StatelessWidget {
                           hintStyle:
                               const TextStyle(color: _white, letterSpacing: 4),
                           filled: true,
-                          fillColor: const Color(0xFF111626),
+                          fillColor: const Color(0xFF2C3E50),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                             borderSide: const BorderSide(color: _gold),
@@ -494,7 +494,7 @@ class _WaitingForOpponentView extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             decoration: BoxDecoration(
-              color: const Color(0xFF111626),
+              color: const Color(0xFF2C3E50),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: _gold, width: 2),
             ),
@@ -569,7 +569,7 @@ class _SectionCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFF111626),
+        color: const Color(0xFF2C3E50),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: _gold.withValues(alpha: 0.4)),
       ),
@@ -654,7 +654,7 @@ class _CoinFlipDialogState extends State<_CoinFlipDialog>
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: const Color(0xFF111626),
+      backgroundColor: const Color(0xFF2C3E50),
       title: const Text(
         'Parità iniziativa',
         style: TextStyle(color: _gold),
@@ -698,7 +698,7 @@ class _CoinFlipDialogState extends State<_CoinFlipDialog>
                       child: Text(
                         sideLabel,
                         style: const TextStyle(
-                          color: Colors.black,
+                          color: Color(0xFF2C3E50),
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
                           letterSpacing: 1.2,
@@ -734,7 +734,7 @@ class _CoinFlipDialogState extends State<_CoinFlipDialog>
             style: ElevatedButton.styleFrom(backgroundColor: _gold),
             child: const Text(
               'Inizia partita',
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(color: Color(0xFF2C3E50)),
             ),
           ),
       ],
