@@ -39,7 +39,13 @@ class OnlineGameProvider extends GameProvider {
     required this.gameCode,
     required PlayerSide startingSide,
   })  : _mySide = mySide,
-        super(initialTurn: startingSide) {
+        super(
+          initialTurn: startingSide,
+          player1ProfileForBoard:
+              mySide == PlayerSide.player1 ? myProfile : opponentProfile,
+          player2ProfileForBoard:
+              mySide == PlayerSide.player1 ? opponentProfile : myProfile,
+        ) {
     _listenToGame();
   }
 

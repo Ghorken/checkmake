@@ -342,12 +342,18 @@ class _UpgradeRow extends StatelessWidget {
           ),
           Text('Lv.$level', style: const TextStyle(color: _gold, fontSize: 10)),
           const Spacer(),
-          TextButton(
+          ElevatedButton(
             onPressed: canAfford ? onUpgrade : null,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: _gold,
+              disabledBackgroundColor: Colors.grey,
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              minimumSize: const Size(0, 30),
+            ),
             child: Text(
               '+1 ($cost🪙)',
-              style: TextStyle(
-                color: canAfford ? _red : Colors.grey,
+              style: const TextStyle(
+                color: Colors.black,
                 fontSize: 11,
               ),
             ),

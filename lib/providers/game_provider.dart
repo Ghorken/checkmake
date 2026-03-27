@@ -73,9 +73,14 @@ class GameProvider extends ChangeNotifier {
     this.hotseatMode = false,
     PlayerSide initialTurn = PlayerSide.player1,
     bool startPaused = false,
+    PlayerProfile? player1ProfileForBoard,
+    PlayerProfile? player2ProfileForBoard,
   }) {
     currentTurn = initialTurn;
-    _initBoard();
+    _initBoard(
+      player1Profile: player1ProfileForBoard ?? myProfile,
+      player2Profile: player2ProfileForBoard ?? opponentProfile,
+    );
     if (startPaused) {
       _phaseRaw = GamePhase.waitingForOpponent;
     } else {
@@ -94,10 +99,13 @@ class GameProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void _initBoard() {
+  void _initBoard({
+    required PlayerProfile player1Profile,
+    required PlayerProfile player2Profile,
+  }) {
     board = Board();
-    _setupArmy(opponentProfile, PlayerSide.player2, isTop: true);
-    _setupArmy(myProfile, PlayerSide.player1, isTop: false);
+    _setupArmy(player2Profile, PlayerSide.player2, isTop: true);
+    _setupArmy(player1Profile, PlayerSide.player1, isTop: false);
   }
 
   void _setupArmy(PlayerProfile profile, PlayerSide side,
