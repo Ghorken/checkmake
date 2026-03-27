@@ -6,6 +6,7 @@ import 'package:checkmake/providers/game_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:checkmake/models/piece.dart';
 import 'package:checkmake/models/player_profile.dart';
@@ -14,10 +15,12 @@ import 'package:checkmake/screens/game_screen.dart';
 import 'package:checkmake/services/firebase_service.dart';
 
 const _gold = Color(0xFFD4AF37);
-const _blue = Color(0xFF1E3A8A);
-const _red = Color(0xFF8B1E2D);
-const _black = Color(0xFF0B0B10);
-const _white = Color(0xFFF8F7F2);
+const _steelBlue = Color(0xFF2B5798);
+const _crimson = Color(0xFF8B1E2D);
+const _bloodRed = Color(0xFF6B0F1A);
+const _ironBlack = Color(0xFF0A0A0F);
+const _parchment = Color(0xFFF0E6D3);
+const _darkStone = Color(0xFF1A1A2E);
 
 /// Schermata per creare o unirsi a una partita online.
 class MatchmakingScreen extends StatefulWidget {
@@ -93,7 +96,6 @@ class _MatchmakingScreenState extends State<MatchmakingScreen> {
         return;
       }
 
-      // Recupera i dati di player1 e avvia la partita come player2
       final doc = await FirebaseService.watchGame(code).first;
       final data = doc.data() as Map<String, dynamic>;
       final opponentProfile = FirebaseService.profileFromData(
@@ -126,10 +128,12 @@ class _MatchmakingScreenState extends State<MatchmakingScreen> {
     }
   }
 
-  // ── Attende che player2 si unisca (dopo aver creato la partita) ───────────
+  // ── Attende che player2 si unisca ─────────────────────────────────────────
 
-  void _waitForOpponent(String code, PlayerSide mySide, PlayerProfile profile) {
-    _waitingSubscription = FirebaseService.watchGame(code).listen((snap) async {
+  void _waitForOpponent(
+      String code, PlayerSide mySide, PlayerProfile profile) {
+    _waitingSubscription =
+        FirebaseService.watchGame(code).listen((snap) async {
       if (!snap.exists) {
         if (!mounted) return;
         setState(() {
@@ -168,8 +172,6 @@ class _MatchmakingScreenState extends State<MatchmakingScreen> {
       }
     });
   }
-
-  // ── Naviga alla schermata di gioco ────────────────────────────────────────
 
   void _navigateToGame({
     required PlayerProfile myProfile,
@@ -214,8 +216,6 @@ class _MatchmakingScreenState extends State<MatchmakingScreen> {
     );
   }
 
-  // ── Annulla la partita in attesa ──────────────────────────────────────────
-
   void _cancelWaiting() {
     unawaited(_cancelWaitingAsync());
   }
@@ -240,16 +240,17 @@ class _MatchmakingScreenState extends State<MatchmakingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _black,
+      backgroundColor: _ironBlack,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF111626),
-        foregroundColor: _white,
-        title: const Text(
+        backgroundColor: _darkStone.withValues(alpha: 0.95),
+        foregroundColor: _parchment,
+        title: Text(
           'SFIDA ONLINE',
-          style: TextStyle(
+          style: GoogleFonts.cinzelDecorative(
             color: _gold,
             fontWeight: FontWeight.bold,
             letterSpacing: 3,
+            fontSize: 18,
           ),
         ),
         centerTitle: true,
@@ -260,9 +261,9 @@ class _MatchmakingScreenState extends State<MatchmakingScreen> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              _black,
-              _blue.withValues(alpha: 0.55),
-              _red.withValues(alpha: 0.3),
+              _darkStone.withValues(alpha: 0.4),
+              _ironBlack,
+              _bloodRed.withValues(alpha: 0.1),
             ],
           ),
         ),
@@ -285,13 +286,14 @@ class _MatchmakingScreenState extends State<MatchmakingScreen> {
         );
       case _UIState.creating:
       case _UIState.joining:
-        return const Center(
+        return Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              CircularProgressIndicator(color: _gold),
-              SizedBox(height: 16),
-              Text('Connessione in corso…', style: TextStyle(color: _white)),
+              const CircularProgressIndicator(color: _gold),
+              const SizedBox(height: 16),
+              Text('Connessione in corso...',
+                  style: GoogleFonts.cinzel(color: _parchment)),
             ],
           ),
         );
@@ -306,11 +308,9 @@ class _MatchmakingScreenState extends State<MatchmakingScreen> {
   }
 }
 
-// ─── Stato UI ────────────────────────────────────────────────────────────────
-
 enum _UIState { idle, creating, joining, waitingForOpponent }
 
-// ─── Vista Idle: crea o unisciti ─────────────────────────────────────────────
+// ─── Vista Idle ─────────────────────────────────────────────────────────────
 
 class _IdleView extends StatelessWidget {
   final TextEditingController codeController;
@@ -338,7 +338,7 @@ class _IdleView extends StatelessWidget {
               children: [
                 const SizedBox(height: 24),
 
-                // Sezione "Crea partita"
+                // Create game section
                 _SectionCard(
                   color: _gold,
                   icon: Icons.add_circle_outline,
@@ -347,31 +347,37 @@ class _IdleView extends StatelessWidget {
                   child: ElevatedButton.icon(
                     onPressed: onCreateGame,
                     icon: const Icon(Icons.play_arrow),
-                    label: const Text('CREA PARTITA'),
+                    label: Text('CREA PARTITA',
+                        style: GoogleFonts.cinzel(fontWeight: FontWeight.bold)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _gold,
-                      foregroundColor: Colors.black,
+                      foregroundColor: _ironBlack,
                       minimumSize: const Size(double.infinity, 48),
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
+                          borderRadius: BorderRadius.circular(2)),
                     ),
                   ),
                 ),
 
                 const SizedBox(height: 20),
-                const Row(children: [
-                  Expanded(child: Divider(color: _gold)),
+                Row(children: [
+                  Expanded(
+                      child: Divider(color: _gold.withValues(alpha: 0.3))),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    child: Text('oppure', style: TextStyle(color: _white)),
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Text('oppure',
+                        style: GoogleFonts.cinzel(
+                            color: _parchment.withValues(alpha: 0.5),
+                            fontSize: 12)),
                   ),
-                  Expanded(child: Divider(color: _gold)),
+                  Expanded(
+                      child: Divider(color: _gold.withValues(alpha: 0.3))),
                 ]),
                 const SizedBox(height: 20),
 
-                // Sezione "Unisciti"
+                // Join game section
                 _SectionCard(
-                  color: _blue,
+                  color: _steelBlue,
                   icon: Icons.link,
                   title: 'Unisciti a una Partita',
                   subtitle: 'Inserisci il codice ricevuto dall\'avversario',
@@ -386,8 +392,8 @@ class _IdleView extends StatelessWidget {
                           const UpperCaseTextFormatter(),
                         ],
                         maxLength: 6,
-                        style: const TextStyle(
-                          color: _white,
+                        style: GoogleFonts.cinzel(
+                          color: _parchment,
                           fontSize: 22,
                           letterSpacing: 6,
                           fontWeight: FontWeight.bold,
@@ -396,18 +402,25 @@ class _IdleView extends StatelessWidget {
                         decoration: InputDecoration(
                           counterText: '',
                           hintText: 'CODICE',
-                          hintStyle:
-                              const TextStyle(color: _white, letterSpacing: 4),
+                          hintStyle: GoogleFonts.cinzel(
+                              color: _parchment.withValues(alpha: 0.3),
+                              letterSpacing: 4),
                           filled: true,
-                          fillColor: const Color(0xFF111626),
+                          fillColor: _darkStone,
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(2),
                             borderSide: const BorderSide(color: _gold),
                           ),
                           enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(2),
+                            borderSide: BorderSide(
+                                color: _steelBlue.withValues(alpha: 0.5),
+                                width: 1.5),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(2),
                             borderSide:
-                                const BorderSide(color: _blue, width: 1.5),
+                                const BorderSide(color: _gold, width: 1.5),
                           ),
                         ),
                       ),
@@ -415,13 +428,15 @@ class _IdleView extends StatelessWidget {
                       ElevatedButton.icon(
                         onPressed: onJoinGame,
                         icon: const Icon(Icons.login),
-                        label: const Text('UNISCITI'),
+                        label: Text('UNISCITI',
+                            style: GoogleFonts.cinzel(
+                                fontWeight: FontWeight.bold)),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: _red,
-                          foregroundColor: _white,
+                          backgroundColor: _crimson,
+                          foregroundColor: _parchment,
                           minimumSize: const Size(double.infinity, 48),
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8)),
+                              borderRadius: BorderRadius.circular(2)),
                         ),
                       ),
                     ],
@@ -433,18 +448,22 @@ class _IdleView extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: _red.withValues(alpha: 0.18),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: _gold.withValues(alpha: 0.7)),
+                      color: _crimson.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(2),
+                      border: Border.all(
+                          color: _crimson.withValues(alpha: 0.4)),
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.error_outline, color: _gold, size: 18),
+                        const Icon(Icons.error_outline,
+                            color: _crimson, size: 18),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
                             errorMessage!,
-                            style: const TextStyle(color: _white, fontSize: 13),
+                            style: TextStyle(
+                                color: _parchment.withValues(alpha: 0.8),
+                                fontSize: 13),
                           ),
                         ),
                       ],
@@ -460,7 +479,7 @@ class _IdleView extends StatelessWidget {
   }
 }
 
-// ─── Vista attesa avversario ──────────────────────────────────────────────────
+// ─── Waiting view ──────────────────────────────────────────────────────────
 
 class _WaitingForOpponentView extends StatelessWidget {
   final String gameCode;
@@ -475,37 +494,47 @@ class _WaitingForOpponentView extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.wifi_tethering, color: _gold, size: 64),
+          Icon(Icons.shield,
+              color: _gold.withValues(alpha: 0.7), size: 64),
           const SizedBox(height: 24),
-          const Text(
-            'In attesa dell\'avversario…',
-            style: TextStyle(
-                color: _white, fontSize: 18, fontWeight: FontWeight.bold),
+          Text(
+            'In attesa dell\'avversario...',
+            style: GoogleFonts.cinzel(
+                color: _parchment,
+                fontSize: 17,
+                fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
-          const Text(
+          Text(
             'Condividi questo codice con il tuo amico:',
-            style: TextStyle(color: _white, fontSize: 13),
+            style: GoogleFonts.cinzel(
+                color: _parchment.withValues(alpha: 0.6), fontSize: 12),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
 
-          // Codice partita con pulsante copia
+          // Game code display
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             decoration: BoxDecoration(
-              color: const Color(0xFF111626),
-              borderRadius: BorderRadius.circular(12),
+              color: _darkStone,
+              borderRadius: BorderRadius.circular(4),
               border: Border.all(color: _gold, width: 2),
+              boxShadow: [
+                BoxShadow(
+                  color: _gold.withValues(alpha: 0.15),
+                  blurRadius: 16,
+                ),
+              ],
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   gameCode,
-                  style: const TextStyle(
+                  style: GoogleFonts.cinzelDecorative(
                     color: _gold,
-                    fontSize: 32,
+                    fontSize: 30,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 8,
                   ),
@@ -532,14 +561,15 @@ class _WaitingForOpponentView extends StatelessWidget {
           const SizedBox(
             width: 32,
             height: 32,
-            child: CircularProgressIndicator(color: _gold, strokeWidth: 3),
+            child: CircularProgressIndicator(color: _gold, strokeWidth: 2),
           ),
           const SizedBox(height: 32),
 
           TextButton.icon(
             onPressed: onCancel,
-            icon: const Icon(Icons.cancel_outlined, color: _red),
-            label: const Text('Annulla', style: TextStyle(color: _red)),
+            icon: const Icon(Icons.cancel_outlined, color: _crimson),
+            label: Text('Annulla',
+                style: GoogleFonts.cinzel(color: _crimson)),
           ),
         ],
       ),
@@ -547,7 +577,7 @@ class _WaitingForOpponentView extends StatelessWidget {
   }
 }
 
-// ─── Card sezione ─────────────────────────────────────────────────────────────
+// ─── Section card ──────────────────────────────────────────────────────────
 
 class _SectionCard extends StatelessWidget {
   final Color color;
@@ -569,9 +599,9 @@ class _SectionCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFF111626),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: _gold.withValues(alpha: 0.4)),
+        color: _darkStone,
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: _gold.withValues(alpha: 0.25)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -582,17 +612,19 @@ class _SectionCard extends StatelessWidget {
               const SizedBox(width: 8),
               Text(
                 title,
-                style: TextStyle(
+                style: GoogleFonts.cinzel(
                   color: color,
                   fontWeight: FontWeight.bold,
-                  fontSize: 15,
+                  fontSize: 14,
                   letterSpacing: 1,
                 ),
               ),
             ],
           ),
           const SizedBox(height: 4),
-          Text(subtitle, style: const TextStyle(color: _white, fontSize: 12)),
+          Text(subtitle,
+              style: TextStyle(
+                  color: _parchment.withValues(alpha: 0.5), fontSize: 12)),
           const SizedBox(height: 16),
           child,
         ],
@@ -612,6 +644,8 @@ class UpperCaseTextFormatter extends TextInputFormatter {
     return newValue.copyWith(text: newValue.text.toUpperCase());
   }
 }
+
+// ─── Coin Flip Dialog ──────────────────────────────────────────────────────
 
 class _CoinFlipDialog extends StatefulWidget {
   final bool iStart;
@@ -638,7 +672,8 @@ class _CoinFlipDialogState extends State<_CoinFlipDialog>
     _angle = Tween<double>(
       begin: 0,
       end: (2 * math.pi * 8) + targetExtra,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
+    ).animate(
+        CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
     _controller.forward().whenComplete(() {
       if (!mounted) return;
       setState(() => _finished = true);
@@ -654,10 +689,14 @@ class _CoinFlipDialogState extends State<_CoinFlipDialog>
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: const Color(0xFF111626),
-      title: const Text(
+      backgroundColor: _darkStone,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(4),
+        side: BorderSide(color: _gold.withValues(alpha: 0.4)),
+      ),
+      title: Text(
         'Parità iniziativa',
-        style: TextStyle(color: _gold),
+        style: GoogleFonts.cinzelDecorative(color: _gold, fontSize: 18),
       ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
@@ -674,16 +713,24 @@ class _CoinFlipDialogState extends State<_CoinFlipDialog>
                   ..setEntry(3, 2, 0.001)
                   ..rotateY(angle),
                 child: Container(
-                  width: 76,
-                  height: 76,
+                  width: 80,
+                  height: 80,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: _gold,
-                    border: Border.all(color: _white, width: 2),
+                    gradient: const RadialGradient(
+                      colors: [
+                        Color(0xFFF0D060),
+                        _gold,
+                        Color(0xFF9A7B2A)
+                      ],
+                      stops: [0.0, 0.5, 1.0],
+                    ),
+                    border: Border.all(
+                        color: const Color(0xFF9A7B2A), width: 3),
                     boxShadow: [
                       BoxShadow(
-                        color: _gold.withValues(alpha: 0.45),
-                        blurRadius: 14,
+                        color: _gold.withValues(alpha: 0.5),
+                        blurRadius: 16,
                       ),
                     ],
                   ),
@@ -697,11 +744,10 @@ class _CoinFlipDialogState extends State<_CoinFlipDialog>
                       ),
                       child: Text(
                         sideLabel,
-                        style: const TextStyle(
-                          color: Colors.black,
+                        style: GoogleFonts.cinzelDecorative(
+                          color: _ironBlack,
                           fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          letterSpacing: 1.2,
+                          fontSize: 16,
                         ),
                       ),
                     ),
@@ -710,11 +756,11 @@ class _CoinFlipDialogState extends State<_CoinFlipDialog>
               );
             },
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 12),
           if (!_finished)
-            const Text(
+            Text(
               'Lancio della moneta in corso...',
-              style: TextStyle(color: _white),
+              style: GoogleFonts.cinzel(color: _parchment, fontSize: 12),
               textAlign: TextAlign.center,
             ),
           if (_finished)
@@ -722,7 +768,7 @@ class _CoinFlipDialogState extends State<_CoinFlipDialog>
               widget.iStart
                   ? 'Hai vinto il lancio: inizi tu.'
                   : 'L\'avversario vince il lancio: inizia lui.',
-              style: const TextStyle(color: _white),
+              style: GoogleFonts.cinzel(color: _parchment, fontSize: 12),
               textAlign: TextAlign.center,
             ),
         ],
@@ -731,10 +777,15 @@ class _CoinFlipDialogState extends State<_CoinFlipDialog>
         if (_finished)
           ElevatedButton(
             onPressed: () => Navigator.pop(context),
-            style: ElevatedButton.styleFrom(backgroundColor: _gold),
-            child: const Text(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: _gold,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(2)),
+            ),
+            child: Text(
               'Inizia partita',
-              style: TextStyle(color: Colors.black),
+              style: GoogleFonts.cinzel(
+                  color: _ironBlack, fontWeight: FontWeight.bold),
             ),
           ),
       ],

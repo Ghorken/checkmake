@@ -36,12 +36,18 @@ class Checkmake extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const medievalGold = Color(0xFFD4AF37);
-    const royalBlue = Color(0xFF1E3A8A);
-    const warRed = Color(0xFF8B1E2D);
-    const ironBlack = Color(0xFF0B0B10);
-    const parchmentWhite = Color(0xFFF8F7F2);
+    const bloodRed = Color(0xFF6B0F1A);
+    const deepCrimson = Color(0xFF8B1E2D);
+    const ironBlack = Color(0xFF0A0A0F);
+    const parchmentWhite = Color(0xFFF0E6D3);
+    const darkStone = Color(0xFF1A1A2E);
+    const burnishedBronze = Color(0xFFCD7F32);
 
     final base = ThemeData.dark(useMaterial3: true);
+
+    // Cinzel Decorative for titles, Cinzel for body
+    final cinzelTextTheme = GoogleFonts.cinzelTextTheme(base.textTheme);
+
     return ChangeNotifierProvider(
       create: (_) => PlayerProfile(name: 'Giocatore'),
       child: MaterialApp(
@@ -65,27 +71,28 @@ class Checkmake extends StatelessWidget {
           colorScheme: const ColorScheme.dark(
             primary: medievalGold,
             onPrimary: ironBlack,
-            secondary: warRed,
+            secondary: deepCrimson,
             onSecondary: parchmentWhite,
-            surface: Color(0xFF111626),
+            surface: darkStone,
             onSurface: parchmentWhite,
-            error: warRed,
+            error: bloodRed,
             onError: parchmentWhite,
+            tertiary: burnishedBronze,
           ),
           scaffoldBackgroundColor: ironBlack,
-          textTheme: GoogleFonts.cinzelTextTheme(base.textTheme).apply(
+          textTheme: cinzelTextTheme.apply(
             bodyColor: parchmentWhite,
             displayColor: medievalGold,
           ),
           appBarTheme: AppBarTheme(
-            backgroundColor: royalBlue.withValues(alpha: 0.35),
+            backgroundColor: const Color(0xFF120E1A).withValues(alpha: 0.95),
             foregroundColor: parchmentWhite,
             elevation: 0,
-            titleTextStyle: GoogleFonts.cinzel(
+            titleTextStyle: GoogleFonts.cinzelDecorative(
               color: medievalGold,
               fontSize: 20,
               fontWeight: FontWeight.w700,
-              letterSpacing: 1.6,
+              letterSpacing: 2.0,
             ),
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
@@ -93,11 +100,33 @@ class Checkmake extends StatelessWidget {
               foregroundColor: parchmentWhite,
               textStyle: GoogleFonts.cinzel(
                 fontWeight: FontWeight.w700,
-                letterSpacing: 1.2,
+                letterSpacing: 1.5,
               ),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(4),
               ),
+            ),
+          ),
+          cardTheme: CardThemeData(
+            color: darkStone,
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(4),
+              side: BorderSide(
+                color: medievalGold.withValues(alpha: 0.2),
+              ),
+            ),
+          ),
+          dividerTheme: DividerThemeData(
+            color: medievalGold.withValues(alpha: 0.3),
+            thickness: 1,
+          ),
+          dialogTheme: const DialogThemeData(
+            backgroundColor: Color(0xFF1A1A2E),
+            titleTextStyle: TextStyle(
+              color: medievalGold,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ),

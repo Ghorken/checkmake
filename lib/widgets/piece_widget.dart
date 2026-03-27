@@ -6,11 +6,18 @@ import 'package:flutter/material.dart';
 import 'package:checkmake/models/piece.dart';
 import 'package:checkmake/models/piece_definitions.dart';
 
+// Medieval palette
+const _gold = Color(0xFFD4AF37);
+const _parchment = Color(0xFFF0E6D3);
+const _ironBlack = Color(0xFF0A0A0F);
+const _crimson = Color(0xFF8B1E2D);
+const _royalBlue = Color(0xFF1E3A8A);
+
 // ─────────────────────────────────────────────────────────────────────────────
 // PLACEHOLDER PAINTER
-// Disegna placeholder colorati finché non sono disponibili gli asset reali.
-// I pezzi del giocatore (player1) mostrano il simbolo normale → di schiena.
-// I pezzi dell'avversario (player2) mostrano il simbolo specchiato → di fronte.
+// Medieval warrior shield style placeholders.
+// Player1 pieces: blue-tinted shields (back view).
+// Player2 pieces: red-tinted shields (front view, mirrored symbol).
 // ─────────────────────────────────────────────────────────────────────────────
 class PiecePlaceholderPainter extends CustomPainter {
   final PieceType type;
@@ -24,12 +31,12 @@ class PiecePlaceholderPainter extends CustomPainter {
   });
 
   static Color _pieceColor(PieceType type) => switch (type) {
-        PieceType.pawn => const Color(0xFFF8F7F2),
-        PieceType.rook => const Color(0xFF1E3A8A),
-        PieceType.knight => const Color(0xFF8B1E2D),
-        PieceType.bishop => const Color(0xFF274690),
-        PieceType.queen => const Color(0xFFD4AF37),
-        PieceType.king => const Color(0xFFF3DE9B),
+        PieceType.pawn => const Color(0xFFD4C5A9), // sandstone
+        PieceType.rook => const Color(0xFF4A6FA5), // steel blue
+        PieceType.knight => const Color(0xFF8B4513), // saddle brown
+        PieceType.bishop => const Color(0xFF6A5ACD), // purple vestment
+        PieceType.queen => const Color(0xFFD4AF37), // gold crown
+        PieceType.king => const Color(0xFFF3DE9B), // royal gold
       };
 
   static String _symbol(PieceBaseType base) => switch (base) {
@@ -45,50 +52,69 @@ class PiecePlaceholderPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final def = pieceDefinitions[type]!;
     var color = _pieceColor(type);
-    if (isHalfHp) color = color.withValues(alpha: 0.6);
+    if (isHalfHp) color = color.withValues(alpha: 0.55);
 
-    // Bordo blu = player1 (giocatore), rosso = player2 (avversario)
+    // Player identity colors
     final borderColor = side == PlayerSide.player1
-        ? const Color(0xFF1E3A8A)
-        : const Color(0xFF8B1E2D);
+        ? const Color(0xFF2B5798) // Steel blue
+        : const Color(0xFF9B2335); // Blood red
 
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width / 2 - 2;
 
-    // Sfondo circolare
-    canvas.drawCircle(center, radius, Paint()..color = color);
+    // Shield-like hexagonal background
+    final shieldPath = _createShieldPath(center, radius);
+    canvas.drawPath(shieldPath, Paint()..color = color);
 
-    // Bordo colorato
-    canvas.drawCircle(
-      center,
-      radius,
+    // Dark inner gradient effect
+    final innerGradient = Paint()
+      ..shader = RadialGradient(
+        colors: [
+          Colors.transparent,
+          Colors.black.withValues(alpha: 0.35),
+        ],
+      ).createShader(Rect.fromCircle(center: center, radius: radius));
+    canvas.drawPath(shieldPath, innerGradient);
+
+    // Thick border
+    canvas.drawPath(
+      shieldPath,
       Paint()
         ..color = borderColor
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 3,
+        ..strokeWidth = 2.5,
     );
 
-    // Crepa a metà vita
+    // Second inner border (double-line medieval look)
+    final innerShieldPath = _createShieldPath(center, radius - 3);
+    canvas.drawPath(
+      innerShieldPath,
+      Paint()
+        ..color = borderColor.withValues(alpha: 0.4)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 0.8,
+    );
+
+    // Battle damage effect at half HP
     if (isHalfHp) {
-      final crackPaint = Paint()
-        ..color = Colors.black.withValues(alpha: 0.5)
-        ..strokeWidth = 1.5
-        ..style = PaintingStyle.stroke;
-      final path = Path()
-        ..moveTo(size.width * 0.4, size.height * 0.2)
-        ..lineTo(size.width * 0.55, size.height * 0.5)
-        ..lineTo(size.width * 0.35, size.height * 0.8);
-      canvas.drawPath(path, crackPaint);
+      _drawBattleDamage(canvas, size);
     }
 
-    // Simbolo scacchi: specchiato orizzontalmente per player2 (di fronte)
+    // Chess symbol
     final symbol = _symbol(def.baseType);
     final textPainter = TextPainter(
       text: TextSpan(
         text: symbol,
         style: TextStyle(
-          fontSize: size.width * 0.55,
-          color: Colors.white.withValues(alpha: isHalfHp ? 0.6 : 0.95),
+          fontSize: size.width * 0.5,
+          color: Colors.white.withValues(alpha: isHalfHp ? 0.5 : 0.92),
+          shadows: [
+            Shadow(
+              color: Colors.black.withValues(alpha: 0.7),
+              blurRadius: 3,
+              offset: const Offset(1, 1),
+            ),
+          ],
         ),
       ),
       textDirection: TextDirection.ltr,
@@ -98,7 +124,6 @@ class PiecePlaceholderPainter extends CustomPainter {
     final dy = center.dy - textPainter.height / 2;
 
     if (side == PlayerSide.player2) {
-      // Specchia orizzontalmente: trasla al centro, scala -1 sull'asse X, ritrasla
       canvas.save();
       canvas.translate(center.dx, 0);
       canvas.scale(-1, 1);
@@ -110,6 +135,56 @@ class PiecePlaceholderPainter extends CustomPainter {
     }
   }
 
+  Path _createShieldPath(Offset center, double radius) {
+    // Rounded hexagonal shield shape
+    final path = Path();
+    const sides = 6;
+    const startAngle = -math.pi / 2;
+    for (int i = 0; i < sides; i++) {
+      final angle = startAngle + (2 * math.pi * i / sides);
+      final x = center.dx + radius * math.cos(angle);
+      final y = center.dy + radius * math.sin(angle) * 1.05; // slightly taller
+      if (i == 0) {
+        path.moveTo(x, y);
+      } else {
+        path.lineTo(x, y);
+      }
+    }
+    path.close();
+    return path;
+  }
+
+  void _drawBattleDamage(Canvas canvas, Size size) {
+    final crackPaint = Paint()
+      ..color = const Color(0xFF6B0F1A).withValues(alpha: 0.7)
+      ..strokeWidth = 1.5
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+
+    // Main crack
+    final path1 = Path()
+      ..moveTo(size.width * 0.35, size.height * 0.15)
+      ..lineTo(size.width * 0.45, size.height * 0.35)
+      ..lineTo(size.width * 0.55, size.height * 0.45)
+      ..lineTo(size.width * 0.4, size.height * 0.65)
+      ..lineTo(size.width * 0.5, size.height * 0.85);
+    canvas.drawPath(path1, crackPaint);
+
+    // Secondary crack
+    final path2 = Path()
+      ..moveTo(size.width * 0.55, size.height * 0.45)
+      ..lineTo(size.width * 0.7, size.height * 0.55);
+    canvas.drawPath(path2, crackPaint..strokeWidth = 1.0);
+
+    // Blood splatter dots
+    final splatPaint = Paint()
+      ..color = const Color(0xFF6B0F1A).withValues(alpha: 0.4);
+    canvas.drawCircle(
+        Offset(size.width * 0.6, size.height * 0.3), 1.5, splatPaint);
+    canvas.drawCircle(
+        Offset(size.width * 0.35, size.height * 0.7), 1.0, splatPaint);
+  }
+
   @override
   bool shouldRepaint(PiecePlaceholderPainter old) =>
       old.type != type || old.side != side || old.isHalfHp != isHalfHp;
@@ -117,23 +192,11 @@ class PiecePlaceholderPainter extends CustomPainter {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PIECE WIDGET
-// Carica piece.imagePath (asset PNG); se manca usa il placeholder.
-//
-// Convenzione asset:
-//   assets/images/pieces/{type}_{perspective}_{state}.png
-//     perspective = 'back'  → player1 (di schiena)
-//                = 'front' → player2 (di fronte)
-//     state       = 'full' | 'half'
-//
-// Esempi:
-//   assets/images/pieces/pawn_back_full.png
-//   assets/images/pieces/pawn_front_half.png
-//   assets/images/pieces/queen_back_full.png
 // ─────────────────────────────────────────────────────────────────────────────
 class PieceWidget extends StatelessWidget {
   final Piece piece;
   final double size;
-  final bool showStats; // mostra la barra HP solo per i propri pezzi
+  final bool showStats;
   final bool isSelected;
 
   const PieceWidget({
@@ -149,8 +212,7 @@ class PieceWidget extends StatelessWidget {
     final rotateForPlayer2 = piece.side == PlayerSide.player2;
     final visualLayer = Stack(
       children: [
-        // ── Immagine principale ──────────────────────────────────────────
-        // Prova a caricare l'asset; se non esiste (ancora) usa il placeholder.
+        // ── Main image ──────────────────────────────────────────
         Positioned.fill(
           child: Image.asset(
             piece.imagePath,
@@ -159,16 +221,22 @@ class PieceWidget extends StatelessWidget {
           ),
         ),
 
-        // ── Bordo selezione ──────────────────────────────────────────────
+        // ── Selection glow ──────────────────────────────────────
         if (isSelected)
           Container(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: const Color(0xFFD4AF37), width: 3),
+              border: Border.all(color: _gold, width: 2.5),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFFD4AF37).withValues(alpha: 0.5),
-                  blurRadius: 8,
+                  color: _gold.withValues(alpha: 0.5),
+                  blurRadius: 10,
+                  spreadRadius: 1,
+                ),
+                BoxShadow(
+                  color: _gold.withValues(alpha: 0.2),
+                  blurRadius: 20,
+                  spreadRadius: 3,
                 ),
               ],
             ),
@@ -189,7 +257,7 @@ class PieceWidget extends StatelessWidget {
           else
             visualLayer,
 
-          // ── Barra HP ─────────────────────────────────────────────────────
+          // ── HP Bar (blood-themed) ──────────────────────────────
           if (showStats)
             Positioned(
               top: rotateForPlayer2 ? 0 : null,
@@ -216,6 +284,8 @@ class PieceWidget extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// HP BAR (blood-themed)
+// ─────────────────────────────────────────────────────────────────────────────
 class _HpBar extends StatelessWidget {
   final int current;
   final int max;
@@ -224,22 +294,40 @@ class _HpBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ratio = current / max;
-    const color = Colors.green;
+    final ratio = (current / max).clamp(0.0, 1.0);
+
+    // Color transitions: green -> yellow -> orange -> red based on HP
+    Color barColor;
+    if (ratio > 0.6) {
+      barColor = const Color(0xFF2E7D32); // Forest green
+    } else if (ratio > 0.35) {
+      barColor = const Color(0xFFCD7F32); // Bronze/amber warning
+    } else {
+      barColor = const Color(0xFF8B1E2D); // Blood red critical
+    }
 
     return Container(
       height: 4,
       decoration: BoxDecoration(
-        color: const Color(0xFF0B0B10).withValues(alpha: 0.75),
-        borderRadius: BorderRadius.circular(2),
+        color: _ironBlack.withValues(alpha: 0.8),
+        borderRadius: BorderRadius.circular(1),
+        border: Border.all(
+          color: Colors.black.withValues(alpha: 0.5),
+          width: 0.5,
+        ),
       ),
       child: FractionallySizedBox(
         alignment: Alignment.centerLeft,
         widthFactor: ratio,
         child: Container(
           decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(2),
+            gradient: LinearGradient(
+              colors: [
+                barColor,
+                barColor.withValues(alpha: 0.7),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(1),
           ),
         ),
       ),
