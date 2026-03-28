@@ -116,9 +116,16 @@ class _ArmyBuilderScreenState extends State<ArmyBuilderScreen> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: _darkStone.withValues(alpha: 0.95),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  _darkStone.withValues(alpha: 0.98),
+                  const Color(0xFF0D1225),
+                ],
+              ),
               border: Border(
-                bottom: BorderSide(color: _gold.withValues(alpha: 0.2)),
+                bottom: BorderSide(color: _gold.withValues(alpha: 0.35), width: 1.5),
               ),
             ),
             child: Row(
@@ -245,9 +252,11 @@ class _PieceRow extends StatelessWidget {
                           fontSize: 12)),
                   Text(
                     'HP ${def.baseHp}  ATK ${def.baseAttack}  VAL ${def.baseValue}',
-                    style: TextStyle(
-                        color: _parchment.withValues(alpha: 0.5),
-                        fontSize: 10),
+                    style: GoogleFonts.lora(
+                      color: _parchment.withValues(alpha: 0.6),
+                      fontSize: 10,
+                      fontStyle: FontStyle.italic,
+                    ),
                   ),
                 ],
               ),

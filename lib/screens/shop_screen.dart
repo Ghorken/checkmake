@@ -143,9 +143,10 @@ class _PiecesTab extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(l.pieceDescFor(def.type),
-                    style: TextStyle(
-                        color: _parchment.withValues(alpha: 0.6),
-                        fontSize: 11)),
+                    style: GoogleFonts.lora(
+                        color: _parchment.withValues(alpha: 0.65),
+                        fontSize: 11,
+                        fontStyle: FontStyle.italic)),
                 const SizedBox(height: 4),
                 Row(
                   children: [
@@ -264,8 +265,11 @@ class _InitiativeCard extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               l.shopInitiativeDesc,
-              style: TextStyle(
-                  color: _parchment.withValues(alpha: 0.6), fontSize: 11),
+              style: GoogleFonts.lora(
+                color: _parchment.withValues(alpha: 0.65),
+                fontSize: 11,
+                fontStyle: FontStyle.italic,
+              ),
             ),
             const SizedBox(height: 8),
             ElevatedButton(
@@ -489,9 +493,10 @@ class _SkinsTab extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(skinDesc,
-                    style: TextStyle(
-                        color: _parchment.withValues(alpha: 0.6),
-                        fontSize: 11)),
+                    style: GoogleFonts.lora(
+                        color: _parchment.withValues(alpha: 0.65),
+                        fontSize: 11,
+                        fontStyle: FontStyle.italic)),
                 if (skin.targetPiece == null)
                   Text(l.shopSkinForArmy,
                       style: GoogleFonts.cinzel(

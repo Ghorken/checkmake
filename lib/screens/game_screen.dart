@@ -93,7 +93,11 @@ class _GameScreenState extends State<GameScreen> {
                 game.hotseatMode
                     ? 'Giocatore ${side == PlayerSide.player1 ? 1 : 2}, vuoi ritirarti dalla partita?'
                     : l.gameLeaveConfirmBody,
-                style: TextStyle(color: _parchment.withValues(alpha: 0.8)),
+                style: GoogleFonts.lora(
+                  color: _parchment.withValues(alpha: 0.9),
+                  fontSize: 14,
+                  fontStyle: FontStyle.italic,
+                ),
               ),
               actions: [
                 TextButton(
@@ -182,7 +186,11 @@ class _GameScreenState extends State<GameScreen> {
               children: [
                 Text(
                   body,
-                  style: TextStyle(color: _parchment.withValues(alpha: 0.8)),
+                  style: GoogleFonts.lora(
+                    color: _parchment.withValues(alpha: 0.9),
+                    fontSize: 14,
+                    fontStyle: FontStyle.italic,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Text(
@@ -464,7 +472,11 @@ class _LocalEndSection extends StatelessWidget {
         const SizedBox(height: 8),
         Text(
           body,
-          style: TextStyle(color: _parchment.withValues(alpha: 0.8)),
+          style: GoogleFonts.lora(
+            color: _parchment.withValues(alpha: 0.9),
+            fontSize: 14,
+            fontStyle: FontStyle.italic,
+          ),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 10),
@@ -720,13 +732,28 @@ class _OpponentBar extends StatelessWidget {
         height: 68,
         padding: const EdgeInsets.symmetric(horizontal: 10),
         decoration: BoxDecoration(
-          color: _darkStone.withValues(alpha: 0.95),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              _crimson.withValues(alpha: 0.25),
+              _darkStone.withValues(alpha: 0.95),
+              const Color(0xFF0D1225),
+            ],
+          ),
           border: Border(
             bottom: BorderSide(
-              color: _crimson.withValues(alpha: 0.4),
+              color: _crimson.withValues(alpha: 0.55),
               width: 2,
             ),
           ),
+          boxShadow: [
+            BoxShadow(
+              color: _crimson.withValues(alpha: 0.12),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            ),
+          ],
         ),
         child: Row(
           children: [
@@ -834,13 +861,28 @@ class _PlayerBar extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: _darkStone.withValues(alpha: 0.95),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            const Color(0xFF0D1225),
+            _darkStone.withValues(alpha: 0.95),
+            _steelBlue.withValues(alpha: 0.2),
+          ],
+        ),
         border: Border(
           top: BorderSide(
-            color: _steelBlue.withValues(alpha: 0.4),
+            color: _steelBlue.withValues(alpha: 0.55),
             width: 2,
           ),
         ),
+        boxShadow: [
+          BoxShadow(
+            color: _steelBlue.withValues(alpha: 0.1),
+            blurRadius: 8,
+            offset: const Offset(0, -3),
+          ),
+        ],
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -908,6 +950,11 @@ class _PlayerBar extends StatelessWidget {
                 ],
               ),
               const Spacer(),
+              if (game.phase == GamePhase.myTurn &&
+                  game.selectedPosition != null)
+                _AbilityButton(game: game)
+              else
+                const SizedBox(width: 48),
               IconButton(
                 onPressed: () => unawaited(
                   onSurrenderPressed(
@@ -918,12 +965,6 @@ class _PlayerBar extends StatelessWidget {
                 icon: const Icon(Icons.flag, color: _crimson),
                 tooltip: l.gameLeaveConfirmTitle,
               ),
-              if (game.phase == GamePhase.myTurn) ...[
-                if (game.selectedPosition != null) ...[
-                  _AbilityButton(game: game),
-                  const SizedBox(width: 8),
-                ],
-              ],
             ],
           ),
         ],

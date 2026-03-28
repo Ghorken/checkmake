@@ -258,8 +258,8 @@ class _CheckerboardPainter extends CustomPainter {
     final squareSize = size.width / squareCount;
     final rows = (size.height / squareSize).ceil() + 1;
 
-    final lightPaint = Paint()..color = _lightSquare.withValues(alpha: 0.12);
-    final darkPaint = Paint()..color = _darkSquare.withValues(alpha: 0.25);
+    final lightPaint = Paint()..color = _lightSquare.withValues(alpha: 0.28);
+    final darkPaint = Paint()..color = _darkSquare.withValues(alpha: 0.55);
 
     for (int r = 0; r < rows; r++) {
       for (int c = 0; c < squareCount; c++) {
@@ -284,8 +284,8 @@ class _CheckerboardPainter extends CustomPainter {
 
     // Grid lines for stone-cut feel
     final linePaint = Paint()
-      ..color = _gold.withValues(alpha: 0.05)
-      ..strokeWidth = 0.5
+      ..color = _gold.withValues(alpha: 0.12)
+      ..strokeWidth = 0.8
       ..style = PaintingStyle.stroke;
     for (int r = 0; r <= rows; r++) {
       canvas.drawLine(
@@ -374,39 +374,54 @@ class _DecorativeLinePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = _gold.withValues(alpha: 0.5)
-      ..strokeWidth = 1.0
+      ..color = _gold.withValues(alpha: 0.65)
+      ..strokeWidth = 1.2
       ..style = PaintingStyle.stroke;
 
     final cy = size.height / 2;
     final cx = size.width / 2;
 
-    // Left line
-    canvas.drawLine(Offset(0, cy), Offset(cx - 12, cy), paint);
-    // Right line
-    canvas.drawLine(Offset(cx + 12, cy), Offset(size.width, cy), paint);
+    // Main lines
+    canvas.drawLine(Offset(0, cy), Offset(cx - 14, cy), paint);
+    canvas.drawLine(Offset(cx + 14, cy), Offset(size.width, cy), paint);
 
-    // Diamond in center
-    final diamondPaint = Paint()
-      ..color = _gold.withValues(alpha: 0.6)
+    // Central diamond
+    final diamondFill = Paint()
+      ..color = _gold.withValues(alpha: 0.75)
       ..style = PaintingStyle.fill;
     final diamond = Path()
-      ..moveTo(cx, cy - 5)
-      ..lineTo(cx + 8, cy)
-      ..lineTo(cx, cy + 5)
-      ..lineTo(cx - 8, cy)
+      ..moveTo(cx, cy - 6)
+      ..lineTo(cx + 10, cy)
+      ..lineTo(cx, cy + 6)
+      ..lineTo(cx - 10, cy)
       ..close();
-    canvas.drawPath(diamond, diamondPaint);
+    canvas.drawPath(diamond, diamondFill);
+    canvas.drawPath(diamond, paint..strokeWidth = 0.5);
 
-    // Small diamonds at ends
-    for (final offset in [16.0, size.width - 16.0]) {
-      final small = Path()
-        ..moveTo(offset, cy - 3)
-        ..lineTo(offset + 4, cy)
-        ..lineTo(offset, cy + 3)
-        ..lineTo(offset - 4, cy)
+    // Sword-tip terminations at the ends of lines
+    for (final x in [0.0, size.width]) {
+      final sign = x == 0.0 ? 1.0 : -1.0;
+      final tip = Path()
+        ..moveTo(x, cy)
+        ..lineTo(x + sign * 8, cy - 3)
+        ..lineTo(x + sign * 14, cy)
+        ..lineTo(x + sign * 8, cy + 3)
         ..close();
-      canvas.drawPath(small, Paint()..color = _gold.withValues(alpha: 0.3));
+      canvas.drawPath(tip, Paint()..color = _gold.withValues(alpha: 0.45)..style = PaintingStyle.fill);
+    }
+
+    // Small flanking diamonds
+    for (final offset in [cx * 0.4, size.width - cx * 0.4]) {
+      final small = Path()
+        ..moveTo(offset, cy - 3.5)
+        ..lineTo(offset + 5, cy)
+        ..lineTo(offset, cy + 3.5)
+        ..lineTo(offset - 5, cy)
+        ..close();
+      canvas.drawPath(
+        small,
+        Paint()..color = _gold.withValues(alpha: 0.35)..style = PaintingStyle.fill,
+      );
     }
   }
 
