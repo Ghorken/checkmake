@@ -12,7 +12,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get appTitle => 'CheckMake';
 
   @override
-  String get appSubtitle => 'Battle Chess';
+  String get appSubtitle => 'Crea l\'armata. Spezza la corona.';
 
   @override
   String get statCoins => 'Monete';

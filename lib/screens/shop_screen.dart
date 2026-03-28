@@ -1,6 +1,7 @@
 // lib/screens/shop_screen.dart
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:checkmake/l10n/app_localizations.dart';
 import 'package:checkmake/l10n/piece_strings.dart';
@@ -10,10 +11,11 @@ import 'package:checkmake/providers/shop_provider.dart';
 import 'package:checkmake/widgets/piece_widget.dart';
 
 const _gold = Color(0xFFD4AF37);
-const _blue = Color(0xFF1E3A8A);
-const _red = Color(0xFF8B1E2D);
-const _black = Color(0xFF0B0B10);
-const _white = Color(0xFFF8F7F2);
+const _steelBlue = Color(0xFF2B5798);
+const _crimson = Color(0xFF8B1E2D);
+const _ironBlack = Color(0xFF0A0A0F);
+const _parchment = Color(0xFFF0E6D3);
+const _darkStone = Color(0xFF1A1A2E);
 
 class ShopScreen extends StatefulWidget {
   const ShopScreen({super.key});
@@ -38,26 +40,32 @@ class _ShopScreenState extends State<ShopScreen>
     final l = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: _black,
+      backgroundColor: _ironBlack,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF111626),
+        backgroundColor: _darkStone.withValues(alpha: 0.95),
         title: Row(
           children: [
-            Text(l.shopTitle, style: const TextStyle(color: _gold)),
+            Text(l.shopTitle,
+                style: GoogleFonts.cinzelDecorative(
+                    color: _gold, fontSize: 18)),
             const Spacer(),
             const Icon(Icons.monetization_on, color: _gold, size: 18),
             const SizedBox(width: 4),
             Text(
               '${shop.profile.coins}',
-              style: const TextStyle(color: _gold, fontWeight: FontWeight.bold),
+              style: GoogleFonts.cinzel(
+                  color: _gold, fontWeight: FontWeight.bold),
             ),
           ],
         ),
         bottom: TabBar(
           controller: _tabs,
           indicatorColor: _gold,
+          indicatorWeight: 2,
           labelColor: _gold,
-          unselectedLabelColor: _white,
+          unselectedLabelColor: _parchment.withValues(alpha: 0.5),
+          labelStyle: GoogleFonts.cinzel(
+              fontWeight: FontWeight.w700, fontSize: 12),
           tabs: [
             Tab(text: l.shopTabPieces),
             Tab(text: l.shopTabUpgrades),
@@ -65,13 +73,25 @@ class _ShopScreenState extends State<ShopScreen>
           ],
         ),
       ),
-      body: TabBarView(
-        controller: _tabs,
-        children: [
-          _PiecesTab(shop: shop),
-          _UpgradesTab(shop: shop),
-          _SkinsTab(shop: shop),
-        ],
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              _darkStone.withValues(alpha: 0.3),
+              _ironBlack,
+            ],
+          ),
+        ),
+        child: TabBarView(
+          controller: _tabs,
+          children: [
+            _PiecesTab(shop: shop),
+            _UpgradesTab(shop: shop),
+            _SkinsTab(shop: shop),
+          ],
+        ),
       ),
     );
   }
@@ -97,8 +117,12 @@ class _PiecesTab extends StatelessWidget {
         final canBuy = shop.canUnlock(def.type);
 
         return Card(
-          color: const Color(0xFF111626),
+          color: _darkStone,
           margin: const EdgeInsets.only(bottom: 10),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4),
+            side: BorderSide(color: _gold.withValues(alpha: 0.2)),
+          ),
           child: ListTile(
             leading: SizedBox(
               width: 48,
@@ -112,35 +136,38 @@ class _PiecesTab extends StatelessWidget {
             ),
             title: Text(
               l.pieceNameFor(def.type),
-              style:
-                  const TextStyle(color: _white, fontWeight: FontWeight.bold),
+              style: GoogleFonts.cinzel(
+                  color: _parchment, fontWeight: FontWeight.bold, fontSize: 14),
             ),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(l.pieceDescFor(def.type),
-                    style: const TextStyle(color: _white, fontSize: 11)),
+                    style: TextStyle(
+                        color: _parchment.withValues(alpha: 0.6),
+                        fontSize: 11)),
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    _StatChip('❤️ ${def.baseHp}'),
+                    _StatChip('HP ${def.baseHp}', _crimson),
                     const SizedBox(width: 4),
-                    _StatChip('⚔️ ${def.baseAttack}'),
+                    _StatChip('ATK ${def.baseAttack}', _steelBlue),
                     const SizedBox(width: 4),
-                    _StatChip('🪙 ${def.baseValue}'),
+                    _StatChip('VAL ${def.baseValue}', _gold),
                   ],
                 ),
                 if (def.abilityFactory != null)
                   Padding(
                     padding: const EdgeInsets.only(top: 4),
                     child: _StatChip(
-                        '✨ ${l.abilityNameFor(def.abilityFactory!()?.id ?? '')}'),
+                        l.abilityNameFor(def.abilityFactory!()?.id ?? ''),
+                        _gold),
                   ),
               ],
             ),
             isThreeLine: true,
             trailing: owned
-                ? const Icon(Icons.check_circle, color: _gold)
+                ? Icon(Icons.check_circle, color: _gold.withValues(alpha: 0.7))
                 : ElevatedButton(
                     onPressed:
                         canBuy ? () => _buy(context, shop, def.type) : null,
@@ -148,10 +175,15 @@ class _PiecesTab extends StatelessWidget {
                       backgroundColor: canBuy ? _gold : Colors.grey,
                       padding: const EdgeInsets.symmetric(
                           horizontal: 10, vertical: 6),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(2)),
                     ),
                     child: Text(
-                      '${def.unlockCost}🪙',
-                      style: const TextStyle(color: Colors.black, fontSize: 12),
+                      '${def.unlockCost}',
+                      style: GoogleFonts.cinzel(
+                          color: _ironBlack,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold),
                     ),
                   ),
           ),
@@ -167,7 +199,7 @@ class _PiecesTab extends StatelessWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(l.shopUnlockSuccess(l.pieceNameFor(type))),
-          backgroundColor: _blue,
+          backgroundColor: _steelBlue,
         ),
       );
     }
@@ -190,8 +222,8 @@ class _UpgradesTab extends StatelessWidget {
         _InitiativeCard(shop: shop),
         const SizedBox(height: 12),
         Text(l.shopUpgradePieces,
-            style: const TextStyle(
-                color: _gold, fontWeight: FontWeight.bold, fontSize: 16)),
+            style: GoogleFonts.cinzelDecorative(
+                color: _gold, fontWeight: FontWeight.bold, fontSize: 15)),
         const SizedBox(height: 8),
         ...owned.map((type) => _PieceUpgradeCard(shop: shop, type: type)),
       ],
@@ -208,7 +240,11 @@ class _InitiativeCard extends StatelessWidget {
     final l = AppLocalizations.of(context)!;
 
     return Card(
-      color: const Color(0xFF111626),
+      color: _darkStone,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(4),
+        side: BorderSide(color: _gold.withValues(alpha: 0.3)),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
@@ -216,29 +252,35 @@ class _InitiativeCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                const Icon(Icons.flash_on, color: _gold),
+                const Icon(Icons.local_fire_department, color: _gold),
                 const SizedBox(width: 8),
                 Text(
                   l.shopInitiativeLabel(shop.profile.initiative),
-                  style: const TextStyle(
-                      color: _white, fontWeight: FontWeight.bold),
+                  style: GoogleFonts.cinzel(
+                      color: _parchment, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
             const SizedBox(height: 4),
             Text(
               l.shopInitiativeDesc,
-              style: const TextStyle(color: _white, fontSize: 11),
+              style: TextStyle(
+                  color: _parchment.withValues(alpha: 0.6), fontSize: 11),
             ),
             const SizedBox(height: 8),
             ElevatedButton(
               onPressed: shop.profile.coins >= shop.initiativeUpgradeCost
                   ? () => shop.upgradeInitiative()
                   : null,
-              style: ElevatedButton.styleFrom(backgroundColor: _gold),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _gold,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(2)),
+              ),
               child: Text(
                 l.shopUpgradeBtn(shop.initiativeUpgradeCost),
-                style: const TextStyle(color: Colors.black, fontSize: 12),
+                style: GoogleFonts.cinzel(
+                    color: _ironBlack, fontSize: 12, fontWeight: FontWeight.bold),
               ),
             ),
           ],
@@ -259,26 +301,34 @@ class _PieceUpgradeCard extends StatelessWidget {
     final levels = shop.profile.getUpgradeLevel(type);
 
     return Card(
-      color: const Color(0xFF111626),
+      color: _darkStone,
       margin: const EdgeInsets.only(bottom: 8),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(4),
+        side: BorderSide(color: _gold.withValues(alpha: 0.15)),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(l.pieceNameFor(type),
-                style: const TextStyle(
-                    color: _white, fontWeight: FontWeight.bold)),
+                style: GoogleFonts.cinzel(
+                    color: _parchment, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             _UpgradeRow(
-              label: '❤️ HP',
+              label: 'HP',
+              icon: Icons.favorite,
+              iconColor: _crimson,
               level: levels.hpLevel,
               cost: shop.getUpgradeCost(type, 'hp'),
               canAfford: shop.profile.coins >= shop.getUpgradeCost(type, 'hp'),
               onUpgrade: () => shop.upgradeStat(type, 'hp'),
             ),
             _UpgradeRow(
-              label: '⚔️ ATK',
+              label: 'ATK',
+              icon: Icons.local_fire_department,
+              iconColor: _steelBlue,
               level: levels.attackLevel,
               cost: shop.getUpgradeCost(type, 'attack'),
               canAfford:
@@ -287,6 +337,8 @@ class _PieceUpgradeCard extends StatelessWidget {
             ),
             _UpgradeRow(
               label: l.shopStatValue,
+              icon: Icons.monetization_on,
+              iconColor: _gold,
               level: levels.valueLevel,
               cost: shop.getUpgradeCost(type, 'value'),
               canAfford:
@@ -302,6 +354,8 @@ class _PieceUpgradeCard extends StatelessWidget {
 
 class _UpgradeRow extends StatelessWidget {
   final String label;
+  final IconData icon;
+  final Color iconColor;
   final int level;
   final int cost;
   final bool canAfford;
@@ -309,6 +363,8 @@ class _UpgradeRow extends StatelessWidget {
 
   const _UpgradeRow({
     required this.label,
+    required this.icon,
+    required this.iconColor,
     required this.level,
     required this.cost,
     required this.canAfford,
@@ -321,10 +377,13 @@ class _UpgradeRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 3),
       child: Row(
         children: [
+          Icon(icon, color: iconColor, size: 14),
+          const SizedBox(width: 4),
           SizedBox(
-            width: 80,
+            width: 60,
             child: Text(label,
-                style: const TextStyle(color: Colors.white70, fontSize: 12)),
+                style: TextStyle(
+                    color: _parchment.withValues(alpha: 0.7), fontSize: 12)),
           ),
           Row(
             children: List.generate(
@@ -333,28 +392,39 @@ class _UpgradeRow extends StatelessWidget {
                 width: 8,
                 height: 8,
                 margin: const EdgeInsets.only(right: 2),
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: _gold,
                   shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: _gold.withValues(alpha: 0.3),
+                      blurRadius: 2,
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
-          Text('Lv.$level', style: const TextStyle(color: _gold, fontSize: 10)),
+          Text('Lv.$level',
+              style: GoogleFonts.cinzel(color: _gold, fontSize: 10)),
           const Spacer(),
           ElevatedButton(
             onPressed: canAfford ? onUpgrade : null,
             style: ElevatedButton.styleFrom(
               backgroundColor: _gold,
-              disabledBackgroundColor: Colors.grey,
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              disabledBackgroundColor: Colors.grey.shade800,
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               minimumSize: const Size(0, 30),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(2)),
             ),
             child: Text(
-              '+1 ($cost🪙)',
-              style: const TextStyle(
-                color: Colors.black,
+              '+1 ($cost)',
+              style: GoogleFonts.cinzel(
+                color: _ironBlack,
                 fontSize: 11,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
@@ -372,8 +442,6 @@ class _SkinsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
-
-    // Skin con nomi e descrizioni localizzate
     final localizedSkins = _buildLocalizedSkins(l);
 
     return ListView.builder(
@@ -388,52 +456,66 @@ class _SkinsTab extends StatelessWidget {
         final canBuy = !owned && shop.profile.coins >= skin.cost;
 
         return Card(
-          color: const Color(0xFF111626),
+          color: _darkStone,
           margin: const EdgeInsets.only(bottom: 10),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4),
+            side: BorderSide(color: _gold.withValues(alpha: 0.2)),
+          ),
           child: ListTile(
             leading: Container(
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(4),
                 gradient: LinearGradient(
                   colors: skin.skinId.contains('fire')
-                      ? [_gold, _red]
+                      ? [_gold, _crimson]
                       : skin.skinId.contains('ice')
-                          ? [_white, _blue]
-                          : [_blue, _black],
+                          ? [_parchment, _steelBlue]
+                          : [_steelBlue, _ironBlack],
                 ),
+                border: Border.all(color: _gold.withValues(alpha: 0.3)),
               ),
               child: Icon(
                 skin.targetPiece == null ? Icons.shield : Icons.person,
-                color: Colors.white,
+                color: _parchment,
               ),
             ),
-            title: Text(skinName, style: const TextStyle(color: Colors.white)),
+            title: Text(skinName,
+                style: GoogleFonts.cinzel(
+                    color: _parchment, fontWeight: FontWeight.bold, fontSize: 13)),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(skinDesc,
-                    style: const TextStyle(color: _white, fontSize: 11)),
+                    style: TextStyle(
+                        color: _parchment.withValues(alpha: 0.6),
+                        fontSize: 11)),
                 if (skin.targetPiece == null)
                   Text(l.shopSkinForArmy,
-                      style: const TextStyle(color: _gold, fontSize: 10)),
+                      style: GoogleFonts.cinzel(
+                          color: _gold, fontSize: 10)),
               ],
             ),
             trailing: owned
                 ? TextButton(
                     onPressed: () => shop.equipSkin(skin.skinId),
-                    child:
-                        Text(l.shopEquip, style: const TextStyle(color: _blue)),
+                    child: Text(l.shopEquip,
+                        style: GoogleFonts.cinzel(color: _steelBlue, fontSize: 11)),
                   )
                 : ElevatedButton(
                     onPressed: canBuy ? () => shop.buySkin(skin) : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: canBuy ? _gold : Colors.grey,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(2)),
                     ),
-                    child: Text('${skin.cost}🪙',
-                        style:
-                            const TextStyle(color: Colors.black, fontSize: 12)),
+                    child: Text('${skin.cost}',
+                        style: GoogleFonts.cinzel(
+                            color: _ironBlack,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold)),
                   ),
           ),
         );
@@ -462,17 +544,20 @@ class _LocalizedSkin {
 // Helpers
 class _StatChip extends StatelessWidget {
   final String label;
-  const _StatChip(this.label);
+  final Color color;
+  const _StatChip(this.label, this.color);
 
   @override
   Widget build(BuildContext context) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
         decoration: BoxDecoration(
-          color: _blue.withValues(alpha: 0.2),
-          border: Border.all(color: _gold.withValues(alpha: 0.5)),
-          borderRadius: BorderRadius.circular(8),
+          color: color.withValues(alpha: 0.12),
+          border: Border.all(color: color.withValues(alpha: 0.3)),
+          borderRadius: BorderRadius.circular(2),
         ),
-        child: Text(label, style: const TextStyle(color: _white, fontSize: 10)),
+        child: Text(label,
+            style: GoogleFonts.cinzel(
+                color: _parchment, fontSize: 9, fontWeight: FontWeight.w600)),
       );
 }
 
@@ -483,12 +568,12 @@ class _LockedPieceIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
         decoration: BoxDecoration(
-          color: _black,
+          color: _ironBlack,
           shape: BoxShape.circle,
-          border: Border.all(color: _gold.withValues(alpha: 0.5)),
+          border: Border.all(color: _gold.withValues(alpha: 0.3)),
         ),
-        child: const Center(
-          child: Icon(Icons.lock, color: _white, size: 24),
+        child: Center(
+          child: Icon(Icons.lock, color: _parchment.withValues(alpha: 0.5), size: 24),
         ),
       );
 }

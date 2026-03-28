@@ -1,6 +1,7 @@
 // lib/screens/army_builder_screen.dart
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:checkmake/l10n/app_localizations.dart';
 import 'package:checkmake/l10n/piece_strings.dart';
@@ -10,10 +11,11 @@ import 'package:checkmake/models/player_profile.dart';
 import 'package:checkmake/widgets/piece_widget.dart';
 
 const _gold = Color(0xFFD4AF37);
-const _blue = Color(0xFF1E3A8A);
-const _red = Color(0xFF8B1E2D);
-const _black = Color(0xFF0B0B10);
-const _white = Color(0xFFF8F7F2);
+const _steelBlue = Color(0xFF2B5798);
+const _crimson = Color(0xFF8B1E2D);
+const _ironBlack = Color(0xFF0A0A0F);
+const _parchment = Color(0xFFF0E6D3);
+const _darkStone = Color(0xFF1A1A2E);
 
 class ArmyBuilderScreen extends StatefulWidget {
   const ArmyBuilderScreen({super.key});
@@ -77,7 +79,7 @@ class _ArmyBuilderScreenState extends State<ArmyBuilderScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(l.armySaved),
-        backgroundColor: _blue,
+        backgroundColor: _steelBlue,
       ),
     );
   }
@@ -94,15 +96,17 @@ class _ArmyBuilderScreenState extends State<ArmyBuilderScreen> {
     }
 
     return Scaffold(
-      backgroundColor: _black,
+      backgroundColor: _ironBlack,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF111626),
-        title: Text(l.armyBuilderTitle, style: const TextStyle(color: _gold)),
+        backgroundColor: _darkStone.withValues(alpha: 0.95),
+        title: Text(l.armyBuilderTitle,
+            style: GoogleFonts.cinzelDecorative(color: _gold, fontSize: 18)),
         actions: [
           TextButton.icon(
             onPressed: _isValid ? () => _save(context) : null,
             icon: const Icon(Icons.save, color: _gold),
-            label: Text(l.armySave, style: const TextStyle(color: _gold)),
+            label: Text(l.armySave,
+                style: GoogleFonts.cinzel(color: _gold, fontSize: 12)),
           ),
         ],
       ),
@@ -111,23 +115,32 @@ class _ArmyBuilderScreenState extends State<ArmyBuilderScreen> {
           // Summary header
           Container(
             padding: const EdgeInsets.all(12),
-            color: const Color(0xFF111626),
+            decoration: BoxDecoration(
+              color: _darkStone.withValues(alpha: 0.95),
+              border: Border(
+                bottom: BorderSide(color: _gold.withValues(alpha: 0.2)),
+              ),
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: PieceBaseType.values.map((base) {
                 final current = _countForBase(base);
                 final max = pieceMaxCount[base] ?? 0;
+                final isFull = current == max;
                 return Column(
                   children: [
                     Text(
                       l.baseTypeLabel(base),
-                      style: const TextStyle(color: _white, fontSize: 10),
+                      style: GoogleFonts.cinzel(
+                          color: _parchment.withValues(alpha: 0.6),
+                          fontSize: 9),
                     ),
                     Text(
                       '$current/$max',
-                      style: TextStyle(
-                        color: current == max ? _gold : _white,
+                      style: GoogleFonts.cinzel(
+                        color: isFull ? _gold : _parchment,
                         fontWeight: FontWeight.bold,
+                        fontSize: 13,
                       ),
                     ),
                   ],
@@ -150,10 +163,10 @@ class _ArmyBuilderScreenState extends State<ArmyBuilderScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(
                         '${l.baseTypeLabel(base)} (${_countForBase(base)}/${pieceMaxCount[base]})',
-                        style: const TextStyle(
+                        style: GoogleFonts.cinzel(
                           color: _gold,
                           fontWeight: FontWeight.bold,
-                          fontSize: 14,
+                          fontSize: 13,
                         ),
                       ),
                     ),
@@ -164,7 +177,7 @@ class _ArmyBuilderScreenState extends State<ArmyBuilderScreen> {
                           onAdd: () => _add(def.type),
                           onRemove: () => _remove(def.type),
                         )),
-                    const Divider(color: _gold),
+                    Divider(color: _gold.withValues(alpha: 0.2)),
                   ],
                 );
               }).toList(),
@@ -196,8 +209,12 @@ class _PieceRow extends StatelessWidget {
     final l = AppLocalizations.of(context)!;
 
     return Card(
-      color: const Color(0xFF111626),
+      color: _darkStone,
       margin: const EdgeInsets.only(bottom: 6),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(4),
+        side: BorderSide(color: _gold.withValues(alpha: 0.12)),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(8),
         child: Row(
@@ -222,11 +239,15 @@ class _PieceRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(l.pieceNameFor(def.type),
-                      style: const TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold)),
+                      style: GoogleFonts.cinzel(
+                          color: _parchment,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12)),
                   Text(
-                    '❤️${def.baseHp} ⚔️${def.baseAttack} 🪙${def.baseValue}',
-                    style: const TextStyle(color: _white, fontSize: 10),
+                    'HP ${def.baseHp}  ATK ${def.baseAttack}  VAL ${def.baseValue}',
+                    style: TextStyle(
+                        color: _parchment.withValues(alpha: 0.5),
+                        fontSize: 10),
                   ),
                 ],
               ),
@@ -235,7 +256,7 @@ class _PieceRow extends StatelessWidget {
               children: [
                 IconButton(
                   onPressed: count > 0 ? onRemove : null,
-                  icon: const Icon(Icons.remove_circle, color: _red),
+                  icon: const Icon(Icons.remove_circle, color: _crimson),
                   iconSize: 20,
                   padding: EdgeInsets.zero,
                   constraints:
@@ -246,8 +267,8 @@ class _PieceRow extends StatelessWidget {
                   child: Text(
                     '$count',
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: GoogleFonts.cinzel(
+                      color: _parchment,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -255,7 +276,7 @@ class _PieceRow extends StatelessWidget {
                 IconButton(
                   onPressed: canAdd ? onAdd : null,
                   icon: Icon(Icons.add_circle,
-                      color: canAdd ? _gold : Colors.grey),
+                      color: canAdd ? _gold : Colors.grey.shade700),
                   iconSize: 20,
                   padding: EdgeInsets.zero,
                   constraints:

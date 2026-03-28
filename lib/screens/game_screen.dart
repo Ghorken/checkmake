@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:checkmake/l10n/app_localizations.dart';
 import 'package:checkmake/l10n/piece_strings.dart';
@@ -11,6 +12,15 @@ import 'package:checkmake/models/piece.dart';
 import 'package:checkmake/providers/game_provider.dart';
 import 'package:checkmake/providers/online_game_provider.dart';
 import 'package:checkmake/widgets/game_board_widget.dart';
+
+// Medieval palette
+const _gold = Color(0xFFD4AF37);
+const _crimson = Color(0xFF8B1E2D);
+const _bloodRed = Color(0xFF6B0F1A);
+const _ironBlack = Color(0xFF0A0A0F);
+const _parchment = Color(0xFFF0E6D3);
+const _darkStone = Color(0xFF1A1A2E);
+const _steelBlue = Color(0xFF2B5798);
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
@@ -67,26 +77,40 @@ class _GameScreenState extends State<GameScreen> {
           builder: (ctx) => Transform.rotate(
             angle: upsideDown ? math.pi : 0,
             child: AlertDialog(
-              backgroundColor: const Color(0xFF16213E),
+              backgroundColor: _darkStone,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4),
+                side: BorderSide(color: _gold.withValues(alpha: 0.4)),
+              ),
               title: Text(
                 l.gameLeaveConfirmTitle,
-                style: const TextStyle(color: Colors.amber),
+                style: GoogleFonts.cinzelDecorative(
+                  color: _gold,
+                  fontSize: 18,
+                ),
               ),
               content: Text(
                 game.hotseatMode
                     ? 'Giocatore ${side == PlayerSide.player1 ? 1 : 2}, vuoi ritirarti dalla partita?'
                     : l.gameLeaveConfirmBody,
-                style: const TextStyle(color: Colors.white70),
+                style: TextStyle(color: _parchment.withValues(alpha: 0.8)),
               ),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(ctx, false),
-                  child: Text(l.gameLeaveConfirmCancel),
+                  child: Text(l.gameLeaveConfirmCancel,
+                      style: const TextStyle(color: _parchment)),
                 ),
                 ElevatedButton(
                   onPressed: () => Navigator.pop(ctx, true),
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                  child: Text(l.gameLeaveConfirmOk),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _bloodRed,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  child: Text(l.gameLeaveConfirmOk,
+                      style: const TextStyle(color: _parchment)),
                 ),
               ],
             ),
@@ -140,10 +164,17 @@ class _GameScreenState extends State<GameScreen> {
           context: context,
           barrierDismissible: false,
           builder: (ctx) => AlertDialog(
-            backgroundColor: const Color(0xFF16213E),
+            backgroundColor: _darkStone,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(4),
+              side: BorderSide(color: _gold.withValues(alpha: 0.4)),
+            ),
             title: Text(
               title,
-              style: const TextStyle(color: Colors.amber),
+              style: GoogleFonts.cinzelDecorative(
+                color: _gold,
+                fontSize: 20,
+              ),
             ),
             content: Column(
               mainAxisSize: MainAxisSize.min,
@@ -151,13 +182,13 @@ class _GameScreenState extends State<GameScreen> {
               children: [
                 Text(
                   body,
-                  style: const TextStyle(color: Colors.white70),
+                  style: TextStyle(color: _parchment.withValues(alpha: 0.8)),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   l.gameResultCoins(gained),
-                  style: const TextStyle(
-                    color: Colors.amber,
+                  style: GoogleFonts.cinzel(
+                    color: _gold,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -166,10 +197,15 @@ class _GameScreenState extends State<GameScreen> {
             actions: [
               ElevatedButton(
                 onPressed: () => Navigator.pop(ctx),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: _gold,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
                 child: Text(
                   l.gameDialogClose,
-                  style: const TextStyle(color: Colors.black),
+                  style: const TextStyle(color: _ironBlack),
                 ),
               ),
             ],
@@ -208,7 +244,11 @@ class _GameScreenState extends State<GameScreen> {
         barrierDismissible: false,
         builder: (ctx) => StatefulBuilder(
           builder: (ctx, setState) => AlertDialog(
-            backgroundColor: const Color(0xFF16213E),
+            backgroundColor: _darkStone,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(4),
+              side: BorderSide(color: _gold.withValues(alpha: 0.4)),
+            ),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -227,7 +267,24 @@ class _GameScreenState extends State<GameScreen> {
                     },
                   ),
                 ),
-                const Divider(color: Color(0xFFD4AF37), height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Row(
+                    children: [
+                      Expanded(
+                          child: Divider(
+                              color: _gold.withValues(alpha: 0.3))),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Icon(Icons.shield,
+                            color: _gold.withValues(alpha: 0.4), size: 16),
+                      ),
+                      Expanded(
+                          child: Divider(
+                              color: _gold.withValues(alpha: 0.3))),
+                    ],
+                  ),
+                ),
                 _LocalEndSection(
                   title: _titleForLocalOutcome(p1Outcome),
                   body: _bodyForLocalOutcome(p1Outcome),
@@ -278,80 +335,94 @@ class _GameScreenState extends State<GameScreen> {
         unawaited(_handleBackRequested());
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFF0B0B10),
-        body: SafeArea(
-          child: Column(
-            children: [
-              Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  _OpponentBar(
-                    game: game,
-                    onSurrenderPressed: _handleSurrenderRequested,
-                  ),
-                  if (showTopTurnBanner)
-                    Positioned(
-                      left: 12,
-                      right: 12,
-                      bottom: -34,
-                      child: _TurnBanner(game: game, upsideDown: true),
+        backgroundColor: _ironBlack,
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                _darkStone.withValues(alpha: 0.6),
+                _ironBlack,
+                _darkStone.withValues(alpha: 0.4),
+              ],
+            ),
+          ),
+          child: SafeArea(
+            child: Column(
+              children: [
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    _OpponentBar(
+                      game: game,
+                      onSurrenderPressed: _handleSurrenderRequested,
                     ),
-                ],
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      if (game.lastCombatLog != null && game.hotseatMode) ...[
-                        _CombatLogBanner(
-                          message: game.lastCombatLog!,
-                          upsideDown: true,
-                        ),
-                        const SizedBox(height: 8),
-                      ],
-                      const GameBoardWidget(),
-                      if (game.hotseatMode) ...[
-                        const SizedBox(height: 8),
-                        if (game.lastCombatLog != null)
+                    if (showTopTurnBanner)
+                      Positioned(
+                        left: 12,
+                        right: 12,
+                        bottom: -34,
+                        child: _TurnBanner(game: game, upsideDown: true),
+                      ),
+                  ],
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        if (game.lastCombatLog != null &&
+                            game.hotseatMode) ...[
                           _CombatLogBanner(
                             message: game.lastCombatLog!,
-                            upsideDown: false,
+                            upsideDown: true,
                           ),
-                      ] else ...[
-                        const SizedBox(height: 8),
-                        SizedBox(
-                          height: 34,
-                          child: game.lastCombatLog != null
-                              ? _CombatLogBanner(
-                                  message: game.lastCombatLog!,
-                                  upsideDown: false,
-                                )
-                              : const SizedBox.shrink(),
-                        ),
+                          const SizedBox(height: 8),
+                        ],
+                        const GameBoardWidget(),
+                        if (game.hotseatMode) ...[
+                          const SizedBox(height: 8),
+                          if (game.lastCombatLog != null)
+                            _CombatLogBanner(
+                              message: game.lastCombatLog!,
+                              upsideDown: false,
+                            ),
+                        ] else ...[
+                          const SizedBox(height: 8),
+                          SizedBox(
+                            height: 34,
+                            child: game.lastCombatLog != null
+                                ? _CombatLogBanner(
+                                    message: game.lastCombatLog!,
+                                    upsideDown: false,
+                                  )
+                                : const SizedBox.shrink(),
+                          ),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
                 ),
-              ),
-              Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  _PlayerBar(
-                    game: game,
-                    onSurrenderPressed: _handleSurrenderRequested,
-                  ),
-                  if (showBottomTurnBanner)
-                    Positioned(
-                      left: 12,
-                      right: 12,
-                      top: -34,
-                      child: _TurnBanner(game: game),
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    _PlayerBar(
+                      game: game,
+                      onSurrenderPressed: _handleSurrenderRequested,
                     ),
-                ],
-              ),
-            ],
+                    if (showBottomTurnBanner)
+                      Positioned(
+                        left: 12,
+                        right: 12,
+                        top: -34,
+                        child: _TurnBanner(game: game),
+                      ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -383,8 +454,8 @@ class _LocalEndSection extends StatelessWidget {
       children: [
         Text(
           title,
-          style: const TextStyle(
-            color: Colors.amber,
+          style: GoogleFonts.cinzelDecorative(
+            color: _gold,
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
@@ -393,16 +464,21 @@ class _LocalEndSection extends StatelessWidget {
         const SizedBox(height: 8),
         Text(
           body,
-          style: const TextStyle(color: Colors.white70),
+          style: TextStyle(color: _parchment.withValues(alpha: 0.8)),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 10),
         ElevatedButton(
           onPressed: isClosing ? null : () => unawaited(onClose()),
-          style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: _gold,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
           child: Text(
             buttonLabel,
-            style: const TextStyle(color: Colors.black),
+            style: const TextStyle(color: _ironBlack),
           ),
         ),
       ],
@@ -410,6 +486,9 @@ class _LocalEndSection extends StatelessWidget {
   }
 }
 
+// ═══════════════════════════════════════════════════════════════════════════════
+// COMBAT LOG BANNER (scroll/parchment style)
+// ═══════════════════════════════════════════════════════════════════════════════
 class _CombatLogBanner extends StatelessWidget {
   final String message;
   final bool upsideDown;
@@ -420,24 +499,53 @@ class _CombatLogBanner extends StatelessWidget {
     return Transform.rotate(
       angle: upsideDown ? math.pi : 0,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
         decoration: BoxDecoration(
-          color: const Color(0xFF111626),
-          borderRadius: BorderRadius.circular(8),
+          color: const Color(0xFF1A1208).withValues(alpha: 0.92),
+          borderRadius: BorderRadius.circular(2),
           border: Border.all(
-            color: const Color(0xFFD4AF37).withValues(alpha: 0.3),
+            color: _crimson.withValues(alpha: 0.5),
+            width: 1.5,
           ),
+          boxShadow: [
+            BoxShadow(
+              color: _crimson.withValues(alpha: 0.15),
+              blurRadius: 8,
+            ),
+          ],
         ),
-        child: Text(
-          message,
-          style: const TextStyle(color: Color(0xFFF8F7F2), fontSize: 12),
-          textAlign: TextAlign.center,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.local_fire_department,
+                color: _crimson.withValues(alpha: 0.7), size: 14),
+            const SizedBox(width: 6),
+            Flexible(
+              child: Text(
+                message,
+                style: GoogleFonts.cinzel(
+                  color: _parchment,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.5,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            const SizedBox(width: 6),
+            Icon(Icons.local_fire_department,
+                color: _crimson.withValues(alpha: 0.7), size: 14),
+          ],
         ),
       ),
     );
   }
 }
 
+// ═══════════════════════════════════════════════════════════════════════════════
+// COIN FLIP DIALOG (medieval)
+// ═══════════════════════════════════════════════════════════════════════════════
 class _LocalCoinFlipDialog extends StatefulWidget {
   const _LocalCoinFlipDialog();
 
@@ -467,7 +575,8 @@ class _LocalCoinFlipDialogState extends State<_LocalCoinFlipDialog>
     _angle = Tween<double>(
       begin: 0,
       end: (2 * math.pi * 8) + targetExtra,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
+    ).animate(
+        CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
     _controller.forward().whenComplete(() {
       if (!mounted) return;
       setState(() => _finished = true);
@@ -483,10 +592,14 @@ class _LocalCoinFlipDialogState extends State<_LocalCoinFlipDialog>
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: const Color(0xFF111626),
-      title: const Text(
+      backgroundColor: _darkStone,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(4),
+        side: BorderSide(color: _gold.withValues(alpha: 0.4)),
+      ),
+      title: Text(
         'Lancio della moneta',
-        style: TextStyle(color: Color(0xFFD4AF37)),
+        style: GoogleFonts.cinzelDecorative(color: _gold, fontSize: 18),
       ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
@@ -496,24 +609,26 @@ class _LocalCoinFlipDialogState extends State<_LocalCoinFlipDialog>
             builder: (_, __) {
               final angle = _angle.value;
               final frontVisible = math.cos(angle) >= 0;
-              final label = frontVisible ? '1' : '2';
+              final label = frontVisible ? 'I' : 'II';
               return Transform(
                 alignment: Alignment.center,
                 transform: Matrix4.identity()
                   ..setEntry(3, 2, 0.001)
                   ..rotateY(angle),
                 child: Container(
-                  width: 76,
-                  height: 76,
+                  width: 80,
+                  height: 80,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: const Color(0xFFD4AF37),
-                    border:
-                        Border.all(color: const Color(0xFFF8F7F2), width: 2),
+                    gradient: const RadialGradient(
+                      colors: [Color(0xFFF0D060), _gold, Color(0xFF9A7B2A)],
+                      stops: [0.0, 0.5, 1.0],
+                    ),
+                    border: Border.all(color: const Color(0xFF9A7B2A), width: 3),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFFD4AF37).withValues(alpha: 0.45),
-                        blurRadius: 14,
+                        color: _gold.withValues(alpha: 0.5),
+                        blurRadius: 16,
                       ),
                     ],
                   ),
@@ -527,10 +642,10 @@ class _LocalCoinFlipDialogState extends State<_LocalCoinFlipDialog>
                       ),
                       child: Text(
                         label,
-                        style: const TextStyle(
-                          color: Colors.black,
+                        style: GoogleFonts.cinzelDecorative(
+                          color: _ironBlack,
                           fontWeight: FontWeight.bold,
-                          fontSize: 24,
+                          fontSize: 26,
                         ),
                       ),
                     ),
@@ -539,11 +654,11 @@ class _LocalCoinFlipDialogState extends State<_LocalCoinFlipDialog>
               );
             },
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 12),
           if (!_finished)
-            const Text(
+            Text(
               'Lancio in corso...',
-              style: TextStyle(color: Color(0xFFF8F7F2)),
+              style: GoogleFonts.cinzel(color: _parchment, fontSize: 13),
               textAlign: TextAlign.center,
             ),
           if (_finished)
@@ -551,7 +666,7 @@ class _LocalCoinFlipDialogState extends State<_LocalCoinFlipDialog>
               _winner == PlayerSide.player1
                   ? 'Il giocatore 1 inizia la partita.'
                   : 'Il giocatore 2 inizia la partita.',
-              style: const TextStyle(color: Color(0xFFF8F7F2)),
+              style: GoogleFonts.cinzel(color: _parchment, fontSize: 13),
               textAlign: TextAlign.center,
             ),
         ],
@@ -561,10 +676,17 @@ class _LocalCoinFlipDialogState extends State<_LocalCoinFlipDialog>
           ElevatedButton(
             onPressed: () => Navigator.pop(context, _winner),
             style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFD4AF37)),
-            child: const Text(
+              backgroundColor: _gold,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            child: Text(
               'Inizia partita',
-              style: TextStyle(color: Colors.black),
+              style: GoogleFonts.cinzel(
+                color: _ironBlack,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
       ],
@@ -572,6 +694,9 @@ class _LocalCoinFlipDialogState extends State<_LocalCoinFlipDialog>
   }
 }
 
+// ═══════════════════════════════════════════════════════════════════════════════
+// OPPONENT BAR (top - enemy banner)
+// ═══════════════════════════════════════════════════════════════════════════════
 class _OpponentBar extends StatelessWidget {
   final GameProvider game;
   final Future<void> Function(
@@ -593,13 +718,28 @@ class _OpponentBar extends StatelessWidget {
       angle: game.hotseatMode ? math.pi : 0,
       child: Container(
         height: 68,
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        color: const Color(0xFF111626),
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        decoration: BoxDecoration(
+          color: _darkStone.withValues(alpha: 0.95),
+          border: Border(
+            bottom: BorderSide(
+              color: _crimson.withValues(alpha: 0.4),
+              width: 2,
+            ),
+          ),
+        ),
         child: Row(
           children: [
-            const CircleAvatar(
-              backgroundColor: Color(0xFF8B1E2D),
-              child: Icon(Icons.person, color: Colors.white),
+            // Player 2 shield avatar
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: _crimson.withValues(alpha: 0.3),
+                shape: BoxShape.circle,
+                border: Border.all(color: _crimson, width: 1.5),
+              ),
+              child: const Icon(Icons.shield, color: _crimson, size: 20),
             ),
             const SizedBox(width: 8),
             Column(
@@ -608,24 +748,27 @@ class _OpponentBar extends StatelessWidget {
               children: [
                 Text(
                   game.hotseatMode ? 'Giocatore 2' : game.opponentProfile.name,
-                  style: const TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
+                  style: GoogleFonts.cinzel(
+                    color: _parchment,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                  ),
                 ),
                 Container(
                   margin: const EdgeInsets.only(top: 2),
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(12),
+                    color: _crimson.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(2),
                     border: Border.all(
-                        color: const Color(0xFFD4AF37).withValues(alpha: 0.5)),
+                        color: _crimson.withValues(alpha: 0.3)),
                   ),
                   child: Text(
                     modeLabel,
-                    style: const TextStyle(
-                      color: Color(0xFFF8F7F2),
-                      fontSize: 10,
+                    style: GoogleFonts.cinzel(
+                      color: _parchment.withValues(alpha: 0.7),
+                      fontSize: 9,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -641,7 +784,7 @@ class _OpponentBar extends StatelessWidget {
                     upsideDown: true,
                   ),
                 ),
-                icon: const Icon(Icons.flag, color: Colors.redAccent),
+                icon: const Icon(Icons.flag, color: _crimson),
                 tooltip: l.gameLeaveConfirmTitle,
               ),
             if (!game.hotseatMode && game.phase == GamePhase.opponentTurn)
@@ -649,14 +792,16 @@ class _OpponentBar extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF8B1E2D).withValues(alpha: 0.35),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFFD4AF37)),
+                  color: _crimson.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(2),
+                  border: Border.all(color: _crimson.withValues(alpha: 0.4)),
                 ),
                 child: Text(
                   '${l.gameOpponentTurn} · ${game.turnSecondsLeft}s',
-                  style:
-                      const TextStyle(color: Color(0xFFF8F7F2), fontSize: 11),
+                  style: GoogleFonts.cinzel(
+                    color: _parchment,
+                    fontSize: 10,
+                  ),
                 ),
               ),
           ],
@@ -666,6 +811,9 @@ class _OpponentBar extends StatelessWidget {
   }
 }
 
+// ═══════════════════════════════════════════════════════════════════════════════
+// PLAYER BAR (bottom - allied banner)
+// ═══════════════════════════════════════════════════════════════════════════════
 class _PlayerBar extends StatelessWidget {
   final GameProvider game;
   final Future<void> Function(
@@ -685,15 +833,31 @@ class _PlayerBar extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.all(12),
-      color: const Color(0xFF111626),
+      decoration: BoxDecoration(
+        color: _darkStone.withValues(alpha: 0.95),
+        border: Border(
+          top: BorderSide(
+            color: _steelBlue.withValues(alpha: 0.4),
+            width: 2,
+          ),
+        ),
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             children: [
-              const CircleAvatar(
-                backgroundColor: Color(0xFF1E3A8A),
-                child: Icon(Icons.person, color: Colors.white),
+              // Player 1 shield avatar
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: _steelBlue.withValues(alpha: 0.3),
+                  shape: BoxShape.circle,
+                  border: Border.all(color: _steelBlue, width: 1.5),
+                ),
+                child:
+                    const Icon(Icons.shield, color: _steelBlue, size: 20),
               ),
               const SizedBox(width: 12),
               Column(
@@ -701,25 +865,27 @@ class _PlayerBar extends StatelessWidget {
                 children: [
                   Text(
                     game.hotseatMode ? 'Giocatore 1' : game.myProfile.name,
-                    style: const TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
+                    style: GoogleFonts.cinzel(
+                      color: _parchment,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                    ),
                   ),
                   Container(
                     margin: const EdgeInsets.only(top: 2),
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.08),
-                      borderRadius: BorderRadius.circular(12),
+                      color: _steelBlue.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(2),
                       border: Border.all(
-                          color:
-                              const Color(0xFFD4AF37).withValues(alpha: 0.5)),
+                          color: _steelBlue.withValues(alpha: 0.3)),
                     ),
                     child: Text(
                       modeLabel,
-                      style: const TextStyle(
-                        color: Color(0xFFF8F7F2),
-                        fontSize: 10,
+                      style: GoogleFonts.cinzel(
+                        color: _parchment.withValues(alpha: 0.7),
+                        fontSize: 9,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -728,12 +894,14 @@ class _PlayerBar extends StatelessWidget {
                     Row(
                       children: [
                         const Icon(Icons.monetization_on,
-                            color: Color(0xFFD4AF37), size: 14),
+                            color: _gold, size: 14),
                         const SizedBox(width: 4),
                         Text(
                           '${game.myProfile.coins}',
-                          style: const TextStyle(
-                              color: Color(0xFFD4AF37), fontSize: 12),
+                          style: GoogleFonts.cinzel(
+                            color: _gold,
+                            fontSize: 12,
+                          ),
                         ),
                       ],
                     ),
@@ -747,7 +915,7 @@ class _PlayerBar extends StatelessWidget {
                     upsideDown: false,
                   ),
                 ),
-                icon: const Icon(Icons.flag, color: Colors.redAccent),
+                icon: const Icon(Icons.flag, color: _crimson),
                 tooltip: l.gameLeaveConfirmTitle,
               ),
               if (game.phase == GamePhase.myTurn) ...[
@@ -764,6 +932,9 @@ class _PlayerBar extends StatelessWidget {
   }
 }
 
+// ═══════════════════════════════════════════════════════════════════════════════
+// TURN BANNER (war horn / battle cry style)
+// ═══════════════════════════════════════════════════════════════════════════════
 class _TurnBanner extends StatelessWidget {
   final GameProvider game;
   final bool upsideDown;
@@ -782,18 +953,34 @@ class _TurnBanner extends StatelessWidget {
       angle: upsideDown ? math.pi : 0,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 4),
+        padding: const EdgeInsets.symmetric(vertical: 5),
         decoration: BoxDecoration(
-          color: const Color(0xFF1E3A8A).withValues(alpha: 0.2),
-          borderRadius: BorderRadius.circular(6),
-          border:
-              Border.all(color: const Color(0xFFD4AF37).withValues(alpha: 0.8)),
+          gradient: LinearGradient(
+            colors: [
+              _darkStone.withValues(alpha: 0.95),
+              const Color(0xFF1A1208).withValues(alpha: 0.95),
+              _darkStone.withValues(alpha: 0.95),
+            ],
+          ),
+          borderRadius: BorderRadius.circular(2),
+          border: Border.all(color: _gold.withValues(alpha: 0.6)),
+          boxShadow: [
+            BoxShadow(
+              color: _gold.withValues(alpha: 0.1),
+              blurRadius: 8,
+            ),
+          ],
         ),
         child: Text(
           message != null
               ? '$message (${game.turnSecondsLeft}s)'
               : '${l.gameTurnSelect} (${game.turnSecondsLeft}s)',
-          style: const TextStyle(color: Color(0xFFF8F7F2), fontSize: 11),
+          style: GoogleFonts.cinzel(
+            color: _gold,
+            fontSize: 11,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 1,
+          ),
           textAlign: TextAlign.center,
         ),
       ),
@@ -801,6 +988,9 @@ class _TurnBanner extends StatelessWidget {
   }
 }
 
+// ═══════════════════════════════════════════════════════════════════════════════
+// ABILITY BUTTON
+// ═══════════════════════════════════════════════════════════════════════════════
 class _AbilityButton extends StatelessWidget {
   final GameProvider game;
   const _AbilityButton({required this.game});
@@ -821,12 +1011,21 @@ class _AbilityButton extends StatelessWidget {
           '${l.abilityNameFor(ability.id)}: ${l.abilityDescFor(ability.id)}',
       child: ElevatedButton.icon(
         onPressed: canUse ? () => game.useAbility(pos) : null,
-        icon: const Icon(Icons.flash_on, size: 14),
-        label: Text(abilityName, style: const TextStyle(fontSize: 11)),
+        icon: const Icon(Icons.local_fire_department, size: 14),
+        label: Text(abilityName,
+            style: GoogleFonts.cinzel(fontSize: 10, fontWeight: FontWeight.w700)),
         style: ElevatedButton.styleFrom(
-          backgroundColor: canUse ? const Color(0xFF8B1E2D) : Colors.grey,
-          foregroundColor: Colors.white,
+          backgroundColor: canUse ? _crimson : Colors.grey,
+          foregroundColor: _parchment,
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(2),
+            side: BorderSide(
+              color: canUse
+                  ? _gold.withValues(alpha: 0.4)
+                  : Colors.transparent,
+            ),
+          ),
         ),
       ),
     );

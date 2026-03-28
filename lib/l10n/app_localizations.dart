@@ -107,7 +107,7 @@ abstract class AppLocalizations {
   /// No description provided for @appSubtitle.
   ///
   /// In it, this message translates to:
-  /// **'Battle Chess'**
+  /// **'Crea l\'armata. Spezza la corona.'**
   String get appSubtitle;
 
   /// No description provided for @statCoins.
