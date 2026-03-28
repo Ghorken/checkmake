@@ -1,6 +1,5 @@
 // lib/screens/main_menu_screen.dart
 
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -15,7 +14,6 @@ import 'package:checkmake/screens/matchmaking_screen.dart';
 
 // Medieval palette
 const _gold = Color(0xFFD4AF37);
-const _darkGold = Color(0xFFB8941F);
 const _crimson = Color(0xFF8B1E2D);
 const _bloodRed = Color(0xFF6B0F1A);
 const _ironBlack = Color(0xFF0A0A0F);
@@ -564,7 +562,7 @@ class _MedievalMenuTile extends StatelessWidget {
                 right: 4,
                 child: Transform(
                   alignment: Alignment.center,
-                  transform: Matrix4.identity()..scale(-1.0, 1.0),
+                  transform: Matrix4.diagonal3Values(-1.0, 1.0, 1.0),
                   child: _CornerDecoration(color: accentColor),
                 ),
               ),
@@ -573,7 +571,7 @@ class _MedievalMenuTile extends StatelessWidget {
                 left: 4,
                 child: Transform(
                   alignment: Alignment.center,
-                  transform: Matrix4.identity()..scale(1.0, -1.0),
+                  transform: Matrix4.diagonal3Values(1.0, -1.0, 1.0),
                   child: _CornerDecoration(color: accentColor),
                 ),
               ),
@@ -582,7 +580,7 @@ class _MedievalMenuTile extends StatelessWidget {
                 right: 4,
                 child: Transform(
                   alignment: Alignment.center,
-                  transform: Matrix4.identity()..scale(-1.0, -1.0),
+                  transform: Matrix4.diagonal3Values(-1.0, -1.0, 1.0),
                   child: _CornerDecoration(color: accentColor),
                 ),
               ),

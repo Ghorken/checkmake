@@ -8,10 +8,7 @@ import 'package:checkmake/models/piece_definitions.dart';
 
 // Medieval palette
 const _gold = Color(0xFFD4AF37);
-const _parchment = Color(0xFFF0E6D3);
 const _ironBlack = Color(0xFF0A0A0F);
-const _crimson = Color(0xFF8B1E2D);
-const _royalBlue = Color(0xFF1E3A8A);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PLACEHOLDER PAINTER
