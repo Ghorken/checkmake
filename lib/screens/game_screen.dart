@@ -940,9 +940,9 @@ class _PlayerBar extends StatelessWidget {
                         const SizedBox(width: 4),
                         Text(
                           '${game.myProfile.coins}',
-                          style: GoogleFonts.cinzel(
+                          style: GoogleFonts.cormorantGaramond(
                             color: _gold,
-                            fontSize: 12,
+                            fontSize: 15,
                           ),
                         ),
                       ],

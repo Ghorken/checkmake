@@ -492,10 +492,10 @@ class _StatItem extends StatelessWidget {
               const SizedBox(width: 4),
               Text(
                 value,
-                style: GoogleFonts.cinzel(
+                style: GoogleFonts.cormorantGaramond(
                   color: _gold,
                   fontWeight: FontWeight.bold,
-                  fontSize: 16,
+                  fontSize: 20,
                 ),
               ),
             ],

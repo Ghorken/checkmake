@@ -53,8 +53,8 @@ class _ShopScreenState extends State<ShopScreen>
             const SizedBox(width: 4),
             Text(
               '${shop.profile.coins}',
-              style: GoogleFonts.cinzel(
-                  color: _gold, fontWeight: FontWeight.bold),
+              style: GoogleFonts.cormorantGaramond(
+                  color: _gold, fontWeight: FontWeight.bold, fontSize: 18),
             ),
           ],
         ),
@@ -181,9 +181,9 @@ class _PiecesTab extends StatelessWidget {
                     ),
                     child: Text(
                       '${def.unlockCost}',
-                      style: GoogleFonts.cinzel(
+                      style: GoogleFonts.cormorantGaramond(
                           color: _ironBlack,
-                          fontSize: 12,
+                          fontSize: 14,
                           fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -257,8 +257,8 @@ class _InitiativeCard extends StatelessWidget {
                 const SizedBox(width: 8),
                 Text(
                   l.shopInitiativeLabel(shop.profile.initiative),
-                  style: GoogleFonts.cinzel(
-                      color: _parchment, fontWeight: FontWeight.bold),
+                  style: GoogleFonts.cormorantGaramond(
+                      color: _parchment, fontWeight: FontWeight.bold, fontSize: 16),
                 ),
               ],
             ),
@@ -283,8 +283,8 @@ class _InitiativeCard extends StatelessWidget {
               ),
               child: Text(
                 l.shopUpgradeBtn(shop.initiativeUpgradeCost),
-                style: GoogleFonts.cinzel(
-                    color: _ironBlack, fontSize: 12, fontWeight: FontWeight.bold),
+                style: GoogleFonts.cormorantGaramond(
+                    color: _ironBlack, fontSize: 14, fontWeight: FontWeight.bold),
               ),
             ),
           ],
@@ -410,7 +410,7 @@ class _UpgradeRow extends StatelessWidget {
             ),
           ),
           Text('Lv.$level',
-              style: GoogleFonts.cinzel(color: _gold, fontSize: 10)),
+              style: GoogleFonts.cormorantGaramond(color: _gold, fontSize: 12)),
           const Spacer(),
           ElevatedButton(
             onPressed: canAfford ? onUpgrade : null,
@@ -425,9 +425,9 @@ class _UpgradeRow extends StatelessWidget {
             ),
             child: Text(
               '+1 ($cost)',
-              style: GoogleFonts.cinzel(
+              style: GoogleFonts.cormorantGaramond(
                 color: _ironBlack,
-                fontSize: 11,
+                fontSize: 13,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -517,9 +517,9 @@ class _SkinsTab extends StatelessWidget {
                           borderRadius: BorderRadius.circular(2)),
                     ),
                     child: Text('${skin.cost}',
-                        style: GoogleFonts.cinzel(
+                        style: GoogleFonts.cormorantGaramond(
                             color: _ironBlack,
-                            fontSize: 12,
+                            fontSize: 14,
                             fontWeight: FontWeight.bold)),
                   ),
           ),
