@@ -51,20 +51,20 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'YOUR_ANDROID_API_KEY',
-    appId: 'YOUR_ANDROID_APP_ID',
-    messagingSenderId: 'YOUR_SENDER_ID',
-    projectId: 'YOUR_PROJECT_ID',
-    storageBucket: 'YOUR_PROJECT_ID.firebasestorage.app',
+    apiKey: 'AIzaSyCpI8GI4QOUeUHcbHTY0o1ENQAVzvpz0FE',
+    appId: '1:53100118222:android:0eea4a1e2e7dc64910509f',
+    messagingSenderId: '53100118222',
+    projectId: 'checkmake-b3426',
+    storageBucket: 'checkmake-b3426.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'YOUR_IOS_API_KEY',
-    appId: 'YOUR_IOS_APP_ID',
-    messagingSenderId: 'YOUR_SENDER_ID',
-    projectId: 'YOUR_PROJECT_ID',
-    storageBucket: 'YOUR_PROJECT_ID.firebasestorage.app',
-    iosBundleId: 'com.example.checkmake',
+    apiKey: 'AIzaSyCkFLuGfoIVcEYdn-5-fI1dWM4zmKcAV6s',
+    appId: '1:53100118222:ios:25e18b93adb28d7210509f',
+    messagingSenderId: '53100118222',
+    projectId: 'checkmake-b3426',
+    storageBucket: 'checkmake-b3426.firebasestorage.app',
+    iosBundleId: 'mf.smithingthings.checkmake',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(

@@ -63,6 +63,11 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   Future<void> _handleBackRequested() async {
+    if (_showingEndDialog) {
+      Navigator.popUntil(context, (route) => route.isFirst);
+      await _navigateHome();
+      return;
+    }
     await _handleSurrenderRequested(PlayerSide.player1, upsideDown: false);
   }
 
@@ -621,7 +626,7 @@ class _LocalCoinFlipDialogState extends State<_LocalCoinFlipDialog>
             builder: (_, __) {
               final angle = _angle.value;
               final frontVisible = math.cos(angle) >= 0;
-              final label = frontVisible ? 'I' : 'II';
+              final label = frontVisible ? '1' : '2';
               return Transform(
                 alignment: Alignment.center,
                 transform: Matrix4.identity()
