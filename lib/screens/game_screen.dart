@@ -386,34 +386,29 @@ class _GameScreenState extends State<GameScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        if (game.lastCombatLog != null &&
-                            game.hotseatMode) ...[
-                          _CombatLogBanner(
-                            message: game.lastCombatLog!,
-                            upsideDown: true,
-                          ),
-                          const SizedBox(height: 8),
-                        ],
-                        const GameBoardWidget(),
                         if (game.hotseatMode) ...[
-                          const SizedBox(height: 8),
-                          if (game.lastCombatLog != null)
-                            _CombatLogBanner(
-                              message: game.lastCombatLog!,
-                              upsideDown: false,
-                            ),
-                        ] else ...[
-                          const SizedBox(height: 8),
                           SizedBox(
                             height: 34,
                             child: game.lastCombatLog != null
                                 ? _CombatLogBanner(
                                     message: game.lastCombatLog!,
-                                    upsideDown: false,
+                                    upsideDown: true,
                                   )
                                 : const SizedBox.shrink(),
                           ),
+                          const SizedBox(height: 8),
                         ],
+                        const GameBoardWidget(),
+                        const SizedBox(height: 8),
+                        SizedBox(
+                          height: 34,
+                          child: game.lastCombatLog != null
+                              ? _CombatLogBanner(
+                                  message: game.lastCombatLog!,
+                                  upsideDown: false,
+                                )
+                              : const SizedBox.shrink(),
+                        ),
                       ],
                     ),
                   ),
@@ -741,17 +736,24 @@ class _OpponentBar extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              _crimson.withValues(alpha: 0.25),
-              _darkStone.withValues(alpha: 0.95),
               const Color(0xFF0D1225),
+              _darkStone.withValues(alpha: 0.95),
+              _crimson.withValues(alpha: 0.25),
             ],
           ),
-          border: Border(
-            bottom: BorderSide(
-              color: _crimson.withValues(alpha: 0.55),
-              width: 2,
-            ),
-          ),
+          border: game.hotseatMode
+              ? Border(
+                  top: BorderSide(
+                    color: _crimson.withValues(alpha: 0.55),
+                    width: 2,
+                  ),
+                )
+              : Border(
+                  bottom: BorderSide(
+                    color: _crimson.withValues(alpha: 0.55),
+                    width: 2,
+                  ),
+                ),
           boxShadow: [
             BoxShadow(
               color: _crimson.withValues(alpha: 0.12),

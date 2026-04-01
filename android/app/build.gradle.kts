@@ -70,6 +70,7 @@ android {
         }
 
         release {
+            resValue("string", "app_name", "Checkmake")
             signingConfig = signingConfigs.getByName("release")
         }
     }
