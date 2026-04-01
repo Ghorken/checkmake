@@ -122,6 +122,7 @@ class PlayerProfile extends ChangeNotifier {
   ArmyConfig armyConfig;
   int wins;
   int losses;
+  Set<String> unlockedAchievements;
 
   PlayerProfile({
     required this.name,
@@ -133,6 +134,7 @@ class PlayerProfile extends ChangeNotifier {
     ArmyConfig? armyConfig,
     this.wins = 0,
     this.losses = 0,
+    Set<String>? unlockedAchievements,
   })  : unlockedPieces = unlockedPieces ??
             {
               PieceType.pawn,
@@ -144,7 +146,8 @@ class PlayerProfile extends ChangeNotifier {
             },
         upgradeLevels = upgradeLevels ?? {},
         ownedSkins = ownedSkins ?? [],
-        armyConfig = armyConfig ?? ArmyConfig();
+        armyConfig = armyConfig ?? ArmyConfig(),
+        unlockedAchievements = unlockedAchievements ?? {};
 
   /// Scala i coins e notifica tutti i listener (es. la home page).
   bool spendCoins(int amount) {
@@ -180,6 +183,22 @@ class PlayerProfile extends ChangeNotifier {
 
   bool hasPiece(PieceType type) => unlockedPieces.contains(type);
 
+  void unlockAchievement(String id, {SkinOwnership? skinReward}) {
+    if (unlockedAchievements.contains(id)) return;
+    unlockedAchievements.add(id);
+    if (skinReward != null && !ownedSkins.any((s) => s.skinId == skinReward.skinId)) {
+      ownedSkins.add(skinReward);
+    }
+    notifyListeners();
+  }
+
+  void equipSkin(String skinId) {
+    for (final skin in ownedSkins) {
+      skin.isEquipped = skin.skinId == skinId;
+    }
+    notifyListeners();
+  }
+
   UpgradeLevel getUpgradeLevel(PieceType type) =>
       upgradeLevels[type] ?? UpgradeLevel(pieceType: type);
 
@@ -193,6 +212,7 @@ class PlayerProfile extends ChangeNotifier {
         'losses': losses,
         'unlockedPieces': unlockedPieces.map((e) => e.name).toList(),
         'ownedSkins': ownedSkins.map((s) => s.toJson()).toList(),
+        'unlockedAchievements': unlockedAchievements.toList(),
       };
 
   factory PlayerProfile.fromJson(Map<String, dynamic> json) {
@@ -211,6 +231,9 @@ class PlayerProfile extends ChangeNotifier {
             .map((s) => SkinOwnership.fromJson(s as Map<String, dynamic>))
             .toList()
         : null;
+    final achievements = json['unlockedAchievements'] != null
+        ? (json['unlockedAchievements'] as List).cast<String>().toSet()
+        : null;
     return PlayerProfile(
       name: json['name'] as String,
       coins: (json['coins'] as int?) ?? 500,
@@ -221,6 +244,7 @@ class PlayerProfile extends ChangeNotifier {
       losses: (json['losses'] as int?) ?? 0,
       unlockedPieces: unlocked,
       ownedSkins: skins,
+      unlockedAchievements: achievements,
     );
   }
 

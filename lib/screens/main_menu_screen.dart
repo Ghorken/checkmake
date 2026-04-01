@@ -11,7 +11,7 @@ import 'package:checkmake/screens/game_screen.dart';
 import 'package:checkmake/screens/shop_screen.dart';
 import 'package:checkmake/screens/army_builder_screen.dart';
 import 'package:checkmake/screens/matchmaking_screen.dart';
-import 'package:checkmake/screens/skins_screen.dart';
+import 'package:checkmake/screens/achievements_screen.dart';
 import 'package:checkmake/widgets/tutorial_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -236,19 +236,19 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
                                   ),
                                 ),
                               ),
-                              // (1,2) dark — skins
+                              // (1,2) dark — achievements
                               _MedievalMenuTile(
-                                icon: Icons.palette,
-                                secondaryIcon: '🎨',
-                                label: 'Aspetto',
+                                icon: Icons.military_tech,
+                                secondaryIcon: '🏅',
+                                label: 'Imprese',
                                 isLightSquare: false,
                                 onTap: () => Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) => ChangeNotifierProvider(
-                                      create: (_) =>
-                                          ShopProvider(profile: profile),
-                                      child: const SkinsScreen(),
+                                    builder: (_) =>
+                                        ChangeNotifierProvider<PlayerProfile>.value(
+                                      value: profile,
+                                      child: const AchievementsScreen(),
                                     ),
                                   ),
                                 ),

@@ -7,6 +7,7 @@ import 'package:checkmake/models/board.dart';
 import 'package:checkmake/models/piece.dart';
 import 'package:checkmake/models/piece_definitions.dart';
 import 'package:checkmake/models/player_profile.dart';
+import 'package:checkmake/models/achievement.dart';
 import 'package:checkmake/services/movement_service.dart';
 import 'package:checkmake/services/combat_service.dart';
 
@@ -353,11 +354,13 @@ class GameProvider extends ChangeNotifier {
       _phaseRaw = GamePhase.gameOver;
       if (!hotseatMode) {
         myProfile.registerLoss(coinsReward: 10);
+        tryUnlockAchievements(myProfile);
       }
     } else if (oppKing == null) {
       _phaseRaw = GamePhase.gameOver;
       if (!hotseatMode) {
         myProfile.registerWin(coinsReward: 200);
+        tryUnlockAchievements(myProfile);
       }
     }
   }

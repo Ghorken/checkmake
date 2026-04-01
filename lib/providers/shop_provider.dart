@@ -1,28 +1,10 @@
 // lib/providers/shop_provider.dart
 
 import 'package:flutter/foundation.dart';
+import 'package:checkmake/models/achievement.dart';
 import 'package:checkmake/models/player_profile.dart';
 import 'package:checkmake/models/piece.dart';
 import 'package:checkmake/models/piece_definitions.dart';
-
-class ShopSkinItem {
-  final String skinId;
-  final String name;
-  final String description;
-  final int cost;
-  final PieceType? targetPiece; // null = skin intera armata
-
-  const ShopSkinItem({
-    required this.skinId,
-    required this.name,
-    required this.description,
-    required this.cost,
-    this.targetPiece,
-  });
-}
-
-// Catalogo skin disponibili - espandibile facilmente
-const List<ShopSkinItem> availableSkins = [];
 
 class ShopProvider extends ChangeNotifier {
   final PlayerProfile profile;
@@ -42,6 +24,7 @@ class ShopProvider extends ChangeNotifier {
     if (def == null || !canUnlock(type)) return false;
     if (!profile.spendCoins(def.unlockCost)) return false;
     profile.unlockedPieces.add(type);
+    tryUnlockAchievements(profile);
     notifyListeners();
     return true;
   }
@@ -75,6 +58,7 @@ class ShopProvider extends ChangeNotifier {
         levels.valueLevel++;
     }
     profile.upgradeLevels[type] = levels;
+    tryUnlockAchievements(profile);
     notifyListeners();
     return true;
   }
@@ -85,29 +69,12 @@ class ShopProvider extends ChangeNotifier {
   bool upgradeInitiative() {
     if (!profile.spendCoins(initiativeUpgradeCost)) return false;
     profile.initiative++;
+    tryUnlockAchievements(profile);
     notifyListeners();
     return true;
   }
 
   // ===== SKIN =====
-  bool hasSkin(String skinId) => profile.ownedSkins.any((s) => s.skinId == skinId);
-
-  bool buySkin(ShopSkinItem item) {
-    if (hasSkin(item.skinId)) return false;
-    if (!profile.spendCoins(item.cost)) return false;
-    profile.ownedSkins.add(SkinOwnership(
-      skinId: item.skinId,
-      name: item.name,
-      targetPiece: item.targetPiece,
-    ));
-    notifyListeners();
-    return true;
-  }
-
-  void equipSkin(String skinId) {
-    for (final skin in profile.ownedSkins) {
-      skin.isEquipped = skin.skinId == skinId;
-    }
-    notifyListeners();
-  }
+  bool hasSkin(String skinId) =>
+      profile.ownedSkins.any((s) => s.skinId == skinId);
 }

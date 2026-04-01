@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:checkmake/models/board.dart';
 import 'package:checkmake/models/piece.dart';
+import 'package:checkmake/models/achievement.dart';
 import 'package:checkmake/providers/game_provider.dart';
 import 'package:checkmake/services/firebase_service.dart';
 
@@ -206,12 +207,14 @@ class OnlineGameProvider extends GameProvider {
   void _applyWinResult() {
     if (_resultApplied || _isDisposed) return;
     myProfile.registerWin(coinsReward: 200);
+    tryUnlockAchievements(myProfile);
     _resultApplied = true;
   }
 
   void _applyLossResult() {
     if (_resultApplied || _isDisposed) return;
     myProfile.registerLoss(coinsReward: 10);
+    tryUnlockAchievements(myProfile);
     _resultApplied = true;
   }
 
