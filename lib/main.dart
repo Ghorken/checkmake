@@ -11,6 +11,7 @@ import 'package:checkmake/firebase_options.dart';
 import 'package:checkmake/l10n/app_localizations.dart';
 import 'package:checkmake/models/player_profile.dart';
 import 'package:checkmake/screens/main_menu_screen.dart';
+import 'package:checkmake/services/profile_persistence_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,11 +28,13 @@ void main() async {
   } else {
     await Firebase.initializeApp();
   }
-  runApp(const Checkmake());
+  final profile = await ProfilePersistenceService.load();
+  runApp(Checkmake(profile: profile));
 }
 
 class Checkmake extends StatelessWidget {
-  const Checkmake({super.key});
+  final PlayerProfile profile;
+  const Checkmake({super.key, required this.profile});
 
   @override
   Widget build(BuildContext context) {
@@ -48,8 +51,10 @@ class Checkmake extends StatelessWidget {
     // Cinzel Decorative for titles, Cinzel for body
     final cinzelTextTheme = GoogleFonts.cinzelTextTheme(base.textTheme);
 
-    return ChangeNotifierProvider(
-      create: (_) => PlayerProfile(name: 'Giocatore'),
+    profile.addListener(() => ProfilePersistenceService.save(profile));
+
+    return ChangeNotifierProvider.value(
+      value: profile,
       child: MaterialApp(
         title: 'CheckMake',
         debugShowCheckedModeBanner: false,

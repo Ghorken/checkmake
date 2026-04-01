@@ -22,34 +22,7 @@ class ShopSkinItem {
 }
 
 // Catalogo skin disponibili - espandibile facilmente
-const List<ShopSkinItem> availableSkins = [
-  ShopSkinItem(
-    skinId: 'army_fire',
-    name: 'Armata del Fuoco',
-    description: 'Tinge tutti i tuoi pezzi di rosso ardente',
-    cost: 1000,
-  ),
-  ShopSkinItem(
-    skinId: 'army_ice',
-    name: 'Armata del Ghiaccio',
-    description: 'Pezzi cristallizzati in blu glaciale',
-    cost: 1000,
-  ),
-  ShopSkinItem(
-    skinId: 'pawn_shadow',
-    name: 'Pedone Ombra',
-    description: 'Skin oscura per i tuoi pedoni',
-    cost: 200,
-    targetPiece: PieceType.pawn,
-  ),
-  ShopSkinItem(
-    skinId: 'queen_golden',
-    name: 'Regina Dorata',
-    description: 'La tua regina splende d\'oro',
-    cost: 500,
-    targetPiece: PieceType.queen,
-  ),
-];
+const List<ShopSkinItem> availableSkins = [];
 
 class ShopProvider extends ChangeNotifier {
   final PlayerProfile profile;

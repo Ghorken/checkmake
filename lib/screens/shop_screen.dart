@@ -528,15 +528,7 @@ class _SkinsTab extends StatelessWidget {
     );
   }
 
-  List<_LocalizedSkin> _buildLocalizedSkins(AppLocalizations l) {
-    return [
-      _LocalizedSkin(availableSkins[0], l.skinFireArmy, l.skinFireArmyDesc),
-      _LocalizedSkin(availableSkins[1], l.skinIceArmy, l.skinIceArmyDesc),
-      _LocalizedSkin(availableSkins[2], l.skinPawnShadow, l.skinPawnShadowDesc),
-      _LocalizedSkin(
-          availableSkins[3], l.skinQueenGolden, l.skinQueenGoldenDesc),
-    ];
-  }
+  List<_LocalizedSkin> _buildLocalizedSkins(AppLocalizations l) => [];
 }
 
 class _LocalizedSkin {

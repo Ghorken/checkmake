@@ -45,6 +45,22 @@ class SkinOwnership {
     this.targetPiece,
     this.isEquipped = false,
   });
+
+  Map<String, dynamic> toJson() => {
+        'skinId': skinId,
+        'name': name,
+        'targetPiece': targetPiece?.name,
+        'isEquipped': isEquipped,
+      };
+
+  factory SkinOwnership.fromJson(Map<String, dynamic> json) => SkinOwnership(
+        skinId: json['skinId'] as String,
+        name: json['name'] as String,
+        targetPiece: json['targetPiece'] != null
+            ? PieceType.values.firstWhere((e) => e.name == json['targetPiece'])
+            : null,
+        isEquipped: json['isEquipped'] as bool? ?? false,
+      );
 }
 
 // Configurazione dell'esercito del giocatore
@@ -175,6 +191,8 @@ class PlayerProfile extends ChangeNotifier {
         'upgrades': upgradeLevels.values.map((u) => u.toJson()).toList(),
         'wins': wins,
         'losses': losses,
+        'unlockedPieces': unlockedPieces.map((e) => e.name).toList(),
+        'ownedSkins': ownedSkins.map((s) => s.toJson()).toList(),
       };
 
   factory PlayerProfile.fromJson(Map<String, dynamic> json) {
@@ -183,6 +201,16 @@ class PlayerProfile extends ChangeNotifier {
       final upgrade = UpgradeLevel.fromJson(u as Map<String, dynamic>);
       upgrades[upgrade.pieceType] = upgrade;
     }
+    final unlocked = json['unlockedPieces'] != null
+        ? (json['unlockedPieces'] as List)
+            .map((e) => PieceType.values.firstWhere((p) => p.name == e))
+            .toSet()
+        : null;
+    final skins = json['ownedSkins'] != null
+        ? (json['ownedSkins'] as List)
+            .map((s) => SkinOwnership.fromJson(s as Map<String, dynamic>))
+            .toList()
+        : null;
     return PlayerProfile(
       name: json['name'] as String,
       coins: (json['coins'] as int?) ?? 500,
@@ -191,6 +219,8 @@ class PlayerProfile extends ChangeNotifier {
       upgradeLevels: upgrades,
       wins: (json['wins'] as int?) ?? 0,
       losses: (json['losses'] as int?) ?? 0,
+      unlockedPieces: unlocked,
+      ownedSkins: skins,
     );
   }
 
