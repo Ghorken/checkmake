@@ -31,7 +31,7 @@ class _ShopScreenState extends State<ShopScreen>
   @override
   void initState() {
     super.initState();
-    _tabs = TabController(length: 3, vsync: this);
+    _tabs = TabController(length: 2, vsync: this);
   }
 
   @override
@@ -69,7 +69,6 @@ class _ShopScreenState extends State<ShopScreen>
           tabs: [
             Tab(text: l.shopTabPieces),
             Tab(text: l.shopTabUpgrades),
-            Tab(text: l.shopTabSkins),
           ],
         ),
       ),
@@ -89,7 +88,6 @@ class _ShopScreenState extends State<ShopScreen>
           children: [
             _PiecesTab(shop: shop),
             _UpgradesTab(shop: shop),
-            _SkinsTab(shop: shop),
           ],
         ),
       ),
@@ -436,106 +434,6 @@ class _UpgradeRow extends StatelessWidget {
       ),
     );
   }
-}
-
-// ===== TAB SKIN =====
-class _SkinsTab extends StatelessWidget {
-  final ShopProvider shop;
-  const _SkinsTab({required this.shop});
-
-  @override
-  Widget build(BuildContext context) {
-    final l = AppLocalizations.of(context)!;
-    final localizedSkins = _buildLocalizedSkins(l);
-
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: localizedSkins.length,
-      itemBuilder: (context, i) {
-        final entry = localizedSkins[i];
-        final skin = entry.item;
-        final skinName = entry.name;
-        final skinDesc = entry.description;
-        final owned = shop.hasSkin(skin.skinId);
-        final canBuy = !owned && shop.profile.coins >= skin.cost;
-
-        return Card(
-          color: _darkStone,
-          margin: const EdgeInsets.only(bottom: 10),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4),
-            side: BorderSide(color: _gold.withValues(alpha: 0.2)),
-          ),
-          child: ListTile(
-            leading: Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4),
-                gradient: LinearGradient(
-                  colors: skin.skinId.contains('fire')
-                      ? [_gold, _crimson]
-                      : skin.skinId.contains('ice')
-                          ? [_parchment, _steelBlue]
-                          : [_steelBlue, _ironBlack],
-                ),
-                border: Border.all(color: _gold.withValues(alpha: 0.3)),
-              ),
-              child: Icon(
-                skin.targetPiece == null ? Icons.shield : Icons.person,
-                color: _parchment,
-              ),
-            ),
-            title: Text(skinName,
-                style: GoogleFonts.cinzel(
-                    color: _parchment, fontWeight: FontWeight.bold, fontSize: 13)),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(skinDesc,
-                    style: GoogleFonts.lora(
-                        color: _parchment.withValues(alpha: 0.65),
-                        fontSize: 11,
-                        fontStyle: FontStyle.italic)),
-                if (skin.targetPiece == null)
-                  Text(l.shopSkinForArmy,
-                      style: GoogleFonts.cinzel(
-                          color: _gold, fontSize: 10)),
-              ],
-            ),
-            trailing: owned
-                ? TextButton(
-                    onPressed: () => shop.equipSkin(skin.skinId),
-                    child: Text(l.shopEquip,
-                        style: GoogleFonts.cinzel(color: _steelBlue, fontSize: 11)),
-                  )
-                : ElevatedButton(
-                    onPressed: canBuy ? () => shop.buySkin(skin) : null,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: canBuy ? _gold : Colors.grey,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(2)),
-                    ),
-                    child: Text('${skin.cost}',
-                        style: GoogleFonts.cinzel(
-                            color: _ironBlack,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold)),
-                  ),
-          ),
-        );
-      },
-    );
-  }
-
-  List<_LocalizedSkin> _buildLocalizedSkins(AppLocalizations l) => [];
-}
-
-class _LocalizedSkin {
-  final ShopSkinItem item;
-  final String name;
-  final String description;
-  const _LocalizedSkin(this.item, this.name, this.description);
 }
 
 // Helpers

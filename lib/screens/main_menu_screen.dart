@@ -11,6 +11,9 @@ import 'package:checkmake/screens/game_screen.dart';
 import 'package:checkmake/screens/shop_screen.dart';
 import 'package:checkmake/screens/army_builder_screen.dart';
 import 'package:checkmake/screens/matchmaking_screen.dart';
+import 'package:checkmake/screens/skins_screen.dart';
+import 'package:checkmake/widgets/tutorial_dialog.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // Medieval palette
 const _gold = Color(0xFFD4AF37);
@@ -22,8 +25,30 @@ const _darkStone = Color(0xFF1A1A2E);
 const _lightSquare = Color(0xFFD4C5A9);
 const _darkSquare = Color(0xFF2A1F1A);
 
-class MainMenuScreen extends StatelessWidget {
+class MainMenuScreen extends StatefulWidget {
   const MainMenuScreen({super.key});
+
+  @override
+  State<MainMenuScreen> createState() => _MainMenuScreenState();
+}
+
+class _MainMenuScreenState extends State<MainMenuScreen> {
+  static const _tutorialShownKey = 'tutorial_shown';
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _maybeShowTutorial());
+  }
+
+  Future<void> _maybeShowTutorial() async {
+    final prefs = await SharedPreferences.getInstance();
+    final shown = prefs.getBool(_tutorialShownKey) ?? false;
+    if (!shown && mounted) {
+      await prefs.setBool(_tutorialShownKey, true);
+      if (mounted) await TutorialDialog.show(context);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -128,7 +153,7 @@ class MainMenuScreen extends StatelessWidget {
                 // Player stats banner
                 _StatsBar(profile: profile, l: l),
 
-                // Menu buttons grid (2x2 checkerboard)
+                // Menu buttons grid (3x3 checkerboard)
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -140,10 +165,11 @@ class MainMenuScreen extends StatelessWidget {
                           aspectRatio: 1,
                           child: GridView.count(
                             physics: const NeverScrollableScrollPhysics(),
-                            crossAxisCount: 2,
+                            crossAxisCount: 3,
                             crossAxisSpacing: 6,
                             mainAxisSpacing: 6,
                             children: [
+                              // (0,0) light
                               _MedievalMenuTile(
                                 icon: Icons.sports_esports,
                                 secondaryIcon: '⚔',
@@ -151,6 +177,7 @@ class MainMenuScreen extends StatelessWidget {
                                 isLightSquare: true,
                                 onTap: () => _startGame(context, profile),
                               ),
+                              // (0,1) dark
                               _MedievalMenuTile(
                                 icon: Icons.wifi,
                                 secondaryIcon: '🏰',
@@ -167,6 +194,15 @@ class MainMenuScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
+                              // (0,2) light — disabled
+                              _MedievalMenuTile(
+                                icon: Icons.emoji_events,
+                                secondaryIcon: '🏆',
+                                label: 'Classifiche',
+                                isLightSquare: true,
+                                onTap: null,
+                              ),
+                              // (1,0) dark
                               _MedievalMenuTile(
                                 icon: Icons.shield,
                                 secondaryIcon: '🛡',
@@ -183,6 +219,7 @@ class MainMenuScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
+                              // (1,1) light
                               _MedievalMenuTile(
                                 icon: Icons.store,
                                 secondaryIcon: '🪙',
@@ -198,6 +235,47 @@ class MainMenuScreen extends StatelessWidget {
                                     ),
                                   ),
                                 ),
+                              ),
+                              // (1,2) dark — skins
+                              _MedievalMenuTile(
+                                icon: Icons.palette,
+                                secondaryIcon: '🎨',
+                                label: 'Aspetto',
+                                isLightSquare: false,
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => ChangeNotifierProvider(
+                                      create: (_) =>
+                                          ShopProvider(profile: profile),
+                                      child: const SkinsScreen(),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              // (2,0) light — tutorial
+                              _MedievalMenuTile(
+                                icon: Icons.menu_book,
+                                secondaryIcon: '📖',
+                                label: 'Tutorial',
+                                isLightSquare: true,
+                                onTap: () => TutorialDialog.show(context),
+                              ),
+                              // (2,1) dark — disabled
+                              _MedievalMenuTile(
+                                icon: Icons.bar_chart,
+                                secondaryIcon: '📊',
+                                label: 'Statistiche',
+                                isLightSquare: false,
+                                onTap: null,
+                              ),
+                              // (2,2) light — disabled
+                              _MedievalMenuTile(
+                                icon: Icons.settings,
+                                secondaryIcon: '⚙',
+                                label: 'Impostazioni',
+                                isLightSquare: true,
+                                onTap: null,
                               ),
                             ],
                           ),
@@ -521,7 +599,7 @@ class _MedievalMenuTile extends StatelessWidget {
   final String secondaryIcon;
   final String label;
   final bool isLightSquare;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   const _MedievalMenuTile({
     required this.icon,
@@ -533,11 +611,13 @@ class _MedievalMenuTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final disabled = onTap == null;
     final bgColor = isLightSquare
-        ? _lightSquare.withValues(alpha: 0.9)
-        : _darkSquare.withValues(alpha: 0.95);
+        ? _lightSquare.withValues(alpha: disabled ? 0.4 : 0.9)
+        : _darkSquare.withValues(alpha: disabled ? 0.5 : 0.95);
     final fgColor = isLightSquare ? _ironBlack : _parchment;
-    final accentColor = isLightSquare ? _crimson : _gold;
+    final accentColor = (isLightSquare ? _crimson : _gold)
+        .withValues(alpha: disabled ? 0.3 : 1.0);
 
     return Material(
       color: Colors.transparent,
@@ -624,7 +704,7 @@ class _MedievalMenuTile extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.cinzel(
-                        color: fgColor,
+                        color: fgColor.withValues(alpha: disabled ? 0.3 : 1.0),
                         fontWeight: FontWeight.w800,
                         letterSpacing: 1.5,
                         fontSize: 12,
