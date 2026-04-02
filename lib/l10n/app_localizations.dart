@@ -859,6 +859,96 @@ abstract class AppLocalizations {
   /// In it, this message translates to:
   /// **'La tua regina splende d\'oro'**
   String get skinQueenGoldenDesc;
+
+  /// No description provided for @btnLeaderboard.
+  ///
+  /// In it, this message translates to:
+  /// **'Classifiche'**
+  String get btnLeaderboard;
+
+  /// No description provided for @btnAchievements.
+  ///
+  /// In it, this message translates to:
+  /// **'Imprese'**
+  String get btnAchievements;
+
+  /// No description provided for @btnTutorial.
+  ///
+  /// In it, this message translates to:
+  /// **'Tutorial'**
+  String get btnTutorial;
+
+  /// No description provided for @btnStats.
+  ///
+  /// In it, this message translates to:
+  /// **'Statistiche'**
+  String get btnStats;
+
+  /// No description provided for @btnInfo.
+  ///
+  /// In it, this message translates to:
+  /// **'Informazioni'**
+  String get btnInfo;
+
+  /// No description provided for @player2Name.
+  ///
+  /// In it, this message translates to:
+  /// **'Giocatore 2'**
+  String get player2Name;
+
+  /// No description provided for @infoTitle.
+  ///
+  /// In it, this message translates to:
+  /// **'Informazioni'**
+  String get infoTitle;
+
+  /// No description provided for @bugRequestTitle.
+  ///
+  /// In it, this message translates to:
+  /// **'Segnala un bug o suggerisci una feature'**
+  String get bugRequestTitle;
+
+  /// No description provided for @joinDiscordTitle.
+  ///
+  /// In it, this message translates to:
+  /// **'Unisciti al nostro Discord'**
+  String get joinDiscordTitle;
+
+  /// No description provided for @sendEmailTitle.
+  ///
+  /// In it, this message translates to:
+  /// **'Scrivici un\'email'**
+  String get sendEmailTitle;
+
+  /// No description provided for @supportEmail.
+  ///
+  /// In it, this message translates to:
+  /// **'smithingthings@gmail.com'**
+  String get supportEmail;
+
+  /// No description provided for @supportSubject.
+  ///
+  /// In it, this message translates to:
+  /// **'Supporto CheckMake'**
+  String get supportSubject;
+
+  /// No description provided for @privacyTitle.
+  ///
+  /// In it, this message translates to:
+  /// **'Informativa sulla Privacy'**
+  String get privacyTitle;
+
+  /// No description provided for @discordUrl.
+  ///
+  /// In it, this message translates to:
+  /// **'https://discord.gg/checkmake'**
+  String get discordUrl;
+
+  /// No description provided for @urlError.
+  ///
+  /// In it, this message translates to:
+  /// **'Impossibile aprire {url}'**
+  String urlError(String url);
 }
 
 class _AppLocalizationsDelegate

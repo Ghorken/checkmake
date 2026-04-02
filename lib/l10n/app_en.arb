@@ -158,5 +158,27 @@
   "skinPawnShadow": "Shadow Pawn",
   "skinPawnShadowDesc": "Dark skin for your pawns",
   "skinQueenGolden": "Golden Queen",
-  "skinQueenGoldenDesc": "Your queen shines in gold"
+  "skinQueenGoldenDesc": "Your queen shines in gold",
+
+  "btnLeaderboard": "Leaderboard",
+  "btnAchievements": "Achievements",
+  "btnTutorial": "Tutorial",
+  "btnStats": "Statistics",
+  "btnInfo": "Info",
+  "player2Name": "Player 2",
+
+  "infoTitle": "Info",
+  "bugRequestTitle": "Report a bug or suggest a feature",
+  "joinDiscordTitle": "Join our Discord",
+  "sendEmailTitle": "Send us an email",
+  "supportEmail": "smithingthings@gmail.com",
+  "supportSubject": "CheckMake Support",
+  "privacyTitle": "Privacy Policy",
+  "discordUrl": "https://discord.gg/checkmake",
+  "urlError": "Could not open {url}",
+  "@urlError": {
+    "placeholders": {
+      "url": { "type": "String" }
+    }
+  }
 }

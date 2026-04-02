@@ -21,6 +21,8 @@ dependencies:
   firebase_core: ^3.13.0
   firebase_auth: ^5.5.2
   cloud_firestore: ^5.6.6
+  url_launcher: ^6.3.1
+  flutter_markdown: ^0.7.6
   
 dev_dependencies:
   flutter_test:
@@ -40,8 +42,10 @@ flutter:
     # piece_id examples: pawn, rook, knight, bishop, queen, king
     # per pezzi nuovi: fighter, miner, rifleman, healer, etc.
     - assets/images/pieces/
+    - assets/icons/
     - assets/icon.png
     - assets/splash.png
+    - assets/privacy/
   # fonts:
     # Puoi aggiungere font custom qui
     # - family: MedievalFont

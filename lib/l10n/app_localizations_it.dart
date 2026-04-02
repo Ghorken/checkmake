@@ -416,4 +416,51 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get skinQueenGoldenDesc => 'La tua regina splende d\'oro';
+
+  @override
+  String get btnLeaderboard => 'Classifiche';
+
+  @override
+  String get btnAchievements => 'Imprese';
+
+  @override
+  String get btnTutorial => 'Tutorial';
+
+  @override
+  String get btnStats => 'Statistiche';
+
+  @override
+  String get btnInfo => 'Informazioni';
+
+  @override
+  String get player2Name => 'Giocatore 2';
+
+  @override
+  String get infoTitle => 'Informazioni';
+
+  @override
+  String get bugRequestTitle => 'Segnala un bug o suggerisci una feature';
+
+  @override
+  String get joinDiscordTitle => 'Unisciti al nostro Discord';
+
+  @override
+  String get sendEmailTitle => 'Scrivici un\'email';
+
+  @override
+  String get supportEmail => 'smithingthings@gmail.com';
+
+  @override
+  String get supportSubject => 'Supporto CheckMake';
+
+  @override
+  String get privacyTitle => 'Informativa sulla Privacy';
+
+  @override
+  String get discordUrl => 'https://discord.gg/checkmake';
+
+  @override
+  String urlError(String url) {
+    return 'Impossibile aprire $url';
+  }
 }

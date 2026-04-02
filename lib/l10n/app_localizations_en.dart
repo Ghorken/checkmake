@@ -411,4 +411,51 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get skinQueenGoldenDesc => 'Your queen shines in gold';
+
+  @override
+  String get btnLeaderboard => 'Leaderboard';
+
+  @override
+  String get btnAchievements => 'Achievements';
+
+  @override
+  String get btnTutorial => 'Tutorial';
+
+  @override
+  String get btnStats => 'Statistics';
+
+  @override
+  String get btnInfo => 'Info';
+
+  @override
+  String get player2Name => 'Player 2';
+
+  @override
+  String get infoTitle => 'Info';
+
+  @override
+  String get bugRequestTitle => 'Report a bug or suggest a feature';
+
+  @override
+  String get joinDiscordTitle => 'Join our Discord';
+
+  @override
+  String get sendEmailTitle => 'Send us an email';
+
+  @override
+  String get supportEmail => 'smithingthings@gmail.com';
+
+  @override
+  String get supportSubject => 'CheckMake Support';
+
+  @override
+  String get privacyTitle => 'Privacy Policy';
+
+  @override
+  String get discordUrl => 'https://discord.gg/checkmake';
+
+  @override
+  String urlError(String url) {
+    return 'Could not open $url';
+  }
 }

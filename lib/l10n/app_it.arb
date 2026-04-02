@@ -161,5 +161,27 @@
   "skinPawnShadow": "Pedone Ombra",
   "skinPawnShadowDesc": "Skin oscura per i tuoi pedoni",
   "skinQueenGolden": "Regina Dorata",
-  "skinQueenGoldenDesc": "La tua regina splende d'oro"
+  "skinQueenGoldenDesc": "La tua regina splende d'oro",
+
+  "btnLeaderboard": "Classifiche",
+  "btnAchievements": "Imprese",
+  "btnTutorial": "Tutorial",
+  "btnStats": "Statistiche",
+  "btnInfo": "Informazioni",
+  "player2Name": "Giocatore 2",
+
+  "infoTitle": "Informazioni",
+  "bugRequestTitle": "Segnala un bug o suggerisci una feature",
+  "joinDiscordTitle": "Unisciti al nostro Discord",
+  "sendEmailTitle": "Scrivici un'email",
+  "supportEmail": "smithingthings@gmail.com",
+  "supportSubject": "Supporto CheckMake",
+  "privacyTitle": "Informativa sulla Privacy",
+  "discordUrl": "https://discord.gg/checkmake",
+  "urlError": "Impossibile aprire {url}",
+  "@urlError": {
+    "placeholders": {
+      "url": { "type": "String" }
+    }
+  }
 }

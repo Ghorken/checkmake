@@ -12,6 +12,7 @@ import 'package:checkmake/screens/shop_screen.dart';
 import 'package:checkmake/screens/army_builder_screen.dart';
 import 'package:checkmake/screens/matchmaking_screen.dart';
 import 'package:checkmake/screens/achievements_screen.dart';
+import 'package:checkmake/screens/info_screen.dart';
 import 'package:checkmake/widgets/tutorial_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -198,7 +199,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
                               _MedievalMenuTile(
                                 icon: Icons.emoji_events,
                                 secondaryIcon: '🏆',
-                                label: 'Classifiche',
+                                label: l.btnLeaderboard,
                                 isLightSquare: true,
                                 onTap: null,
                               ),
@@ -240,7 +241,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
                               _MedievalMenuTile(
                                 icon: Icons.military_tech,
                                 secondaryIcon: '🏅',
-                                label: 'Imprese',
+                                label: l.btnAchievements,
                                 isLightSquare: false,
                                 onTap: () => Navigator.push(
                                   context,
@@ -257,7 +258,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
                               _MedievalMenuTile(
                                 icon: Icons.menu_book,
                                 secondaryIcon: '📖',
-                                label: 'Tutorial',
+                                label: l.btnTutorial,
                                 isLightSquare: true,
                                 onTap: () => TutorialDialog.show(context),
                               ),
@@ -265,17 +266,22 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
                               _MedievalMenuTile(
                                 icon: Icons.bar_chart,
                                 secondaryIcon: '📊',
-                                label: 'Statistiche',
+                                label: l.btnStats,
                                 isLightSquare: false,
                                 onTap: null,
                               ),
-                              // (2,2) light — disabled
+                              // (2,2) light — info
                               _MedievalMenuTile(
-                                icon: Icons.settings,
-                                secondaryIcon: '⚙',
-                                label: 'Impostazioni',
+                                icon: Icons.info_outline,
+                                secondaryIcon: '📜',
+                                label: l.btnInfo,
                                 isLightSquare: true,
-                                onTap: null,
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const InfoScreen(),
+                                  ),
+                                ),
                               ),
                             ],
                           ),
@@ -305,9 +311,10 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
   }
 
   void _startGame(BuildContext context, PlayerProfile myProfile) {
+    final l = AppLocalizations.of(context)!;
     final opponent = PlayerProfile.fromJson({
       ...myProfile.toJson(),
-      'name': 'Giocatore 2',
+      'name': l.player2Name,
     });
     Navigator.push(
       context,
