@@ -45,7 +45,7 @@ class _GameScreenState extends State<GameScreen> {
   Future<void> _maybeStartLocalCoinFlip() async {
     if (_startedLocalCoinFlip || !mounted) return;
     final game = context.read<GameProvider>();
-    if (!game.hotseatMode) return;
+    if (!game.hotseatMode && !game.trainingMode) return;
 
     _startedLocalCoinFlip = true;
     final startingSide = await showDialog<PlayerSide>(
@@ -168,6 +168,84 @@ class _GameScreenState extends State<GameScreen> {
               l.gameResultAbandonedBody
             ),
         };
+
+        await showDialog<void>(
+          context: context,
+          barrierDismissible: false,
+          builder: (ctx) => AlertDialog(
+            backgroundColor: _darkStone,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(4),
+              side: BorderSide(color: _gold.withValues(alpha: 0.4)),
+            ),
+            title: Text(
+              title,
+              style: GoogleFonts.cinzelDecorative(
+                color: _gold,
+                fontSize: 20,
+              ),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  body,
+                  style: GoogleFonts.lora(
+                    color: _parchment.withValues(alpha: 0.9),
+                    fontSize: 14,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  l.gameResultCoins(gained),
+                  style: GoogleFonts.cinzel(
+                    color: _gold,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              ElevatedButton(
+                onPressed: () => Navigator.pop(ctx),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: _gold,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                child: Text(
+                  l.gameDialogClose,
+                  style: const TextStyle(color: _ironBlack),
+                ),
+              ),
+            ],
+          ),
+        );
+        _showingEndDialog = false;
+        await _navigateHome();
+      });
+      return;
+    }
+
+    if (game.trainingMode && game.phase == GamePhase.gameOver) {
+      _showingEndDialog = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        if (!mounted) return;
+        final l = AppLocalizations.of(context)!;
+        final myKingAlive =
+            game.board.findKing(PlayerSide.player1) != null;
+        final title = myKingAlive
+            ? l.gameResultVictoryTitle
+            : l.gameResultDefeatTitle;
+        final body = myKingAlive
+            ? l.gameResultTrainingVictoryBody
+            : l.gameResultTrainingDefeatBody;
+        final gainedRaw =
+            game.myProfile.coins - (_coinsAtMatchStart ?? game.myProfile.coins);
+        final gained = gainedRaw < 0 ? 0 : gainedRaw;
 
         await showDialog<void>(
           context: context,

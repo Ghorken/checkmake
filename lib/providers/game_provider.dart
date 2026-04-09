@@ -22,6 +22,7 @@ class GameProvider extends ChangeNotifier {
   late PlayerProfile myProfile;
   late PlayerProfile opponentProfile; // in local multiplayer
   final bool hotseatMode;
+  final bool trainingMode;
 
   // Stato interno della fase - la fase visibile è calcolata tramite il getter `phase`
   GamePhase _phaseRaw = GamePhase.myTurn;
@@ -72,6 +73,7 @@ class GameProvider extends ChangeNotifier {
     required this.myProfile,
     required this.opponentProfile,
     this.hotseatMode = false,
+    this.trainingMode = false,
     PlayerSide initialTurn = PlayerSide.player1,
     bool startPaused = false,
     PlayerProfile? player1ProfileForBoard,
@@ -90,7 +92,7 @@ class GameProvider extends ChangeNotifier {
   }
 
   void startHotseatMatch(PlayerSide startingSide) {
-    if (!hotseatMode || _phaseRaw == GamePhase.gameOver) return;
+    if ((!hotseatMode && !trainingMode) || _phaseRaw == GamePhase.gameOver) return;
     currentTurn = startingSide;
     selectedPosition = null;
     validMoves = [];
@@ -237,7 +239,7 @@ class GameProvider extends ChangeNotifier {
       );
 
       // In locale non si guadagnano monete.
-      // Online: guadagna monete solo quando è il turno del giocatore locale.
+      // Online e allenamento: guadagna monete solo quando è il turno del giocatore locale.
       if (!hotseatMode && attacker.side == localSide) {
         myCoinsEarned += result.coinsEarned;
         myProfile.addCoins(result.coinsEarned);
@@ -352,15 +354,19 @@ class GameProvider extends ChangeNotifier {
 
     if (myKing == null) {
       _phaseRaw = GamePhase.gameOver;
-      if (!hotseatMode) {
+      if (!hotseatMode && !trainingMode) {
         myProfile.registerLoss(coinsReward: 10);
         tryUnlockAchievements(myProfile);
+      } else if (trainingMode) {
+        myProfile.addCoins(10);
       }
     } else if (oppKing == null) {
       _phaseRaw = GamePhase.gameOver;
-      if (!hotseatMode) {
+      if (!hotseatMode && !trainingMode) {
         myProfile.registerWin(coinsReward: 200);
         tryUnlockAchievements(myProfile);
+      } else if (trainingMode) {
+        myProfile.addCoins(200);
       }
     }
   }

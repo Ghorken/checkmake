@@ -14,6 +14,7 @@
 
   "btnPlay": "GIOCA IN LOCALE",
   "btnMultiplayer": "GIOCA ONLINE",
+  "btnTraining": "ALLENAMENTO",
   "btnBuildArmy": "COSTRUISCI ESERCITO",
   "btnShop": "NEGOZIO",
 
@@ -73,6 +74,8 @@
   "gameResultVictoryBody": "Hai vinto la partita online.",
   "gameResultDefeatTitle": "Sconfitta",
   "gameResultDefeatBody": "Hai perso la partita online.",
+  "gameResultTrainingVictoryBody": "Hai vinto la partita allenamento.",
+  "gameResultTrainingDefeatBody": "Hai perso la partita allenamento.",
   "gameResultAbandonedTitle": "Partita abbandonata",
   "gameResultAbandonedBody": "Hai abbandonato la partita online.",
   "gameResultCoins": "Monete guadagnate: +{coins}",
@@ -169,6 +172,7 @@
   "btnStats": "Statistiche",
   "btnInfo": "Informazioni",
   "player2Name": "Giocatore 2",
+  "aiOpponentName": "Avversario IA",
 
   "infoTitle": "Informazioni",
   "bugRequestTitle": "Segnala un bug o suggerisci una feature",

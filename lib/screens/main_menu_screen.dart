@@ -13,6 +13,7 @@ import 'package:checkmake/screens/army_builder_screen.dart';
 import 'package:checkmake/screens/matchmaking_screen.dart';
 import 'package:checkmake/screens/achievements_screen.dart';
 import 'package:checkmake/screens/info_screen.dart';
+import 'package:checkmake/providers/ai_game_provider.dart';
 import 'package:checkmake/widgets/tutorial_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -195,13 +196,14 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
                                   ),
                                 ),
                               ),
-                              // (0,2) light — disabled
+                              // (0,2) light — allenamento vs IA
                               _MedievalMenuTile(
-                                icon: Icons.emoji_events,
-                                secondaryIcon: '🏆',
-                                label: l.btnLeaderboard,
+                                icon: Icons.smart_toy,
+                                secondaryIcon: '🤖',
+                                label: l.btnTraining,
                                 isLightSquare: true,
-                                onTap: null,
+                                onTap: () =>
+                                    _startTrainingGame(context, profile),
                               ),
                               // (1,0) dark
                               _MedievalMenuTile(
@@ -319,12 +321,34 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => ChangeNotifierProvider(
+        builder: (_) => ChangeNotifierProvider<GameProvider>(
           create: (_) => GameProvider(
             myProfile: myProfile,
             opponentProfile: opponent,
             hotseatMode: true,
             startPaused: true,
+          ),
+          child: const GameScreen(),
+        ),
+      ),
+    );
+  }
+
+  void _startTrainingGame(BuildContext context, PlayerProfile myProfile) {
+    final l = AppLocalizations.of(context)!;
+    // L'IA usa la stessa composizione e gli stessi potenziamenti del giocatore
+    final aiProfile = PlayerProfile(
+      name: l.aiOpponentName,
+      armyConfig: myProfile.armyConfig,
+      upgradeLevels: Map.of(myProfile.upgradeLevels),
+    );
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ChangeNotifierProvider<GameProvider>(
+          create: (_) => AIGameProvider(
+            myProfile: myProfile,
+            aiProfile: aiProfile,
           ),
           child: const GameScreen(),
         ),

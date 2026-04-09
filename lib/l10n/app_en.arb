@@ -11,6 +11,7 @@
 
   "btnPlay": "LOCAL PLAY",
   "btnMultiplayer": "MULTIPLAYER",
+  "btnTraining": "TRAINING",
   "btnBuildArmy": "BUILD ARMY",
   "btnShop": "SHOP",
 
@@ -70,6 +71,8 @@
   "gameResultVictoryBody": "You won the online match.",
   "gameResultDefeatTitle": "Defeat",
   "gameResultDefeatBody": "You lost the online match.",
+  "gameResultTrainingVictoryBody": "You won the training match.",
+  "gameResultTrainingDefeatBody": "You lost the training match.",
   "gameResultAbandonedTitle": "Match abandoned",
   "gameResultAbandonedBody": "You left the online match.",
   "gameResultCoins": "Coins earned: +{coins}",
@@ -166,6 +169,7 @@
   "btnStats": "Statistics",
   "btnInfo": "Info",
   "player2Name": "Player 2",
+  "aiOpponentName": "AI Opponent",
 
   "infoTitle": "Info",
   "bugRequestTitle": "Report a bug or suggest a feature",

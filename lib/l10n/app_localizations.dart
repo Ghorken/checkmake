@@ -146,6 +146,12 @@ abstract class AppLocalizations {
   /// **'GIOCA ONLINE'**
   String get btnMultiplayer;
 
+  /// No description provided for @btnTraining.
+  ///
+  /// In it, this message translates to:
+  /// **'ALLENAMENTO'**
+  String get btnTraining;
+
   /// No description provided for @btnBuildArmy.
   ///
   /// In it, this message translates to:
@@ -373,6 +379,18 @@ abstract class AppLocalizations {
   /// In it, this message translates to:
   /// **'Hai perso la partita online.'**
   String get gameResultDefeatBody;
+
+  /// No description provided for @gameResultTrainingVictoryBody.
+  ///
+  /// In it, this message translates to:
+  /// **'Hai vinto la partita allenamento.'**
+  String get gameResultTrainingVictoryBody;
+
+  /// No description provided for @gameResultTrainingDefeatBody.
+  ///
+  /// In it, this message translates to:
+  /// **'Hai perso la partita allenamento.'**
+  String get gameResultTrainingDefeatBody;
 
   /// No description provided for @gameResultAbandonedTitle.
   ///
@@ -895,6 +913,12 @@ abstract class AppLocalizations {
   /// In it, this message translates to:
   /// **'Giocatore 2'**
   String get player2Name;
+
+  /// No description provided for @aiOpponentName.
+  ///
+  /// In it, this message translates to:
+  /// **'Avversario IA'**
+  String get aiOpponentName;
 
   /// No description provided for @infoTitle.
   ///

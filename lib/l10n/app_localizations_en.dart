@@ -33,6 +33,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get btnMultiplayer => 'MULTIPLAYER';
 
   @override
+  String get btnTraining => 'TRAINING';
+
+  @override
   String get btnBuildArmy => 'BUILD ARMY';
 
   @override
@@ -153,6 +156,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get gameResultDefeatBody => 'You lost the online match.';
+
+  @override
+  String get gameResultTrainingVictoryBody => 'You won the training match.';
+
+  @override
+  String get gameResultTrainingDefeatBody => 'You lost the training match.';
 
   @override
   String get gameResultAbandonedTitle => 'Match abandoned';
@@ -429,6 +438,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get player2Name => 'Player 2';
+
+  @override
+  String get aiOpponentName => 'AI Opponent';
 
   @override
   String get infoTitle => 'Info';
