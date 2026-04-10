@@ -143,7 +143,7 @@ class _BoardCell extends StatelessWidget {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            // Valid move indicator (battle marker)
+            // Valid move indicator — pallino giallo su casella vuota
             if (isValidMove && piece == null)
               Container(
                 width: 12,
@@ -164,14 +164,6 @@ class _BoardCell extends StatelessWidget {
                 ),
               ),
 
-            // Enemy target crosshair
-            if (isEnemyTarget)
-              Positioned.fill(
-                child: CustomPaint(
-                  painter: _BattleTargetPainter(),
-                ),
-              ),
-
             // Piece
             if (piece != null)
               Padding(
@@ -183,6 +175,27 @@ class _BoardCell extends StatelessWidget {
                   isSelected: isSelected,
                 ),
               ),
+
+            // Combat move indicator — pallino rosso sopra il pezzo nemico
+            if (isEnemyTarget)
+              Container(
+                width: 12,
+                height: 12,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: _battleRed.withValues(alpha: 0.9),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.6),
+                    width: 1,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: _battleRed.withValues(alpha: 0.5),
+                      blurRadius: 4,
+                    ),
+                  ],
+                ),
+              ),
           ],
         ),
       ),
@@ -190,50 +203,3 @@ class _BoardCell extends StatelessWidget {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// BATTLE TARGET PAINTER (crossed lines on enemy squares)
-// ═══════════════════════════════════════════════════════════════════════════════
-class _BattleTargetPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = _battleRed.withValues(alpha: 0.35)
-      ..strokeWidth = 1.5
-      ..style = PaintingStyle.stroke;
-
-    // Draw corner marks (like a targeting reticle)
-    const inset = 3.0;
-    const len = 6.0;
-
-    // Top-left
-    canvas.drawLine(
-        Offset(inset, inset + len), Offset(inset, inset), paint);
-    canvas.drawLine(
-        Offset(inset, inset), Offset(inset + len, inset), paint);
-
-    // Top-right
-    canvas.drawLine(Offset(size.width - inset - len, inset),
-        Offset(size.width - inset, inset), paint);
-    canvas.drawLine(Offset(size.width - inset, inset),
-        Offset(size.width - inset, inset + len), paint);
-
-    // Bottom-left
-    canvas.drawLine(Offset(inset, size.height - inset - len),
-        Offset(inset, size.height - inset), paint);
-    canvas.drawLine(Offset(inset, size.height - inset),
-        Offset(inset + len, size.height - inset), paint);
-
-    // Bottom-right
-    canvas.drawLine(
-        Offset(size.width - inset, size.height - inset - len),
-        Offset(size.width - inset, size.height - inset),
-        paint);
-    canvas.drawLine(
-        Offset(size.width - inset - len, size.height - inset),
-        Offset(size.width - inset, size.height - inset),
-        paint);
-  }
-
-  @override
-  bool shouldRepaint(_) => false;
-}
