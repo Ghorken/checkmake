@@ -8,6 +8,8 @@ enum PieceType {
   bishop,
   queen,
   king,
+  // Pezzi sbloccabili
+  fighter,
 }
 
 enum PieceBaseType {

@@ -74,7 +74,7 @@ class _ArmyBuilderScreenState extends State<ArmyBuilderScreen> {
   void _save(BuildContext context) {
     if (!_isValid) return;
     final l = AppLocalizations.of(context)!;
-    _profile.armyConfig = ArmyConfig(composition: _draft);
+    _profile.updateArmyConfig(ArmyConfig(composition: _draft));
     Navigator.pop(context);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

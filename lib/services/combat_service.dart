@@ -13,9 +13,21 @@ class CombatService {
     required Position defenderPos,
     required Board board,
   }) {
-    // Entrambi si colpiscono simultaneamente
-    final defenderNewHp = defender.stats.currentHp - attacker.stats.attack;
-    final attackerNewHp = attacker.stats.currentHp - defender.stats.attack;
+    // Fase 1: scambio simultaneo
+    int defenderNewHp = defender.stats.currentHp - attacker.stats.attack;
+    int attackerNewHp = attacker.stats.currentHp - defender.stats.attack;
+
+    // Fase 2: secondo attacco del Combattente (se sopravvive al primo scambio)
+    if (attacker.type == PieceType.fighter &&
+        attackerNewHp > 0 &&
+        defenderNewHp > 0) {
+      defenderNewHp -= attacker.stats.attack;
+    }
+    if (defender.type == PieceType.fighter &&
+        defenderNewHp > 0 &&
+        attackerNewHp > 0) {
+      attackerNewHp -= defender.stats.attack;
+    }
 
     final attackerDied = attackerNewHp <= 0;
     final defenderDied = defenderNewHp <= 0;

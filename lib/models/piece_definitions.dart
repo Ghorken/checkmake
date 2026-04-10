@@ -121,6 +121,21 @@ final Map<PieceType, PieceDefinition> pieceDefinitions = {
     upgradeCostBase: 300,
   ),
 
+  // --- PEZZI SBLOCCABILI ---
+  PieceType.fighter: PieceDefinition(
+    type: PieceType.fighter,
+    baseType: PieceBaseType.pawn,
+    displayName: 'Combattente',
+    description:
+        'Muove come un pedone. Se sopravvive allo scontro, attacca una seconda volta senza ricevere danno.',
+    baseHp: 30,
+    baseAttack: 10,
+    baseValue: 5,
+    isUnlockable: true,
+    unlockCost: 200,
+    upgradeCostBase: 75,
+  ),
+
 };
 
 // Limiti per tipo base (come negli scacchi standard)

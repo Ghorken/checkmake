@@ -14,6 +14,7 @@ extension PieceStrings on AppLocalizations {
         PieceType.bishop => pieceNameBishop,
         PieceType.queen => pieceNameQueen,
         PieceType.king => pieceNameKing,
+        PieceType.fighter => pieceNameFighter,
       };
 
   // ===== DESCRIZIONI PEZZI =====
@@ -24,6 +25,7 @@ extension PieceStrings on AppLocalizations {
         PieceType.bishop => pieceDescBishop,
         PieceType.queen => pieceDescQueen,
         PieceType.king => pieceDescKing,
+        PieceType.fighter => pieceDescFighter,
       };
 
   // ===== NOMI ABILITÀ =====

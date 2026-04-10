@@ -149,6 +149,12 @@ class PlayerProfile extends ChangeNotifier {
         armyConfig = armyConfig ?? ArmyConfig(),
         unlockedAchievements = unlockedAchievements ?? {};
 
+  /// Aggiorna la composizione dell'esercito e notifica tutti i listener (trigger salvataggio).
+  void updateArmyConfig(ArmyConfig config) {
+    armyConfig = config;
+    notifyListeners();
+  }
+
   /// Scala i coins e notifica tutti i listener (es. la home page).
   bool spendCoins(int amount) {
     if (coins < amount) return false;

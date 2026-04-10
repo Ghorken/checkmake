@@ -34,6 +34,7 @@ class PiecePlaceholderPainter extends CustomPainter {
         PieceType.bishop => const Color(0xFF6A5ACD), // purple vestment
         PieceType.queen => const Color(0xFFD4AF37), // gold crown
         PieceType.king => const Color(0xFFF3DE9B), // royal gold
+        PieceType.fighter => const Color(0xFFB22222), // firebrick red
       };
 
   static String _symbol(PieceBaseType base) => switch (base) {
