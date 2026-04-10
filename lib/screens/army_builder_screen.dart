@@ -251,7 +251,7 @@ class _PieceRow extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                           fontSize: 12)),
                   Text(
-                    'HP ${def.baseHp}  ATK ${def.baseAttack}  VAL ${def.baseValue}',
+                    'HP ${def.baseHp}  ATK ${def.baseAttack}',
                     style: GoogleFonts.lora(
                       color: _parchment.withValues(alpha: 0.6),
                       fontSize: 10,

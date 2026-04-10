@@ -37,7 +37,6 @@ class ShopProvider extends ChangeNotifier {
     final currentLevel = switch (stat) {
       'hp' => levels.hpLevel,
       'attack' => levels.attackLevel,
-      'value' => levels.valueLevel,
       _ => 1,
     };
     return def.getUpgradeCost(currentLevel);
@@ -54,8 +53,6 @@ class ShopProvider extends ChangeNotifier {
         levels.hpLevel++;
       case 'attack':
         levels.attackLevel++;
-      case 'value':
-        levels.valueLevel++;
     }
     profile.upgradeLevels[type] = levels;
     tryUnlockAchievements(profile);

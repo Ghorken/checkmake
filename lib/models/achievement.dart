@@ -57,7 +57,7 @@ final List<AchievementDefinition> allAchievements = [
     name: "L'Armaiolo",
     description: 'Potenzia una statistica di qualsiasi pezzo fino al livello 3.',
     condition: (p) => p.upgradeLevels.values.any(
-      (u) => u.hpLevel >= 3 || u.attackLevel >= 3 || u.valueLevel >= 3,
+      (u) => u.hpLevel >= 3 || u.attackLevel >= 3,
     ),
     skinReward: const AchievementSkinReward(
       skinId: 'pawn_shadow',

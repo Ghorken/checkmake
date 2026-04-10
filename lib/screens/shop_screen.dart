@@ -151,8 +151,6 @@ class _PiecesTab extends StatelessWidget {
                     _StatChip('HP ${def.baseHp}', _crimson),
                     const SizedBox(width: 4),
                     _StatChip('ATK ${def.baseAttack}', _steelBlue),
-                    const SizedBox(width: 4),
-                    _StatChip('VAL ${def.baseValue}', _gold),
                   ],
                 ),
                 if (def.abilityFactory != null)
@@ -336,16 +334,6 @@ class _PieceUpgradeCard extends StatelessWidget {
               canAfford:
                   shop.profile.coins >= shop.getUpgradeCost(type, 'attack'),
               onUpgrade: () => shop.upgradeStat(type, 'attack'),
-            ),
-            _UpgradeRow(
-              label: l.shopStatValue,
-              icon: Icons.monetization_on,
-              iconColor: _gold,
-              level: levels.valueLevel,
-              cost: shop.getUpgradeCost(type, 'value'),
-              canAfford:
-                  shop.profile.coins >= shop.getUpgradeCost(type, 'value'),
-              onUpgrade: () => shop.upgradeStat(type, 'value'),
             ),
           ],
         ),

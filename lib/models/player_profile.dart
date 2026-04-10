@@ -8,28 +8,24 @@ class UpgradeLevel {
   final PieceType pieceType;
   int hpLevel;
   int attackLevel;
-  int valueLevel;
 
   UpgradeLevel({
     required this.pieceType,
     this.hpLevel = 1,
     this.attackLevel = 1,
-    this.valueLevel = 1,
   });
 
   Map<String, dynamic> toJson() => {
         'pieceType': pieceType.name,
         'hpLevel': hpLevel,
         'attackLevel': attackLevel,
-        'valueLevel': valueLevel,
       };
 
   factory UpgradeLevel.fromJson(Map<String, dynamic> json) => UpgradeLevel(
         pieceType:
             PieceType.values.firstWhere((e) => e.name == json['pieceType']),
-        hpLevel: json['hpLevel'],
-        attackLevel: json['attackLevel'],
-        valueLevel: json['valueLevel'],
+        hpLevel: (json['hpLevel'] as int?) ?? 1,
+        attackLevel: (json['attackLevel'] as int?) ?? 1,
       );
 }
 
@@ -257,14 +253,17 @@ class PlayerProfile extends ChangeNotifier {
   PieceStats getStatsForPiece(PieceType type) {
     final def = pieceDefinitions[type]!;
     final levels = getUpgradeLevel(type);
+    // Il valore cresce del 25% del base per ogni livello di potenziamento acquistato
+    final totalExtraLevels = (levels.hpLevel - 1) + (levels.attackLevel - 1);
+    final computedValue =
+        (def.baseValue * (1 + 0.25 * totalExtraLevels)).toInt();
     return PieceStats(
       maxHp: def.getStatAtLevel(def.baseHp, def.hpScaleFactor, levels.hpLevel),
       currentHp:
           def.getStatAtLevel(def.baseHp, def.hpScaleFactor, levels.hpLevel),
       attack: def.getStatAtLevel(
           def.baseAttack, def.attackScaleFactor, levels.attackLevel),
-      value: def.getStatAtLevel(
-          def.baseValue, def.valueScaleFactor, levels.valueLevel),
+      value: computedValue,
     );
   }
 }

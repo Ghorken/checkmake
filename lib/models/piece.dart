@@ -30,7 +30,6 @@ class PieceStats {
   final int value; // valore in monete quando viene eliminato
   int hpLevel;
   int attackLevel;
-  int valueLevel;
 
   PieceStats({
     required this.maxHp,
@@ -39,7 +38,6 @@ class PieceStats {
     required this.value,
     this.hpLevel = 1,
     this.attackLevel = 1,
-    this.valueLevel = 1,
   });
 
   bool get isHalfHp => currentHp <= maxHp / 2;
@@ -52,7 +50,6 @@ class PieceStats {
     int? value,
     int? hpLevel,
     int? attackLevel,
-    int? valueLevel,
   }) {
     return PieceStats(
       maxHp: maxHp ?? this.maxHp,
@@ -61,7 +58,6 @@ class PieceStats {
       value: value ?? this.value,
       hpLevel: hpLevel ?? this.hpLevel,
       attackLevel: attackLevel ?? this.attackLevel,
-      valueLevel: valueLevel ?? this.valueLevel,
     );
   }
 }
