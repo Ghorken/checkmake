@@ -44,6 +44,7 @@ class CombatService {
           currentHp: attackerNewHp.clamp(0, attacker.stats.maxHp),
         ),
       );
+      survivingAttacker.activeBuff = null; // consumo il buff dopo il combattimento
     }
 
     if (!defenderDied) {
@@ -52,6 +53,7 @@ class CombatService {
           currentHp: defenderNewHp.clamp(0, defender.stats.maxHp),
         ),
       );
+      survivingDefender.activeBuff = null; // consumo il buff dopo il combattimento
     } else {
       coinsEarned += defender.stats.value;
     }

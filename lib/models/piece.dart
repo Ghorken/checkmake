@@ -1,5 +1,13 @@
 // lib/models/piece.dart
 
+enum PassiveEffect {
+  doubleAttack,
+}
+
+enum ActiveEffect {
+  heal,
+}
+
 enum PieceType {
   // Pezzi standard
   pawn,
@@ -66,18 +74,32 @@ class SpecialAbility {
   final String id;
   final String name;
   final String description;
-  final int cooldown; // turni di cooldown, 0 = sempre disponibile
+  final bool isPassive;
+  final int cooldown; // turni di cooldown (ignorato se isPassive)
   int currentCooldown;
+
+  // Effetto passivo (sempre attivo)
+  final PassiveEffect? passiveEffect;
+  final double passiveValue; // valore frazionario, es. 0.20 = 20%
+
+  // Effetto attivo (si usa cliccando il tasto abilità)
+  final ActiveEffect? activeEffect;
+  final double activeValue; // valore frazionario, es. 0.30 = 30%
 
   SpecialAbility({
     required this.id,
     required this.name,
     required this.description,
-    required this.cooldown,
+    this.isPassive = false,
+    this.cooldown = 0,
     this.currentCooldown = 0,
+    this.passiveEffect,
+    this.passiveValue = 0.0,
+    this.activeEffect,
+    this.activeValue = 0.0,
   });
 
-  bool get isReady => currentCooldown == 0;
+  bool get isReady => !isPassive && currentCooldown == 0;
 }
 
 class Piece {
@@ -89,6 +111,7 @@ class Piece {
   final SpecialAbility? specialAbility;
   String? equippedSkin; // ID della skin equipaggiata
   bool hasMoved; // per castling e mosse speciali
+  ActiveEffect? activeBuff; // buff temporaneo da abilità attiva, azzerato dopo il combattimento
 
   Piece({
     required this.id,
@@ -99,6 +122,7 @@ class Piece {
     this.specialAbility,
     this.equippedSkin,
     this.hasMoved = false,
+    this.activeBuff,
   });
 
   // Immagine da mostrare in base alla vita

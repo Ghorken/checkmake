@@ -29,10 +29,14 @@ extension PieceStrings on AppLocalizations {
       };
 
   // ===== NOMI ABILITÀ =====
-  String abilityNameFor(String abilityId) => abilityId;
+  String abilityNameFor(String abilityId) => switch (abilityId) {
+        _ => abilityId,
+      };
 
   // ===== DESCRIZIONI ABILITÀ =====
-  String abilityDescFor(String abilityId) => abilityId;
+  String abilityDescFor(String abilityId) => switch (abilityId) {
+        _ => abilityId,
+      };
 
   // ===== LABEL TIPO BASE =====
   String baseTypeLabel(PieceBaseType base) => switch (base) {

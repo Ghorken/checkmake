@@ -312,10 +312,24 @@ class GameProvider extends ChangeNotifier {
     if (!canUseAbility) return;
     final piece = board.getPiece(piecePos);
     if (piece == null || piece.side != interactiveSide) return;
-    if (piece.specialAbility == null || !piece.specialAbility!.isReady) return;
+    final ability = piece.specialAbility;
+    if (ability == null || ability.isPassive || !ability.isReady) return;
 
-    // TODO: implementare effetti delle abilità specifiche
-    // Per ora segnala solo che è stata usata
+    switch (ability.activeEffect) {
+      case ActiveEffect.heal:
+        final healAmount = (piece.stats.maxHp * ability.activeValue).round();
+        final newHp = (piece.stats.currentHp + healAmount).clamp(0, piece.stats.maxHp);
+        board.setPiece(
+          piecePos,
+          piece.copyWith(stats: piece.stats.copyWith(currentHp: newHp)),
+        );
+        _showCombatLog(
+            '+$healAmount HP per ${pieceDefinitions[piece.type]!.displayName}');
+      case null:
+        break;
+    }
+
+    ability.currentCooldown = ability.cooldown;
     turnAction = TurnAction.usedAbility;
     notifyListeners();
   }
@@ -336,6 +350,9 @@ class GameProvider extends ChangeNotifier {
       notifyListeners();
       return;
     }
+
+    // Decrementa i cooldown dei pezzi del giocatore corrente
+    _tickCooldowns(currentTurn);
 
     currentTurn = currentTurn == PlayerSide.player1
         ? PlayerSide.player2
@@ -413,6 +430,20 @@ class GameProvider extends ChangeNotifier {
   void _stopCombatLogTimer() {
     _combatLogTimer?.cancel();
     _combatLogTimer = null;
+  }
+
+  void _tickCooldowns(PlayerSide side) {
+    for (int row = 0; row < 8; row++) {
+      for (int col = 0; col < 8; col++) {
+        final piece = board.getPiece(Position(row, col));
+        if (piece?.side == side) {
+          final ability = piece!.specialAbility;
+          if (ability != null && !ability.isPassive && ability.currentCooldown > 0) {
+            ability.currentCooldown--;
+          }
+        }
+      }
+    }
   }
 
   void _handleTurnTimeout() {

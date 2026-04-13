@@ -153,13 +153,6 @@ class _PiecesTab extends StatelessWidget {
                     _StatChip('ATK ${def.baseAttack}', _steelBlue),
                   ],
                 ),
-                if (def.abilityFactory != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4),
-                    child: _StatChip(
-                        l.abilityNameFor(def.abilityFactory!()?.id ?? ''),
-                        _gold),
-                  ),
               ],
             ),
             isThreeLine: true,
@@ -211,7 +204,13 @@ class _UpgradesTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
-    final owned = shop.profile.unlockedPieces.toList();
+
+    // Raggruppa i pezzi posseduti per tipo base
+    final groups = <PieceBaseType, List<PieceType>>{};
+    for (final type in shop.profile.unlockedPieces) {
+      final base = pieceDefinitions[type]!.baseType;
+      groups.putIfAbsent(base, () => []).add(type);
+    }
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -222,7 +221,23 @@ class _UpgradesTab extends StatelessWidget {
             style: GoogleFonts.cinzelDecorative(
                 color: _gold, fontWeight: FontWeight.bold, fontSize: 15)),
         const SizedBox(height: 8),
-        ...owned.map((type) => _PieceUpgradeCard(shop: shop, type: type)),
+        for (final base in PieceBaseType.values)
+          if (groups.containsKey(base)) ...[
+            Padding(
+              padding: const EdgeInsets.only(top: 8, bottom: 4),
+              child: Text(
+                l.baseTypeLabel(base),
+                style: GoogleFonts.cinzel(
+                  color: _gold.withValues(alpha: 0.7),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
+              ),
+            ),
+            Divider(color: _gold.withValues(alpha: 0.2), height: 1),
+            const SizedBox(height: 6),
+            ...groups[base]!.map((type) => _PieceUpgradeCard(shop: shop, type: type)),
+          ],
       ],
     );
   }

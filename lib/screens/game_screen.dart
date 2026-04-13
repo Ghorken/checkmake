@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:checkmake/l10n/app_localizations.dart';
 import 'package:checkmake/l10n/piece_strings.dart';
+import 'package:checkmake/models/board.dart';
 import 'package:checkmake/models/piece.dart';
 import 'package:checkmake/providers/game_provider.dart';
 import 'package:checkmake/providers/online_game_provider.dart';
@@ -491,21 +492,22 @@ class _GameScreenState extends State<GameScreen> {
                     ),
                   ),
                 ),
-                Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    _PlayerBar(
-                      game: game,
-                      onSurrenderPressed: _handleSurrenderRequested,
-                    ),
-                    if (showBottomTurnBanner)
-                      Positioned(
-                        left: 12,
-                        right: 12,
-                        top: -34,
-                        child: _TurnBanner(game: game),
-                      ),
-                  ],
+                // Sezione abilità (tra il log dello scontro e il banner del turno)
+                _AbilityInfoSection(game: game),
+                // Banner del turno (spazio fisso 34px)
+                SizedBox(
+                  height: 34,
+                  child: showBottomTurnBanner
+                      ? Padding(
+                          padding:
+                              const EdgeInsets.symmetric(horizontal: 12),
+                          child: _TurnBanner(game: game),
+                        )
+                      : null,
+                ),
+                _PlayerBar(
+                  game: game,
+                  onSurrenderPressed: _handleSurrenderRequested,
                 ),
               ],
             ),
@@ -1035,11 +1037,6 @@ class _PlayerBar extends StatelessWidget {
                 ],
               ),
               const Spacer(),
-              if (game.phase == GamePhase.myTurn &&
-                  game.selectedPosition != null)
-                _AbilityButton(game: game)
-              else
-                const SizedBox(width: 48),
               IconButton(
                 onPressed: () => unawaited(
                   onSurrenderPressed(
@@ -1115,43 +1112,128 @@ class _TurnBanner extends StatelessWidget {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// ABILITY BUTTON
+// ABILITY INFO SECTION
+// Spazio fisso tra il log dello scontro e il banner del turno.
+// Passiva: mostra icona + nome + descrizione.
+// Attiva: mostra icona + nome + descrizione + pulsante di attivazione.
 // ═══════════════════════════════════════════════════════════════════════════════
-class _AbilityButton extends StatelessWidget {
+class _AbilityInfoSection extends StatelessWidget {
   final GameProvider game;
-  const _AbilityButton({required this.game});
+  const _AbilityInfoSection({required this.game});
 
   @override
   Widget build(BuildContext context) {
+    final pos = game.selectedPosition;
+    final piece = pos != null ? game.board.getPiece(pos) : null;
+    final ability =
+        (piece != null && piece.side == game.interactiveSide)
+            ? piece.specialAbility
+            : null;
+
+    // Spazio fisso: 48px — vuoto se nessuna abilità da mostrare
+    if (ability == null) return const SizedBox(height: 48);
+
     final l = AppLocalizations.of(context)!;
-    final pos = game.selectedPosition!;
-    final piece = game.board.getPiece(pos);
-    if (piece?.specialAbility == null) return const SizedBox.shrink();
-
-    final ability = piece!.specialAbility!;
-    final canUse = ability.isReady && game.canUseAbility;
     final abilityName = l.abilityNameFor(ability.id);
+    final abilityDesc = l.abilityDescFor(ability.id);
+    final isPassive = ability.isPassive;
+    final accent = isPassive ? _steelBlue : _crimson;
 
-    return Tooltip(
-      message:
-          '${l.abilityNameFor(ability.id)}: ${l.abilityDescFor(ability.id)}',
-      child: ElevatedButton.icon(
-        onPressed: canUse ? () => game.useAbility(pos) : null,
-        icon: const Icon(Icons.local_fire_department, size: 14),
-        label: Text(abilityName,
-            style: GoogleFonts.cinzel(fontSize: 10, fontWeight: FontWeight.w700)),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: canUse ? _crimson : Colors.grey,
-          foregroundColor: _parchment,
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-          shape: RoundedRectangleBorder(
+    return SizedBox(
+      height: 48,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: accent.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(2),
-            side: BorderSide(
-              color: canUse
-                  ? _gold.withValues(alpha: 0.4)
-                  : Colors.transparent,
-            ),
+            border: Border.all(color: accent.withValues(alpha: 0.3)),
           ),
+          child: Row(
+            children: [
+              Icon(
+                isPassive ? Icons.shield : Icons.local_fire_department,
+                color: accent,
+                size: 14,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: '$abilityName  ',
+                        style: GoogleFonts.cinzel(
+                          color: _parchment,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      TextSpan(
+                        text: abilityDesc,
+                        style: GoogleFonts.lora(
+                          color: _parchment.withValues(alpha: 0.65),
+                          fontSize: 10,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    ],
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              if (!isPassive) ...[
+                const SizedBox(width: 8),
+                _ActiveAbilityButton(game: game, pos: pos!, ability: ability),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ActiveAbilityButton extends StatelessWidget {
+  final GameProvider game;
+  final Position pos;
+  final SpecialAbility ability;
+
+  const _ActiveAbilityButton({
+    required this.game,
+    required this.pos,
+    required this.ability,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final canUse = ability.isReady && game.canUseAbility;
+    final label = ability.currentCooldown > 0
+        ? 'CD ${ability.currentCooldown}'
+        : 'Usa';
+
+    return ElevatedButton(
+      onPressed: canUse ? () => game.useAbility(pos) : null,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: canUse ? _crimson : Colors.grey.shade800,
+        foregroundColor: _parchment,
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        minimumSize: const Size(0, 28),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(2),
+          side: BorderSide(
+            color: canUse ? _gold.withValues(alpha: 0.4) : Colors.transparent,
+          ),
+        ),
+      ),
+      child: Text(
+        label,
+        style: GoogleFonts.cinzel(
+          fontSize: 10,
+          fontWeight: FontWeight.w700,
+          color: _parchment,
         ),
       ),
     );

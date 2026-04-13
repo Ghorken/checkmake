@@ -134,6 +134,14 @@ final Map<PieceType, PieceDefinition> pieceDefinitions = {
     isUnlockable: true,
     unlockCost: 200,
     upgradeCostBase: 75,
+    abilityFactory: () => SpecialAbility(
+      id: 'double_attack',
+      name: 'Doppio Attacco',
+      description:
+          'Se sopravvive allo scontro, attacca una seconda volta senza ricevere danno.',
+      isPassive: true,
+      passiveEffect: PassiveEffect.doubleAttack,
+    ),
   ),
 
 };
