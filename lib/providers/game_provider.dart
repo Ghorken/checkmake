@@ -30,6 +30,8 @@ class GameProvider extends ChangeNotifier {
   late PlayerSide currentTurn;
   Position? selectedPosition;
   List<Position> validMoves = [];
+  Position? _abilitySourcePosition;
+  List<Position> _abilityTargets = [];
   TurnAction turnAction = TurnAction.none;
   Timer? _turnTimer;
   Timer? _combatLogTimer;
@@ -65,6 +67,8 @@ class GameProvider extends ChangeNotifier {
   bool get canUseAbility =>
       turnAction == TurnAction.none || turnAction == TurnAction.moved;
   int get turnSecondsLeft => _turnSecondsLeft;
+  bool get isAbilityTargeting => _abilitySourcePosition != null;
+  bool isAbilitySource(Position pos) => _abilitySourcePosition == pos;
 
   String? lastCombatLog;
   int myCoinsEarned = 0;
@@ -94,6 +98,7 @@ class GameProvider extends ChangeNotifier {
   void startHotseatMatch(PlayerSide startingSide) {
     if ((!hotseatMode && !trainingMode) || _phaseRaw == GamePhase.gameOver) return;
     currentTurn = startingSide;
+    _clearAbilityTargeting();
     selectedPosition = null;
     validMoves = [];
     turnAction = TurnAction.none;
@@ -195,6 +200,21 @@ class GameProvider extends ChangeNotifier {
       return;
     }
 
+    if (isAbilityTargeting) {
+      if (pos == _abilitySourcePosition) {
+        _clearAbilityTargeting();
+        selectedPosition = null;
+        validMoves = [];
+        notifyListeners();
+        return;
+      }
+      if (_abilityTargets.contains(pos)) {
+        _resolvePiercingShot(targetPos: pos);
+        return;
+      }
+      _clearAbilityTargeting();
+    }
+
     // Toggle selezione: tap sullo stesso pezzo già selezionato = deseleziona.
     if (selectedPosition == pos) {
       selectedPosition = null;
@@ -224,6 +244,7 @@ class GameProvider extends ChangeNotifier {
 
   /// Esegue una mossa (pubblica per permettere la sovrascrittura nel multiplayer online).
   void executeMove(Position from, Position to) {
+    _clearAbilityTargeting();
     final attacker = board.getPiece(from);
     if (attacker == null) return;
     final defender = board.getPiece(to);
@@ -310,6 +331,16 @@ class GameProvider extends ChangeNotifier {
 
   void useAbility(Position piecePos) {
     if (!canUseAbility) return;
+
+    if (_abilitySourcePosition == piecePos) {
+      _clearAbilityTargeting();
+      selectedPosition = null;
+      validMoves = [];
+      notifyListeners();
+      return;
+    }
+    _clearAbilityTargeting();
+
     final piece = board.getPiece(piecePos);
     if (piece == null || piece.side != interactiveSide) return;
     final ability = piece.specialAbility;
@@ -325,6 +356,19 @@ class GameProvider extends ChangeNotifier {
         );
         _showCombatLog(
             '+$healAmount HP per ${pieceDefinitions[piece.type]!.displayName}');
+      case ActiveEffect.piercingShot:
+        final targets = _piercingShotTargets(piecePos, piece.side);
+        if (targets.isEmpty) {
+          _showCombatLog('Nessun bersaglio in linea per la Ballista.');
+          notifyListeners();
+          return;
+        }
+        _abilitySourcePosition = piecePos;
+        _abilityTargets = targets;
+        selectedPosition = piecePos;
+        validMoves = List<Position>.from(targets);
+        notifyListeners();
+        return;
       case null:
         break;
     }
@@ -340,6 +384,7 @@ class GameProvider extends ChangeNotifier {
   }
 
   void _checkEndTurn() {
+    _clearAbilityTargeting();
     selectedPosition = null;
     validMoves = [];
     turnAction = TurnAction.none;
@@ -451,7 +496,100 @@ class GameProvider extends ChangeNotifier {
         _phaseRaw == GamePhase.waitingForOpponent) {
       return;
     }
+    _clearAbilityTargeting();
     _checkEndTurn();
+  }
+
+  void _clearAbilityTargeting() {
+    _abilitySourcePosition = null;
+    _abilityTargets = [];
+  }
+
+  List<Position> _piercingShotTargets(Position from, PlayerSide side) {
+    const directions = [
+      Position(1, 0),
+      Position(-1, 0),
+      Position(0, 1),
+      Position(0, -1),
+    ];
+    final targets = <Position>[];
+    for (final dir in directions) {
+      var pos = from + dir;
+      while (pos.isValid) {
+        final piece = board.getPiece(pos);
+        if (piece != null && piece.side != side) {
+          targets.add(pos);
+        }
+        pos = pos + dir;
+      }
+    }
+    return targets;
+  }
+
+  void _resolvePiercingShot({required Position targetPos}) {
+    final sourcePos = _abilitySourcePosition;
+    if (sourcePos == null) return;
+
+    final attacker = board.getPiece(sourcePos);
+    if (attacker == null || attacker.side != interactiveSide) {
+      _clearAbilityTargeting();
+      selectedPosition = null;
+      validMoves = [];
+      notifyListeners();
+      return;
+    }
+
+    final ability = attacker.specialAbility;
+    if (ability == null ||
+        ability.isPassive ||
+        ability.activeEffect != ActiveEffect.piercingShot ||
+        !ability.isReady) {
+      _clearAbilityTargeting();
+      selectedPosition = null;
+      validMoves = [];
+      notifyListeners();
+      return;
+    }
+
+    final defender = board.getPiece(targetPos);
+    if (defender == null || defender.side == attacker.side) {
+      _clearAbilityTargeting();
+      selectedPosition = null;
+      validMoves = [];
+      notifyListeners();
+      return;
+    }
+
+    final damage = (attacker.stats.attack * ability.activeValue).round();
+    final newHp = defender.stats.currentHp - damage;
+    if (newHp <= 0) {
+      board.setPiece(targetPos, null);
+      if (!hotseatMode && attacker.side == localSide) {
+        myCoinsEarned += defender.stats.value;
+        myProfile.addCoins(defender.stats.value);
+      }
+      _showCombatLog(
+        '${pieceDefinitions[attacker.type]!.displayName} abbatte ${pieceDefinitions[defender.type]!.displayName} con una freccia perforante!',
+      );
+    } else {
+      board.setPiece(
+        targetPos,
+        defender.copyWith(
+          stats: defender.stats.copyWith(currentHp: newHp),
+        ),
+      );
+      _showCombatLog(
+        '${pieceDefinitions[attacker.type]!.displayName} colpisce ${pieceDefinitions[defender.type]!.displayName} (-$damage HP).',
+      );
+    }
+
+    ability.currentCooldown = ability.cooldown;
+    turnAction = TurnAction.usedAbility;
+    _clearAbilityTargeting();
+    selectedPosition = null;
+    validMoves = [];
+    _checkGameOver();
+    notifyListeners();
   }
 
   @override

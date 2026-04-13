@@ -229,6 +229,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pieceDescFighter => 'A pawn variant with boosted attack.';
 
   @override
+  String get pieceNameBallista => 'Balista';
+
+  @override
+  String get pieceDescBallista =>
+      'Moves and attacks like a rook. Can fire through units.';
+
+  @override
   String get pieceNameMiner => 'Miner';
 
   @override
@@ -379,6 +386,20 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get abilityDescFortify =>
       'Reduces damage taken by 50% until next turn.';
+
+  @override
+  String get abilityNameDoubleAttack => 'Double Attack';
+
+  @override
+  String get abilityDescDoubleAttack =>
+      'If it survives combat, it immediately strikes again without taking return damage.';
+
+  @override
+  String get abilityNamePiercingShot => 'Piercing Shot';
+
+  @override
+  String get abilityDescPiercingShot =>
+      'Hits an enemy on the same row or column, ignoring pieces in between.';
 
   @override
   String get abilityNameHolyCharge => 'Holy Charge';

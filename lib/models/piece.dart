@@ -6,6 +6,7 @@ enum PassiveEffect {
 
 enum ActiveEffect {
   heal,
+  piercingShot,
 }
 
 enum PieceType {
@@ -18,6 +19,7 @@ enum PieceType {
   king,
   // Pezzi sbloccabili
   fighter,
+  balista,
 }
 
 enum PieceBaseType {

@@ -1209,8 +1209,11 @@ class _ActiveAbilityButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final canUse = ability.isReady && game.canUseAbility;
-    final label = ability.currentCooldown > 0
+    final isTargetingThisPiece = game.isAbilityTargeting && game.isAbilitySource(pos);
+    final canUse = isTargetingThisPiece || (ability.isReady && game.canUseAbility);
+    final label = isTargetingThisPiece
+        ? 'Annulla'
+        : ability.currentCooldown > 0
         ? 'CD ${ability.currentCooldown}'
         : 'Usa';
 

@@ -233,6 +233,13 @@ class AppLocalizationsIt extends AppLocalizations {
   String get pieceDescFighter => 'Variante del pedone con attacco potenziato.';
 
   @override
+  String get pieceNameBallista => 'Ballista';
+
+  @override
+  String get pieceDescBallista =>
+      'Muove e attacca come una torre. Può sparare attraverso i pezzi.';
+
+  @override
   String get pieceNameMiner => 'Minatore';
 
   @override
@@ -386,6 +393,20 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get abilityDescFortify =>
       'Riduce i danni subiti del 50% fino al prossimo turno.';
+
+  @override
+  String get abilityNameDoubleAttack => 'Doppio Attacco';
+
+  @override
+  String get abilityDescDoubleAttack =>
+      'Se sopravvive allo scontro, colpisce subito una seconda volta senza subire contrattacco.';
+
+  @override
+  String get abilityNamePiercingShot => 'Freccia Perforante';
+
+  @override
+  String get abilityDescPiercingShot =>
+      'Colpisce un nemico sulla stessa riga o colonna ignorando i pezzi intermedi.';
 
   @override
   String get abilityNameHolyCharge => 'Carica Sacra';

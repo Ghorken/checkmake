@@ -15,6 +15,7 @@ extension PieceStrings on AppLocalizations {
         PieceType.queen => pieceNameQueen,
         PieceType.king => pieceNameKing,
         PieceType.fighter => pieceNameFighter,
+        PieceType.balista => pieceNameBalista,
       };
 
   // ===== DESCRIZIONI PEZZI =====
@@ -26,15 +27,20 @@ extension PieceStrings on AppLocalizations {
         PieceType.queen => pieceDescQueen,
         PieceType.king => pieceDescKing,
         PieceType.fighter => pieceDescFighter,
+        PieceType.balista => pieceDescBalista,
       };
 
   // ===== NOMI ABILITÀ =====
   String abilityNameFor(String abilityId) => switch (abilityId) {
+        'double_attack' => abilityNameDoubleAttack,
+        'piercing_shot' => abilityNamePiercingShot,
         _ => abilityId,
       };
 
   // ===== DESCRIZIONI ABILITÀ =====
   String abilityDescFor(String abilityId) => switch (abilityId) {
+        'double_attack' => abilityDescDoubleAttack,
+        'piercing_shot' => abilityDescPiercingShot,
         _ => abilityId,
       };
 

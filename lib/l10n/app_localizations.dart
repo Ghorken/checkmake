@@ -512,6 +512,18 @@ abstract class AppLocalizations {
   /// **'Variante del pedone con attacco potenziato.'**
   String get pieceDescFighter;
 
+  /// No description provided for @pieceNameBallista.
+  ///
+  /// In it, this message translates to:
+  /// **'Ballista'**
+  String get pieceNameBallista;
+
+  /// No description provided for @pieceDescBallista.
+  ///
+  /// In it, this message translates to:
+  /// **'Muove e attacca come una torre. Può sparare attraverso i pezzi.'**
+  String get pieceDescBallista;
+
   /// No description provided for @pieceNameMiner.
   ///
   /// In it, this message translates to:
@@ -799,6 +811,30 @@ abstract class AppLocalizations {
   /// In it, this message translates to:
   /// **'Riduce i danni subiti del 50% fino al prossimo turno.'**
   String get abilityDescFortify;
+
+  /// No description provided for @abilityNameDoubleAttack.
+  ///
+  /// In it, this message translates to:
+  /// **'Doppio Attacco'**
+  String get abilityNameDoubleAttack;
+
+  /// No description provided for @abilityDescDoubleAttack.
+  ///
+  /// In it, this message translates to:
+  /// **'Se sopravvive allo scontro, colpisce subito una seconda volta senza subire contrattacco.'**
+  String get abilityDescDoubleAttack;
+
+  /// No description provided for @abilityNamePiercingShot.
+  ///
+  /// In it, this message translates to:
+  /// **'Freccia Perforante'**
+  String get abilityNamePiercingShot;
+
+  /// No description provided for @abilityDescPiercingShot.
+  ///
+  /// In it, this message translates to:
+  /// **'Colpisce un nemico sulla stessa riga o colonna ignorando i pezzi intermedi.'**
+  String get abilityDescPiercingShot;
 
   /// No description provided for @abilityNameHolyCharge.
   ///

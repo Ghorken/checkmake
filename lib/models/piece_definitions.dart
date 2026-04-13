@@ -143,6 +143,28 @@ final Map<PieceType, PieceDefinition> pieceDefinitions = {
       passiveEffect: PassiveEffect.doubleAttack,
     ),
   ),
+  PieceType.balista: PieceDefinition(
+    type: PieceType.balista,
+    baseType: PieceBaseType.rook,
+    displayName: 'Ballista',
+    description:
+        'Muove e attacca come una torre. Abilita attiva: scaglia una freccia su un nemico in linea retta, ignorando i pezzi intermedi.',
+    baseHp: 70,
+    baseAttack: 28,
+    baseValue: 28,
+    isUnlockable: true,
+    unlockCost: 420,
+    upgradeCostBase: 140,
+    abilityFactory: () => SpecialAbility(
+      id: 'piercing_shot',
+      name: 'Freccia Perforante',
+      description:
+          'Colpisce un nemico sulla stessa riga o colonna ignorando i pezzi intermedi.',
+      cooldown: 2,
+      activeEffect: ActiveEffect.piercingShot,
+      activeValue: 1.0,
+    ),
+  ),
 
 };
 
