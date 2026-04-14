@@ -512,17 +512,17 @@ abstract class AppLocalizations {
   /// **'Variante del pedone con attacco potenziato.'**
   String get pieceDescFighter;
 
-  /// No description provided for @pieceNameBallista.
+  /// No description provided for @pieceNameBalista.
   ///
   /// In it, this message translates to:
   /// **'Ballista'**
-  String get pieceNameBallista;
+  String get pieceNameBalista;
 
-  /// No description provided for @pieceDescBallista.
+  /// No description provided for @pieceDescBalista.
   ///
   /// In it, this message translates to:
   /// **'Muove e attacca come una torre. Può sparare attraverso i pezzi.'**
-  String get pieceDescBallista;
+  String get pieceDescBalista;
 
   /// No description provided for @pieceNameMiner.
   ///

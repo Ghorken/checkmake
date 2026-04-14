@@ -185,12 +185,19 @@ class PlayerProfile extends ChangeNotifier {
 
   bool hasPiece(PieceType type) => unlockedPieces.contains(type);
 
+  // Coda di achievement appena sbloccati da mostrare come toast
+  final List<String> _pendingAchievementToasts = [];
+  bool get hasPendingAchievementToasts => _pendingAchievementToasts.isNotEmpty;
+  String? consumeAchievementToast() =>
+      _pendingAchievementToasts.isEmpty ? null : _pendingAchievementToasts.removeAt(0);
+
   void unlockAchievement(String id, {SkinOwnership? skinReward}) {
     if (unlockedAchievements.contains(id)) return;
     unlockedAchievements.add(id);
     if (skinReward != null && !ownedSkins.any((s) => s.skinId == skinReward.skinId)) {
       ownedSkins.add(skinReward);
     }
+    _pendingAchievementToasts.add(id);
     notifyListeners();
   }
 

@@ -12,6 +12,9 @@ import 'package:checkmake/l10n/app_localizations.dart';
 import 'package:checkmake/models/player_profile.dart';
 import 'package:checkmake/screens/main_menu_screen.dart';
 import 'package:checkmake/services/profile_persistence_service.dart';
+import 'package:checkmake/widgets/achievement_overlay.dart';
+
+final GlobalKey<NavigatorState> _appNavigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,6 +59,7 @@ class Checkmake extends StatelessWidget {
     return ChangeNotifierProvider.value(
       value: profile,
       child: MaterialApp(
+        navigatorKey: _appNavigatorKey,
         title: 'CheckMake',
         debugShowCheckedModeBanner: false,
 
@@ -135,6 +139,11 @@ class Checkmake extends StatelessWidget {
             ),
           ),
         ),
+        builder: (context, child) =>
+            AchievementToastOverlay(
+              navigatorKey: _appNavigatorKey,
+              child: child!,
+            ),
         home: const MainMenuScreen(),
       ),
     );

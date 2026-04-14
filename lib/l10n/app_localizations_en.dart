@@ -229,10 +229,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pieceDescFighter => 'A pawn variant with boosted attack.';
 
   @override
-  String get pieceNameBallista => 'Balista';
+  String get pieceNameBalista => 'Balista';
 
   @override
-  String get pieceDescBallista =>
+  String get pieceDescBalista =>
       'Moves and attacks like a rook. Can fire through units.';
 
   @override

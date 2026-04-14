@@ -233,10 +233,10 @@ class AppLocalizationsIt extends AppLocalizations {
   String get pieceDescFighter => 'Variante del pedone con attacco potenziato.';
 
   @override
-  String get pieceNameBallista => 'Ballista';
+  String get pieceNameBalista => 'Ballista';
 
   @override
-  String get pieceDescBallista =>
+  String get pieceDescBalista =>
       'Muove e attacca come una torre. Può sparare attraverso i pezzi.';
 
   @override
