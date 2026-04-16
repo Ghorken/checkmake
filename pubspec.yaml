@@ -42,6 +42,8 @@ flutter:
     # piece_id examples: pawn, rook, knight, bishop, queen, king
     # per pezzi nuovi: fighter, miner, rifleman, healer, etc.
     - assets/images/pieces/
+    - assets/images/buildings/
+    - assets/images/terrains/
     - assets/icons/
     - assets/icon.png
     - assets/splash.png

@@ -73,6 +73,14 @@ class GameProvider extends ChangeNotifier {
   String? lastCombatLog;
   int myCoinsEarned = 0;
 
+  // Sprite animation state: set after combat, cleared after animation duration
+  Position? lastAttackPos;
+  Timer? _animClearTimer;
+  int _hitSignalCounter = 0;
+  final Map<Position, int> _hitSignals = {};
+
+  int hitSignalFor(Position pos) => _hitSignals[pos] ?? 0;
+
   GameProvider({
     required this.myProfile,
     required this.opponentProfile,
@@ -96,7 +104,9 @@ class GameProvider extends ChangeNotifier {
   }
 
   void startHotseatMatch(PlayerSide startingSide) {
-    if ((!hotseatMode && !trainingMode) || _phaseRaw == GamePhase.gameOver) return;
+    if ((!hotseatMode && !trainingMode) || _phaseRaw == GamePhase.gameOver) {
+      return;
+    }
     currentTurn = startingSide;
     _clearAbilityTargeting();
     selectedPosition = null;
@@ -277,6 +287,13 @@ class GameProvider extends ChangeNotifier {
       }
 
       _showCombatLog(_buildCombatLog(attacker, defender, result));
+      _triggerCombatAnimation(from);
+      final hitPositions = <Position>[];
+      if (result.survivingDefender != null &&
+          result.defenderNewPosition != null) {
+        hitPositions.add(result.defenderNewPosition!);
+      }
+      _emitHitSignals(hitPositions);
     } else {
       // SPOSTAMENTO SEMPLICE
       board.movePiece(from, to);
@@ -329,6 +346,21 @@ class GameProvider extends ChangeNotifier {
     });
   }
 
+  void _triggerCombatAnimation(Position attackerPos) {
+    _animClearTimer?.cancel();
+    lastAttackPos = attackerPos;
+    _animClearTimer = Timer(const Duration(milliseconds: 600), () {
+      lastAttackPos = null;
+      notifyListeners();
+    });
+  }
+
+  void _emitHitSignals(Iterable<Position> positions) {
+    for (final pos in positions.toSet()) {
+      _hitSignals[pos] = ++_hitSignalCounter;
+    }
+  }
+
   void useAbility(Position piecePos) {
     if (!canUseAbility) return;
 
@@ -349,7 +381,8 @@ class GameProvider extends ChangeNotifier {
     switch (ability.activeEffect) {
       case ActiveEffect.heal:
         final healAmount = (piece.stats.maxHp * ability.activeValue).round();
-        final newHp = (piece.stats.currentHp + healAmount).clamp(0, piece.stats.maxHp);
+        final newHp =
+            (piece.stats.currentHp + healAmount).clamp(0, piece.stats.maxHp);
         board.setPiece(
           piecePos,
           piece.copyWith(stats: piece.stats.copyWith(currentHp: newHp)),
@@ -483,7 +516,9 @@ class GameProvider extends ChangeNotifier {
         final piece = board.getPiece(Position(row, col));
         if (piece?.side == side) {
           final ability = piece!.specialAbility;
-          if (ability != null && !ability.isPassive && ability.currentCooldown > 0) {
+          if (ability != null &&
+              !ability.isPassive &&
+              ability.currentCooldown > 0) {
             ability.currentCooldown--;
           }
         }
@@ -578,6 +613,7 @@ class GameProvider extends ChangeNotifier {
           stats: defender.stats.copyWith(currentHp: newHp),
         ),
       );
+      _emitHitSignals([targetPos]);
       _showCombatLog(
         '${pieceDefinitions[attacker.type]!.displayName} colpisce ${pieceDefinitions[defender.type]!.displayName} (-$damage HP).',
       );
@@ -596,6 +632,7 @@ class GameProvider extends ChangeNotifier {
   void dispose() {
     _stopTurnTimer();
     _stopCombatLogTimer();
+    _animClearTimer?.cancel();
     super.dispose();
   }
 }

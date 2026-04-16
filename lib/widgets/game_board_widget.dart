@@ -8,6 +8,7 @@ import 'package:checkmake/models/board.dart';
 import 'package:checkmake/models/piece.dart';
 import 'package:checkmake/providers/game_provider.dart';
 import 'package:checkmake/widgets/piece_widget.dart';
+import 'package:checkmake/widgets/sprite_widget.dart';
 
 // Medieval board palette
 const _lightSquare = Color(0xFFD4C5A9); // Worn parchment / sandstone
@@ -58,8 +59,7 @@ class GameBoardWidget extends StatelessWidget {
                 angle: rotateForOnlinePlayer2 ? math.pi : 0,
                 child: GridView.builder(
                   physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate:
-                      const SliverGridDelegateWithFixedCrossAxisCount(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 8,
                   ),
                   itemCount: 64,
@@ -173,6 +173,10 @@ class _BoardCell extends StatelessWidget {
                   size: double.infinity,
                   showStats: isMyPiece,
                   isSelected: isSelected,
+                  hitSignal: game.hitSignalFor(position),
+                  animation: game.lastAttackPos == position
+                      ? SpriteAnimation.attack
+                      : SpriteAnimation.idle,
                 ),
               ),
 
@@ -202,4 +206,3 @@ class _BoardCell extends StatelessWidget {
     );
   }
 }
-

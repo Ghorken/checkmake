@@ -1,10 +1,12 @@
 // lib/widgets/piece_widget.dart
 
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:checkmake/models/piece.dart';
 import 'package:checkmake/models/piece_definitions.dart';
+import 'package:checkmake/widgets/sprite_widget.dart';
 
 // Medieval palette
 const _gold = Color(0xFFD4AF37);
@@ -192,11 +194,13 @@ class PiecePlaceholderPainter extends CustomPainter {
 // ─────────────────────────────────────────────────────────────────────────────
 // PIECE WIDGET
 // ─────────────────────────────────────────────────────────────────────────────
-class PieceWidget extends StatelessWidget {
+class PieceWidget extends StatefulWidget {
   final Piece piece;
   final double size;
   final bool showStats;
   final bool isSelected;
+  final SpriteAnimation animation;
+  final int hitSignal;
 
   const PieceWidget({
     super.key,
@@ -204,19 +208,74 @@ class PieceWidget extends StatelessWidget {
     this.size = 48,
     this.showStats = false,
     this.isSelected = false,
+    this.animation = SpriteAnimation.idle,
+    this.hitSignal = 0,
   });
 
   @override
+  State<PieceWidget> createState() => _PieceWidgetState();
+}
+
+class _PieceWidgetState extends State<PieceWidget> {
+  static const _blinkFrames = <double>[0.25, 1.0, 0.25, 1.0];
+  static const _blinkStep = Duration(milliseconds: 85);
+  double _opacity = 1.0;
+  Timer? _blinkTimer;
+  int _blinkIndex = 0;
+
+  @override
+  void didUpdateWidget(covariant PieceWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.hitSignal != oldWidget.hitSignal && widget.hitSignal > 0) {
+      _startBlink();
+    }
+  }
+
+  void _startBlink() {
+    _blinkTimer?.cancel();
+    _blinkIndex = 0;
+    setState(() => _opacity = _blinkFrames[_blinkIndex]);
+
+    _blinkTimer = Timer.periodic(_blinkStep, (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+      _blinkIndex++;
+      if (_blinkIndex >= _blinkFrames.length) {
+        timer.cancel();
+        setState(() => _opacity = 1.0);
+        return;
+      }
+      setState(() => _opacity = _blinkFrames[_blinkIndex]);
+    });
+  }
+
+  @override
+  void dispose() {
+    _blinkTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final rotateForPlayer2 = piece.side == PlayerSide.player2;
+    final piece = widget.piece;
+    final size = widget.size;
+    final showStats = widget.showStats;
+    final isSelected = widget.isSelected;
+    final animation = widget.animation;
+
     final visualLayer = Stack(
       children: [
-        // ── Main image ──────────────────────────────────────────
+        // ── Sprite sheet animation ──────────────────────────────
         Positioned.fill(
-          child: Image.asset(
-            piece.imagePath,
-            fit: BoxFit.contain,
-            errorBuilder: (_, __, ___) => _buildPlaceholder(),
+          child: SpriteWidget(
+            type: piece.type,
+            side: piece.side,
+            isHalfHp: piece.stats.isHalfHp,
+            equippedSkin: piece.equippedSkin,
+            animation: animation,
+            size: size,
           ),
         ),
 
@@ -248,19 +307,16 @@ class PieceWidget extends StatelessWidget {
       height: size,
       child: Stack(
         children: [
-          if (rotateForPlayer2)
-            Transform.rotate(
-              angle: math.pi,
-              child: visualLayer,
-            )
-          else
-            visualLayer,
+          AnimatedOpacity(
+            opacity: _opacity,
+            duration: const Duration(milliseconds: 70),
+            child: visualLayer,
+          ),
 
           // ── HP Bar (blood-themed) ──────────────────────────────
           if (showStats)
             Positioned(
-              top: rotateForPlayer2 ? 0 : null,
-              bottom: rotateForPlayer2 ? null : 0,
+              bottom: 0,
               left: 2,
               right: 2,
               child: _HpBar(
@@ -272,14 +328,6 @@ class PieceWidget extends StatelessWidget {
       ),
     );
   }
-
-  Widget _buildPlaceholder() => CustomPaint(
-        painter: PiecePlaceholderPainter(
-          type: piece.type,
-          side: piece.side,
-          isHalfHp: piece.stats.isHalfHp,
-        ),
-      );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
